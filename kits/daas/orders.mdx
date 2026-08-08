@@ -1,0 +1,75 @@
+---
+title: "DaaS orders"
+description: "Validate, submit, status, and cancel delivery orders."
+---
+
+# DaaS orders
+
+## Validate then submit
+
+1. `POST /api/daas/validate-order`  
+2. `POST /api/daas/submit-order`  
+
+Same body shape for both.
+
+### Important rules
+
+- If HAAT maps businesses, leave `BusinessId` empty and send `posBusinessId`
+- If `isCashOrder` is `true`, every item needs `Price`
+
+### Example body (shortened)
+
+```json
+{
+  "BusinessId": 180,
+  "posBusinessId": "POS-12345-ABC",
+  "DaaSOrderId": "DAAS-987654321",
+  "UserDetails": {
+    "Name": "John Doe",
+    "Location": { "Latitude": 32.522, "Longitude": 35.148 },
+    "Address": {
+      "City": "Umm El Fahem",
+      "Street": "Abu Lahem",
+      "BuildingNumber": "123",
+      "Notes": "Ring the bell"
+    },
+    "PhoneNumber": "+972544774783"
+  },
+  "OrderDetails": {
+    "Items": [
+      { "Id": 1, "Name": "Chicken Shawarma Wrap", "Quantity": 2, "Price": 35.5 }
+    ]
+  },
+  "EstimatedPickupTime": "2025-09-09T23:45:00Z",
+  "Bags": 2,
+  "isCashOrder": true
+}
+```
+
+### Submit success example
+
+```json
+{
+  "status": "success",
+  "message": "Order was submitted successfully",
+  "data": {
+    "haatOrderId": 5887966,
+    "estimatedPickupTime": "09-09-2025 23:56:19",
+    "estimatedDeliveryTime": "10-09-2025 00:16:19"
+  }
+}
+```
+
+## Order status
+
+`GET /api/daas/orders/{haatOrderId}/status`
+
+## Cancel
+
+`PUT /api/daas/orders/{haatOrderId}/cancel`
+
+Denied if already picked up or delivered.
+
+## Update business (optional)
+
+`PUT /api/daas/{businessId}/update-business` — name, address, location, email, phone.

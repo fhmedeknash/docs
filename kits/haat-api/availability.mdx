@@ -1,0 +1,35 @@
+---
+title: "Availability"
+description: "Bulk update menu item availability in HAAT."
+---
+
+# Availability
+
+`PUT /api/pos/business/{businessId}/availability`
+
+| Field | Required | Notes |
+| --- | --- | --- |
+| items | Yes | Partner item ids from onboarding (at least one) |
+| available | Yes | `true` or `false` |
+
+Mark unavailable:
+
+```json
+{
+  "items": ["ITEM-001", "ITEM-002", "DEAL-010"],
+  "available": false
+}
+```
+
+Restore:
+
+```json
+{
+  "items": ["ITEM-001", "ITEM-002"],
+  "available": true
+}
+```
+
+<Tip>
+  If the response `status` is `"Pending"`, poll request status with the returned `requestId`.
+</Tip>

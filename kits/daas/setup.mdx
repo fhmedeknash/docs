@@ -1,0 +1,33 @@
+---
+title: "DaaS setup"
+description: "Login and environments for DaaS partners."
+---
+
+# DaaS setup
+
+## Login
+
+`POST /api/daas/authentication/login`
+
+```json
+{
+  "username": "username",
+  "password": "••••••••"
+}
+```
+
+Response includes a token. Use on all other calls:
+
+```http
+Authorization: Bearer <token>
+```
+
+## Base URL
+
+HAAT provides staging and production DaaS base URLs during onboarding.
+
+## List businesses
+
+`GET /api/daas/businesses`
+
+Use returned `businessId` values when updating a business or submitting orders (unless HAAT maps via `posBusinessId` only).

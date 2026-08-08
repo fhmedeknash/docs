@@ -1,0 +1,28 @@
+---
+title: "DaaS overview"
+description: "When to use the Delivery-as-a-Service partner kit."
+---
+
+# DaaS overview
+
+Use this kit for **Delivery-as-a-Service** partners who submit delivery orders into HAAT.
+
+## Flow
+
+```mermaid
+sequenceDiagram
+  participant Partner
+  participant HAAT
+  Partner->>HAAT: Login
+  HAAT-->>Partner: Bearer token
+  Partner->>HAAT: List businesses
+  Partner->>HAAT: Validate order
+  Partner->>HAAT: Submit order
+  Partner->>HAAT: Get status / Cancel
+```
+
+## Pages in this kit
+
+1. [Setup](/kits/daas/setup)  
+2. [Orders](/kits/daas/orders)  
+3. [Checklist](/kits/daas/checklist)

@@ -1,0 +1,50 @@
+---
+title: "HAAT API setup"
+description: "API key, environments, and business IDs."
+---
+
+# HAAT API setup
+
+## Auth
+
+Every request:
+
+```http
+X-Api-Key: <api-key-from-haat>
+```
+
+## Environments
+
+| Environment | Base URL |
+| --- | --- |
+| Production | `https://integration.internal.haat.delivery` |
+| Staging | `http://ext-integration.haat-delivery.io` |
+
+## First call
+
+`GET /api/pos/businesses`
+
+Returns business ids for this API key. Use `businessId` in all other paths:
+
+`/api/pos/business/{businessId}/...`
+
+## Write response pattern
+
+PUT endpoints return:
+
+```json
+{
+  "requestId": "6651a3f2e1b2c3d4e5f60003",
+  "status": "Success",
+  "message": "Updated successfully"
+}
+```
+
+| HTTP | Meaning |
+| --- | --- |
+| 200 | Success or queued |
+| 400 | Validation failed — read `message` |
+
+If `status` is `"Pending"`, poll:
+
+`GET /api/pos/business/{businessId}/sync-status/{requestId}`

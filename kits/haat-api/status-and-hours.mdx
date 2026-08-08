@@ -1,0 +1,80 @@
+---
+title: "Status and hours"
+description: "Update business status, order status, prepare time, and working hours."
+---
+
+# Status and hours
+
+## Prepare time options
+
+`GET /api/pos/business/{businessId}/prepare-time`
+
+Optional query: `orderId`
+
+Example response: `[10, 15, 20, 25, 30, 45, 60]`
+
+## Update business status
+
+`PUT /api/pos/business/{businessId}/status`
+
+| status | Meaning |
+| --- | --- |
+| `0` | Online (open) |
+| `1` | Offline (closed) |
+
+Open:
+
+```json
+{ "status": 0 }
+```
+
+Close temporarily (expiration required):
+
+```json
+{
+  "status": 1,
+  "closeExpirationDate": "2026-07-01T23:59:59"
+}
+```
+
+## Update order status
+
+`PUT /api/pos/business/{businessId}/order-status`
+
+| status | Meaning | Extra |
+| --- | --- | --- |
+| `1` | Start prepare | `estimationMinutes` required (> 0) |
+| `2` | Cancel | |
+
+```json
+{
+  "orderId": 98765,
+  "status": 1,
+  "estimationMinutes": 20
+}
+```
+
+## Update working hours
+
+`PUT /api/pos/business/{businessId}/working-hours`
+
+Full replacement. Days not listed are closed.
+
+- `day`: `1` Sunday … `7` Saturday  
+- `type`: `0` specific hours (default), `2` open 24 hours  
+- Times: `"HH:mm"` UTC  
+
+```json
+{
+  "days": [
+    {
+      "day": 1,
+      "hours": [
+        { "fromHour": "08:00", "toHour": "14:00" },
+        { "fromHour": "17:00", "toHour": "23:00" }
+      ]
+    },
+    { "day": 6, "type": 2 }
+  ]
+}
+```
