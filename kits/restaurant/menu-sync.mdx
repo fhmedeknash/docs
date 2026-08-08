@@ -1,0 +1,69 @@
+---
+title: "Menu sync"
+description: "How the restaurant POS returns the full menu to HAAT."
+---
+
+# Menu sync
+
+`GET /api/menu` — **required** before HAAT can process orders.
+
+## Rules
+
+- Return the **full** menu (no pagination)
+- Respond in under **5 seconds** when possible
+- Keep `posId` values **stable**
+- Reflect real-time `availability`
+- Names: `en` required; `he` and `ar` recommended
+- Prices as decimals (`32.5`, not `3250`)
+
+## Response shape (summary)
+
+Array of categories. Each category has `meals` and `deals`. Meals/deals can include addon groups (`min` / `max`).
+
+Addon `groupType`: `addon` (default) or `always_print`.
+
+## Example (shortened)
+
+```json
+[
+  {
+    "posId": 1,
+    "name": { "en": "Burgers", "he": "בורגרים", "ar": "برجر" },
+    "image": "https://example.com/categories/burgers.jpg",
+    "meals": [
+      {
+        "posId": 101,
+        "name": { "en": "Classic Burger", "he": "בורגר קלאסי", "ar": "برجر كلاسيكي" },
+        "price": 32.5,
+        "availability": true,
+        "addons": [
+          {
+            "posId": 1001,
+            "name": { "en": "Extras", "he": "תוספות", "ar": "إضافات" },
+            "min": 0,
+            "max": 3,
+            "groupType": "addon",
+            "addons": [
+              {
+                "posId": 2001,
+                "name": { "en": "Extra Cheese", "he": "גבינה נוספת", "ar": "جبن إضافي" },
+                "price": 2.5,
+                "availability": true
+              }
+            ]
+          }
+        ],
+        "discount": null
+      }
+    ],
+    "deals": []
+  }
+]
+```
+
+## When HAAT syncs
+
+- Initial setup  
+- Scheduled (typically daily)  
+- On demand  
+- Before processing orders when needed  

@@ -1,0 +1,14 @@
+{
+  "name": "haat-integration-docs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "HAAT POS and market integration documentation",
+  "scripts": {
+    "dev": "mintlify dev",
+    "validate": "mintlify openapi-check openapi/market-pos.yaml && mintlify openapi-check openapi/restaurant-pos.yaml && mintlify openapi-check openapi/haat-integration.yaml && mintlify openapi-check openapi/daas.yaml",
+    "validate:site": "mintlify validate"
+  },
+  "devDependencies": {
+    "mintlify": "^4.0.0"
+  }
+}

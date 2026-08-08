@@ -1,0 +1,488 @@
+openapi: 3.1.0
+info:
+  title: Restaurant POS External API
+  version: "1.0.0"
+  description: |
+    APIs that a **restaurant POS** must host so HAAT can sync menus and submit orders.
+
+    Auth options: `Authorization: Bearer <token>` or HMAC via `X-Signature`.
+    Always send/accept `X-Haat-Version: 1.0`.
+servers:
+  - url: https://pos.example.com
+    description: Replace with your POS base URL
+tags:
+  - name: Menu
+    description: Full menu sync (categories, meals, deals, addons)
+  - name: Orders
+    description: Real-time order create from HAAT
+
+security:
+  - BearerAuth: []
+
+paths:
+  /api/menu:
+    get:
+      tags: [Menu]
+      operationId: getMenu
+      summary: Get menu from POS
+      description: |
+        REQUIRED endpoint. HAAT calls this to fetch the complete menu structure
+        for synchronization.
+
+        - Return the **full** menu (no pagination)
+        - Respond quickly (target under 5 seconds)
+        - Keep `posId` values stable across calls
+        - Reflect real-time `availability`
+        - Provide localized `name` / `description` dictionaries (`en` required; `he` and `ar` recommended)
+
+        Sync frequency: initial setup, scheduled (typically daily), on-demand, and before processing orders when needed.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+          description: "Bearer token, e.g. `Bearer REPLACE_ME`"
+          example: "Bearer REPLACE_ME"
+        - name: X-Haat-Version
+          in: header
+          required: true
+          schema:
+            type: string
+            example: "1.0"
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            example: application/json
+      responses:
+        "200":
+          description: Menu successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+              examples:
+                sample:
+                  value:
+                    - posId: 1
+                      name:
+                        en: Burgers
+                        he: בורגרים
+                        ar: برجر
+                      image: https://example.com/categories/burgers.jpg
+                      meals:
+                        - posId: 101
+                          name:
+                            en: Classic Burger
+                            he: בורגר קלאסי
+                            ar: برجر كلاسيكي
+                          description:
+                            en: Juicy beef patty with fresh vegetables
+                            he: קציצת בקר עסיסית עם ירקות טריים
+                            ar: فطيرة لحم بقري عصيرية مع خضار طازجة
+                          price: 32.5
+                          image: https://example.com/meals/classic-burger.jpg
+                          addons:
+                            - posId: 1001
+                              name:
+                                en: Extras
+                                he: תוספות
+                                ar: إضافات
+                              min: 0
+                              max: 3
+                              groupType: addon
+                              addons:
+                                - posId: 2001
+                                  name:
+                                    en: Extra Cheese
+                                    he: גבינה נוספת
+                                    ar: جبن إضافي
+                                  price: 2.5
+                                  image: https://example.com/addons/cheese.jpg
+                                  availability: true
+                                - posId: 2002
+                                  name:
+                                    en: Bacon
+                                    he: בייקון
+                                    ar: لحم مقدد
+                                  price: 4.0
+                                  availability: true
+                          availability: true
+                          discount: null
+                      deals:
+                        - posId: 501
+                          name:
+                            en: Burger Combo
+                            he: קומבו בורגר
+                            ar: كومبو برجر
+                          description:
+                            en: Burger + Fries + Drink
+                            he: בורגר + צ'יפס + משקה
+                            ar: برجر + بطاطس + مشروب
+                          price: 45.9
+                          image: https://example.com/deals/burger-combo.jpg
+                          addons:
+                            - posId: 1002
+                              name:
+                                en: Choose Your Drink
+                                he: בחר משקה
+                                ar: اختر مشروبك
+                              min: 1
+                              max: 1
+                              groupType: addon
+                              addons:
+                                - posId: 3001
+                                  name:
+                                    en: Coca Cola
+                                    he: קוקה קולה
+                                    ar: كوكا كولا
+                                  price: 0.0
+                                  availability: true
+                                - posId: 3002
+                                  name:
+                                    en: Sprite
+                                    he: ספרייט
+                                    ar: سبرايت
+                                  price: 0.0
+                                  availability: true
+                          availability: true
+                          priority: 1
+                          discount: 5.0
+        "401":
+          description: Invalid or missing authentication token
+        "500":
+          description: POS system error
+
+  /api/orders:
+    post:
+      tags: [Orders]
+      operationId: createOrder
+      summary: Create order in POS
+      description: |
+        HAAT sends new customer orders to your POS in real time.
+        Process the order and respond with an acknowledgment including your `posOrderId`.
+
+        Honor `Idempotency-Key`: duplicate keys must not create duplicate orders.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+          example: "Bearer REPLACE_ME"
+        - name: Idempotency-Key
+          in: header
+          required: false
+          schema:
+            type: string
+            format: uuid
+          example: 7dda287d-21de-4159-a058-e60618e9b786
+        - name: X-Haat-Version
+          in: header
+          required: true
+          schema:
+            type: string
+            example: "1.0"
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            example: application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderRequest"
+            examples:
+              sample:
+                value:
+                  orderId: 87452
+                  businessId: 1021
+                  customer:
+                    name: John Cohen
+                    phone: "+972501234567"
+                  items:
+                    - id: 5012
+                      quantity: 2
+                      price: 32.5
+                      variations:
+                        - id: 9001
+                          quantity: 1
+                          price: 0.0
+                    - id: 7840
+                      quantity: 1
+                      price: 19.9
+                  payments:
+                    - paymentType: credit_card
+                      amount: 84.9
+                  payRestaurant: 84.9
+                  deliveryType: delivery
+                  customerNotes: Please remove onions from one burger.
+                  formatCreatedDate: "2025-10-05T12:45:00Z"
+                  formatDeliveryDate: "2025-10-05T13:20:00Z"
+      responses:
+        "200":
+          description: Order accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderResponse"
+              examples:
+                sample:
+                  value:
+                    status: success
+                    message: Order accepted
+                    posOrderId: ORD-78456
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token shared with HAAT (or use HMAC via X-Signature)
+    HmacSignature:
+      type: apiKey
+      in: header
+      name: X-Signature
+      description: HMAC signature alternative to Bearer auth
+
+  schemas:
+    LocalizedString:
+      type: object
+      required: [en]
+      properties:
+        en:
+          type: string
+        he:
+          type: string
+        ar:
+          type: string
+      additionalProperties:
+        type: string
+
+    Category:
+      type: object
+      required: [posId, name, meals, deals]
+      properties:
+        posId:
+          type: integer
+          description: Your POS category ID
+        name:
+          $ref: "#/components/schemas/LocalizedString"
+        image:
+          type: [string, "null"]
+          format: uri
+        meals:
+          type: array
+          items:
+            $ref: "#/components/schemas/Meal"
+        deals:
+          type: array
+          items:
+            $ref: "#/components/schemas/Deal"
+
+    Meal:
+      type: object
+      required: [posId, name, price, availability]
+      properties:
+        posId:
+          type: integer
+        name:
+          $ref: "#/components/schemas/LocalizedString"
+        description:
+          $ref: "#/components/schemas/LocalizedString"
+        price:
+          type: number
+          format: double
+          description: Unit price with decimal precision (e.g. 32.5 not 3250)
+        image:
+          type: [string, "null"]
+          format: uri
+        addons:
+          type: array
+          items:
+            $ref: "#/components/schemas/GroupAddons"
+        availability:
+          type: boolean
+        discount:
+          type: [number, "null"]
+          format: double
+
+    Deal:
+      type: object
+      required: [posId, name, price, availability]
+      properties:
+        posId:
+          type: integer
+        name:
+          $ref: "#/components/schemas/LocalizedString"
+        description:
+          $ref: "#/components/schemas/LocalizedString"
+        price:
+          type: number
+          format: double
+        image:
+          type: [string, "null"]
+          format: uri
+        addons:
+          type: array
+          items:
+            $ref: "#/components/schemas/GroupAddons"
+        availability:
+          type: boolean
+        priority:
+          type: [integer, "null"]
+          description: Higher values are shown first
+        discount:
+          type: [number, "null"]
+          format: double
+
+    GroupAddons:
+      type: object
+      required: [posId, name, min, max, addons]
+      properties:
+        posId:
+          type: integer
+        name:
+          $ref: "#/components/schemas/LocalizedString"
+        min:
+          type: integer
+          description: Minimum addons required (0 = optional)
+        max:
+          type: integer
+          description: Maximum addons allowed
+        groupType:
+          type: string
+          enum: [addon, always_print]
+          default: addon
+          description: Use always_print for groups that should always appear on printouts
+        addons:
+          type: array
+          items:
+            $ref: "#/components/schemas/Addon"
+
+    Addon:
+      type: object
+      required: [posId, name, price, availability]
+      properties:
+        posId:
+          type: integer
+        name:
+          $ref: "#/components/schemas/LocalizedString"
+        price:
+          type: number
+          format: double
+          description: Additional price (0.0 if free)
+        image:
+          type: [string, "null"]
+          format: uri
+        availability:
+          type: boolean
+
+    Customer:
+      type: object
+      required: [name, phone]
+      properties:
+        name:
+          type: string
+        phone:
+          type: string
+          description: E.164 format recommended
+
+    Item:
+      type: object
+      required: [id, quantity, price]
+      properties:
+        id:
+          type: integer
+          description: POS item ID
+        quantity:
+          type: integer
+        price:
+          type: number
+          format: double
+          description: Unit price with exact decimal precision
+        variations:
+          type: array
+          description: Add-ons, sides, or nested sub-items
+          items:
+            $ref: "#/components/schemas/Item"
+
+    Payment:
+      type: object
+      required: [paymentType, amount]
+      properties:
+        paymentType:
+          type: string
+          enum: [credit_card, cash]
+        amount:
+          type: number
+          format: double
+          description: Must align with payRestaurant total across payments
+
+    OrderRequest:
+      type: object
+      required:
+        - orderId
+        - businessId
+        - customer
+        - items
+        - payments
+        - payRestaurant
+        - deliveryType
+        - formatCreatedDate
+        - formatDeliveryDate
+      properties:
+        orderId:
+          type: integer
+          description: Unique order ID assigned by HAAT
+        businessId:
+          type: integer
+          description: POS/store identifier for the restaurant on HAAT side
+        customer:
+          $ref: "#/components/schemas/Customer"
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Item"
+        payments:
+          type: array
+          items:
+            $ref: "#/components/schemas/Payment"
+        payRestaurant:
+          type: number
+          format: double
+          description: Total amount payable to the restaurant
+        deliveryType:
+          type: string
+          enum: [delivery, pickup]
+        customerNotes:
+          type: [string, "null"]
+        formatCreatedDate:
+          type: string
+          format: date-time
+          description: ISO-8601 UTC timestamp when the order was created
+        formatDeliveryDate:
+          type: string
+          format: date-time
+          description: Scheduled delivery or pickup time (ISO-8601 UTC)
+
+    OrderResponse:
+      type: object
+      required: [status, message, posOrderId]
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: Order accepted
+        posOrderId:
+          type: string
+          example: ORD-78456

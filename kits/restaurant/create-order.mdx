@@ -1,0 +1,77 @@
+---
+title: "Create order"
+description: "Orders HAAT sends into the restaurant POS."
+---
+
+# Create order
+
+`POST /api/orders`
+
+## Headers
+
+```http
+Authorization: Bearer REPLACE_ME
+Content-Type: application/json
+X-Haat-Version: 1.0
+Idempotency-Key: 7dda287d-21de-4159-a058-e60618e9b786
+```
+
+## Body (main fields)
+
+| Field | Required | Notes |
+| --- | --- | --- |
+| orderId | Yes | HAAT order id |
+| businessId | Yes | Store on HAAT side |
+| customer | Yes | `name`, `phone` |
+| items | Yes | POS item id, qty, price, optional variations |
+| payments | Yes | `credit_card` or `cash` + amount |
+| payRestaurant | Yes | Total to restaurant |
+| deliveryType | Yes | `delivery` or `pickup` |
+| formatCreatedDate | Yes | ISO-8601 UTC |
+| formatDeliveryDate | Yes | ISO-8601 UTC |
+| customerNotes | No | |
+
+## Example request
+
+```json
+{
+  "orderId": 87452,
+  "businessId": 1021,
+  "customer": {
+    "name": "John Cohen",
+    "phone": "+972501234567"
+  },
+  "items": [
+    {
+      "id": 5012,
+      "quantity": 2,
+      "price": 32.5,
+      "variations": [
+        { "id": 9001, "quantity": 1, "price": 0.0 }
+      ]
+    }
+  ],
+  "payments": [
+    { "paymentType": "credit_card", "amount": 84.9 }
+  ],
+  "payRestaurant": 84.9,
+  "deliveryType": "delivery",
+  "customerNotes": "Please remove onions from one burger.",
+  "formatCreatedDate": "2025-10-05T12:45:00Z",
+  "formatDeliveryDate": "2025-10-05T13:20:00Z"
+}
+```
+
+## Example response
+
+```json
+{
+  "status": "success",
+  "message": "Order accepted",
+  "posOrderId": "ORD-78456"
+}
+```
+
+<Warning>
+  Same `Idempotency-Key` must return the same accepted order — do not create duplicates.
+</Warning>

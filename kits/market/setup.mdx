@@ -1,0 +1,47 @@
+---
+title: "Market setup"
+description: "Credentials and environments for Market partners."
+---
+
+# Market setup
+
+Share these with the partner before they start coding.
+
+## Credentials HAAT sends to the POS
+
+HAAT calls the partner’s APIs with:
+
+| Header | Meaning |
+| --- | --- |
+| `integrator-token` | Shared for this integrator across markets |
+| `organization-token` | Identifies the specific market / store |
+
+Partner must reject requests if either header is missing or wrong (`401`).
+
+## Credentials partner uses to call HAAT
+
+For price sync, partner logs in and gets a bearer token:
+
+- Username / password from HAAT onboarding  
+- Then `Authorization: Bearer <token>` on sync calls  
+
+## Environments
+
+| Use | Base URL for HAAT-hosted APIs |
+| --- | --- |
+| Staging | Provided by HAAT during onboarding |
+| Production | Provided by HAAT after go-live approval |
+
+Partner POS base URL example: `https://pos.example.com` (partner chooses; share with HAAT).
+
+## Example paths on partner POS
+
+| Action | Example |
+| --- | --- |
+| Promotions | `GET https://pos.example.com/api/promotions` |
+| Submit order | `POST https://pos.example.com/api/submit-order` |
+| Menu build | Agreed URL or file export (same columns) |
+
+<Tip>
+  Always certify on **staging** before production.
+</Tip>

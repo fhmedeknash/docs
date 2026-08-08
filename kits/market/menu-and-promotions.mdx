@@ -1,0 +1,77 @@
+---
+title: "Menu and promotions"
+description: "Catalog and promotions HAAT pulls from the market POS."
+---
+
+# Menu and promotions
+
+HAAT pulls the catalog and promotions from the partner POS.
+
+## Build menu
+
+Partner returns (or exports) products with these columns:
+
+| Column | Required | Notes |
+| --- | --- | --- |
+| ProductID | Yes | Unique POS id |
+| Price | Yes | Number, e.g. `12.5` |
+| Barcode | Yes | |
+| ImageURL | Yes | |
+| Unit | Yes | `1` Countable, `2` Weighable KG, `3` Weighable Quantity |
+| ProdNameEn / He / Ar | No | At least one name recommended |
+| Category / SubCategory names | No | Localized columns supported |
+| LimitPerOrder | No | `null` if unlimited |
+| AvailableQuantity | No | At build time |
+
+### Example product
+
+```json
+{
+  "ProductID": 76868,
+  "ProdNameEn": "Potato",
+  "ProdNameHe": "תפוח אדמה",
+  "ProdNameAr": "بطاطا",
+  "Price": 12.5,
+  "Barcode": "7893dah97",
+  "ImageURL": "https://cdn.example.com/potato.jpg",
+  "CategoryNameEn": "Fruits and Vegetables",
+  "SubCategoryNameEn": "Vegetables",
+  "Unit": 2,
+  "LimitPerOrder": null,
+  "AvailableQuantity": 100
+}
+```
+
+## Get promotions
+
+`GET /api/promotions`
+
+Headers: `integrator-token`, `organization-token`
+
+| Field | Required | Notes |
+| --- | --- | --- |
+| Code | Yes | Unique promotion id |
+| IsActive | Yes | `1` active, `0` inactive |
+| Qty | Yes | Quantity in the deal |
+| Price | Yes | Price for that quantity |
+| Products | Yes | Comma-separated product ids |
+| Name / FromDate / ToDate | No | Use `null` if not applicable |
+| LimitPerOrder | No | `null` if unlimited |
+
+Example: 3 Cola for 10 → `Qty=3`, `Price=10`, `Products="1322666"`
+
+```json
+[
+  {
+    "Code": 1001,
+    "Name": "3 Cola for 10",
+    "FromDate": "2025-01-01",
+    "ToDate": "2025-12-31",
+    "IsActive": 1,
+    "Qty": 3,
+    "Price": 10,
+    "Products": "1322666",
+    "LimitPerOrder": null
+  }
+]
+```

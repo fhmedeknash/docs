@@ -1,0 +1,453 @@
+openapi: 3.1.0
+info:
+  title: Market POS API
+  version: "1.0.0"
+  description: |
+    Market / grocery POS integration with HAAT.
+
+    **External API (you host):** HAAT calls your POS to build the menu, fetch promotions, and submit orders.
+    Authenticate with `integrator-token` and `organization-token`.
+
+    **HAAT API (HAAT hosts):** Your POS calls HAAT to log in and sync price/availability.
+servers:
+  - url: https://pos.example.com
+    description: Your market POS base URL (External API)
+  - url: https://api.example.haat.delivery
+    description: HAAT API base URL (replace with environment URL from HAAT)
+tags:
+  - name: External API
+    description: Endpoints your POS must host for HAAT
+  - name: HAAT API
+    description: Endpoints your POS calls on HAAT
+
+paths:
+  /api/menu/build:
+    get:
+      tags: [External API]
+      operationId: getBuildMenu
+      summary: Build menu
+      description: |
+        Return the full market catalog so HAAT can build the store menu,
+        or provide an equivalent export file using the same columns.
+
+        **Unit values:** `1` = Countable, `2` = Weighable KG, `3` = Weighable Quantity.
+      parameters:
+        - $ref: "#/components/parameters/IntegratorTokenHeader"
+        - $ref: "#/components/parameters/OrganizationTokenHeader"
+      responses:
+        "200":
+          description: Menu products for the market
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MarketProduct"
+              examples:
+                sample:
+                  value:
+                    - ProductID: 76868
+                      ProdNameAr: "بطاطا"
+                      ProdNameHe: "תפוח אדמה"
+                      ProdNameEn: "Potato"
+                      Price: 12.5
+                      Barcode: "7893dah97"
+                      ImageURL: "https://cdn.example.com/potato.jpg"
+                      CategoryNameEn: "Fruits and Vegetables"
+                      SubCategoryNameEn: "Vegetables"
+                      Unit: 2
+                      LimitPerOrder: null
+                      AvailableQuantity: 100
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/promotions:
+    get:
+      tags: [External API]
+      operationId: getPromotions
+      summary: Get promotions
+      description: |
+        Return all current and upcoming promotions, including quantity-per-price
+        promotions (for example 3 Cola bottles for 10 shekels → Qty=3, Price=10,
+        Products=`"1322666"`).
+
+        Example URL: `https://pos.example.com/api/promotions`
+      parameters:
+        - $ref: "#/components/parameters/IntegratorTokenHeader"
+        - $ref: "#/components/parameters/OrganizationTokenHeader"
+      responses:
+        "200":
+          description: List of promotions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Promotion"
+              examples:
+                sample:
+                  value:
+                    - Code: 1001
+                      Name: "3 Cola for 10"
+                      FromDate: "2025-01-01"
+                      ToDate: "2025-12-31"
+                      IsActive: 1
+                      Qty: 3
+                      Price: 10
+                      Products: "1322666"
+                      LimitPerOrder: null
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/submit-order:
+    post:
+      tags: [External API]
+      operationId: submitMarketOrder
+      summary: Submit order
+      description: |
+        Accept a customer order from HAAT into the market POS.
+
+        Example URL: `https://pos.example.com/api/submit-order`
+      parameters:
+        - $ref: "#/components/parameters/IntegratorTokenHeader"
+        - $ref: "#/components/parameters/OrganizationTokenHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MarketOrderRequest"
+            examples:
+              sample:
+                value:
+                  Items:
+                    - Code: 76868
+                      Name: Potato
+                      SalePrice: 12.5
+                      Quantity: 2
+                      Units: 2
+                      Total: 25.0
+                  Payments:
+                    - Amount: 25.0
+                      PaymentType: 2
+                      Comments: null
+                  Comments: "Please deliver to gate 2"
+                  Total: 25.0
+      responses:
+        "200":
+          description: Order accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MarketOrderResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "400":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+
+  /api/auth/login:
+    post:
+      tags: [HAAT API]
+      operationId: marketLogin
+      summary: Login
+      description: |
+        Obtain a bearer token for calling HAAT Market APIs.
+        Use the returned `token` as `Authorization: Bearer <token>` on subsequent requests.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password]
+              properties:
+                username:
+                  type: string
+                  example: pos.test
+                password:
+                  type: string
+                  example: hE031-5N_
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+              examples:
+                sample:
+                  value:
+                    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                    name: Test POS
+                    imageServer: null
+                    smallImageServer: null
+                    imagesServer: https://im-staging.haat.delivery
+
+  /api/external/products:
+    patch:
+      tags: [HAAT API]
+      operationId: syncProducts
+      summary: Sync products
+      description: |
+        **Price and availability synchronization.** POS must periodically sync prices and availability.
+
+        - **Daily sync:** full synchronization once per day
+        - **Hourly (delta) sync:** incremental sync every ~2 hours for changed items only
+
+        `productCode` is typically a barcode or SKU. If there is no discount, set `discountPrice` equal to `price`.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/ProductSyncItem"
+            examples:
+              sample:
+                value:
+                  - productCode: "346960"
+                    isAvailable: true
+                    price: 16
+                    discountPrice: 16
+                  - productCode: "290014083806"
+                    isAvailable: true
+                    price: 20
+                    discountPrice: 19
+      responses:
+        "200":
+          description: Products updated
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                sample:
+                  value: "All4Shops products with products codes [5011321238916, 565559859595] under market 4829 have been updates successfully"
+
+components:
+  securitySchemes:
+    IntegratorToken:
+      type: apiKey
+      in: header
+      name: integrator-token
+    OrganizationToken:
+      type: apiKey
+      in: header
+      name: organization-token
+    BearerAuth:
+      type: http
+      scheme: bearer
+
+  parameters:
+    IntegratorTokenHeader:
+      name: integrator-token
+      in: header
+      required: true
+      schema:
+        type: string
+      description: Shared across all HAAT markets for this integrator
+    OrganizationTokenHeader:
+      name: organization-token
+      in: header
+      required: true
+      schema:
+        type: string
+      description: Identifies which market or store the request relates to
+
+  responses:
+    Unauthorized:
+      description: Missing or invalid tokens
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorMessage"
+
+  schemas:
+    MarketProduct:
+      type: object
+      required: [ProductID, Price, Barcode, ImageURL, Unit]
+      properties:
+        ProductID:
+          type: integer
+          example: 76868
+        ProdNameAr:
+          type: [string, "null"]
+        ProdNameHe:
+          type: [string, "null"]
+        ProdNameEn:
+          type: [string, "null"]
+        ProdNameFr:
+          type: [string, "null"]
+        ProdDescAr:
+          type: [string, "null"]
+        ProdDescHe:
+          type: [string, "null"]
+        ProdDescEn:
+          type: [string, "null"]
+        Price:
+          type: number
+          format: double
+          example: 12.5
+        Barcode:
+          type: string
+          example: "7893dah97"
+        ImageURL:
+          type: string
+          format: uri
+        CategoryNameAr:
+          type: [string, "null"]
+        CategoryNameHe:
+          type: [string, "null"]
+        CategoryNameEn:
+          type: [string, "null"]
+        SubCategoryNameAr:
+          type: [string, "null"]
+        SubCategoryNameHe:
+          type: [string, "null"]
+        SubCategoryNameEn:
+          type: [string, "null"]
+        Unit:
+          type: integer
+          enum: [1, 2, 3]
+          description: "1=Countable, 2=Weighable KG, 3=Weighable Quantity"
+        LimitPerOrder:
+          type: [integer, "null"]
+        AvailableQuantity:
+          type: [integer, "null"]
+
+    Promotion:
+      type: object
+      required: [Code, IsActive, Qty, Price, Products]
+      properties:
+        Code:
+          type: integer
+        Name:
+          type: [string, "null"]
+        FromDate:
+          type: [string, "null"]
+        ToDate:
+          type: [string, "null"]
+        IsActive:
+          type: integer
+          enum: [0, 1]
+        Qty:
+          type: integer
+        Price:
+          type: number
+          format: double
+        Products:
+          type: string
+          example: "1322666,6518864"
+        LimitPerOrder:
+          type: [integer, "null"]
+
+    MarketOrderItem:
+      type: object
+      required: [Code, SalePrice, Quantity, Units, Total]
+      properties:
+        Code:
+          type: integer
+          description: Product code
+        Name:
+          type: [string, "null"]
+        SalePrice:
+          type: number
+          format: double
+        Quantity:
+          type: number
+        Units:
+          type: integer
+          enum: [1, 2, 3]
+          description: "1=Countable, 2=Weighable KG, 3=Weighable Quantity"
+        Total:
+          type: number
+          format: double
+          description: SalePrice * Quantity
+
+    MarketPayment:
+      type: object
+      required: [Amount, PaymentType]
+      properties:
+        Amount:
+          type: number
+          format: double
+        PaymentType:
+          type: integer
+          enum: [1, 2]
+          description: "1=Cash, 2=CreditCard"
+        Comments:
+          type: [string, "null"]
+
+    MarketOrderRequest:
+      type: object
+      required: [Items, Payments, Total]
+      properties:
+        Items:
+          type: array
+          items:
+            $ref: "#/components/schemas/MarketOrderItem"
+        Payments:
+          type: array
+          items:
+            $ref: "#/components/schemas/MarketPayment"
+        Comments:
+          type: [string, "null"]
+        Total:
+          type: number
+          format: double
+
+    MarketOrderResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+        posOrderId:
+          type: string
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        name:
+          type: string
+        imageServer:
+          type: [string, "null"]
+        smallImageServer:
+          type: [string, "null"]
+        imagesServer:
+          type: [string, "null"]
+
+    ProductSyncItem:
+      type: object
+      required: [productCode, isAvailable, price, discountPrice]
+      properties:
+        productCode:
+          type: string
+          description: POS unique identifier (barcode or SKU)
+        isAvailable:
+          type: boolean
+        price:
+          type: number
+          format: double
+        discountPrice:
+          type: number
+          format: double
+          description: Same as price when there is no discount
+
+    ErrorMessage:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string

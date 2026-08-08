@@ -1,0 +1,40 @@
+---
+title: "Market checklist"
+description: "Go-live checklist for Market partners."
+---
+
+# Market checklist
+
+Tick every item before production.
+
+## Setup
+
+- [ ] Staging credentials received from HAAT
+- [ ] Partner POS base URL shared with HAAT
+- [ ] `integrator-token` / `organization-token` validated on POS
+
+## Menu and promotions
+
+- [ ] Menu build / export matches required columns
+- [ ] Unit values use `1` / `2` / `3` correctly
+- [ ] Promotions endpoint returns active and upcoming promos
+- [ ] Product IDs stay stable across builds
+
+## Orders
+
+- [ ] `POST /api/submit-order` accepts HAAT payload
+- [ ] Invalid tokens return `401`
+- [ ] POS returns acknowledgment / `posOrderId`
+
+## Sync to HAAT
+
+- [ ] Login works on staging
+- [ ] Product sync updates price and availability
+- [ ] Daily full sync + ~2h delta sync scheduled
+- [ ] `discountPrice` equals `price` when there is no discount
+
+## Sign-off
+
+- [ ] Staging certification approved by HAAT Integration
+- [ ] Production credentials issued
+- [ ] First production order tested successfully

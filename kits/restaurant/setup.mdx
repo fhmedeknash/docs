@@ -1,0 +1,36 @@
+---
+title: "Restaurant setup"
+description: "Credentials and headers for Restaurant partners."
+---
+
+# Restaurant setup
+
+## Auth (HAAT → partner POS)
+
+Partner accepts one of:
+
+| Option | Header |
+| --- | --- |
+| Bearer | `Authorization: Bearer <token>` |
+| HMAC | `X-Signature` (shared secret with HAAT) |
+
+Also required:
+
+| Header | Value |
+| --- | --- |
+| `X-Haat-Version` | `1.0` |
+| `Content-Type` | `application/json` |
+| `Idempotency-Key` | On create order (UUID) — same key must not create duplicate orders |
+
+## Partner endpoints
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `GET` | `/api/menu` | Full menu sync |
+| `POST` | `/api/orders` | Create order |
+
+Example base: `https://pos.example.com`
+
+## Environments
+
+Use staging credentials first. Production only after HAAT Integration sign-off.

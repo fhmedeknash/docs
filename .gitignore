@@ -1,0 +1,7 @@
+node_modules/
+.mintlify/
+.tools/
+.deploy-tmp/
+.DS_Store
+*.log
+haat-docs-for-mintlify.zip

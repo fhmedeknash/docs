@@ -1,72 +1,145 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mintlify Starter Kit",
+  "theme": "maple",
+  "name": "HAAT Integration Docs",
+  "description": "Partner integration kits for connecting POS and delivery systems to HAAT.",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#E85D04",
+    "light": "#FF9F1C",
+    "dark": "#9B2226"
   },
   "favicon": "/favicon.svg",
+  "appearance": {
+    "default": "system"
+  },
+  "fonts": {
+    "family": "Manrope",
+    "heading": {
+      "family": "Sora",
+      "weight": 700
+    },
+    "body": {
+      "family": "Manrope",
+      "weight": 400
+    }
+  },
+  "icons": {
+    "library": "lucide"
+  },
+  "background": {
+    "decoration": "gradient"
+  },
+  "styling": {
+    "eyebrows": "breadcrumbs",
+    "codeblocks": {
+      "theme": {
+        "light": "github-light",
+        "dark": "github-dark"
+      }
+    }
+  },
   "navigation": {
-    "pages": [
+    "tabs": [
       {
-        "group": "Getting Started",
-        "pages": [
-          "index",
-          "quickstart"
+        "tab": "Home",
+        "icon": "house",
+        "groups": [
+          {
+            "group": "Start here",
+            "pages": [
+              "introduction",
+              "partner-guide"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Market",
+        "icon": "store",
+        "groups": [
+          {
+            "group": "Market partner kit",
+            "pages": [
+              "kits/market/overview",
+              "kits/market/setup",
+              "kits/market/menu-and-promotions",
+              "kits/market/submit-order",
+              "kits/market/sync-to-haat",
+              "kits/market/checklist"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Restaurant",
+        "icon": "utensils",
+        "groups": [
+          {
+            "group": "Restaurant partner kit",
+            "pages": [
+              "kits/restaurant/overview",
+              "kits/restaurant/setup",
+              "kits/restaurant/menu-sync",
+              "kits/restaurant/create-order",
+              "kits/restaurant/checklist"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "HAAT API",
+        "icon": "plug",
+        "groups": [
+          {
+            "group": "HAAT API partner kit",
+            "pages": [
+              "kits/haat-api/overview",
+              "kits/haat-api/setup",
+              "kits/haat-api/status-and-hours",
+              "kits/haat-api/availability",
+              "kits/haat-api/checklist"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "DaaS",
+        "icon": "truck",
+        "groups": [
+          {
+            "group": "DaaS partner kit",
+            "pages": [
+              "kits/daas/overview",
+              "kits/daas/setup",
+              "kits/daas/orders",
+              "kits/daas/checklist"
+            ]
+          }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
+    ]
   },
   "logo": {
     "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "dark": "/logo/dark.svg",
+    "href": "/"
   },
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "label": "HAAT",
+        "href": "https://haat.delivery"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://app.mintlify.com"
+      "label": "Choose a kit",
+      "href": "/introduction"
     }
-  },
-  "contextual": {
-    "options": [
-      "copy",
-      "view",
-      "chatgpt",
-      "claude",
-      "perplexity",
-      "mcp",
-      "cursor",
-      "vscode"
-    ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "website": "https://haat.delivery"
     }
   }
 }

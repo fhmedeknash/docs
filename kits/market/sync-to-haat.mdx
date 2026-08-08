@@ -1,0 +1,70 @@
+---
+title: "Sync to HAAT"
+description: "Partner pushes price and availability into HAAT."
+---
+
+# Sync to HAAT
+
+Partner POS calls HAAT to keep prices and availability up to date.
+
+## 1. Login
+
+`POST /api/auth/login`
+
+```json
+{
+  "username": "pos.test",
+  "password": "••••••••"
+}
+```
+
+Example response:
+
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "name": "Test POS",
+  "imagesServer": "https://im-staging.haat.delivery"
+}
+```
+
+Use `Authorization: Bearer <token>` on the next call.
+
+## 2. Sync products
+
+`PATCH /api/external/products`
+
+| Field | Required | Notes |
+| --- | --- | --- |
+| productCode | Yes | Barcode or SKU |
+| isAvailable | Yes | `true` / `false` |
+| price | Yes | Regular price |
+| discountPrice | Yes | Same as `price` if no discount |
+
+```json
+[
+  {
+    "productCode": "346960",
+    "isAvailable": true,
+    "price": 16,
+    "discountPrice": 16
+  },
+  {
+    "productCode": "290014083806",
+    "isAvailable": true,
+    "price": 20,
+    "discountPrice": 19
+  }
+]
+```
+
+## Recommended cadence
+
+| Sync | When |
+| --- | --- |
+| Full | Once per day |
+| Delta | About every 2 hours for changed items only |
+
+<Tip>
+  Keep `productCode` stable. Do not change codes for the same product.
+</Tip>

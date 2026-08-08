@@ -1,0 +1,83 @@
+---
+title: "Submit order"
+description: "Orders HAAT sends into the market POS."
+---
+
+# Submit order
+
+HAAT posts customer orders to the partner POS.
+
+## Endpoint
+
+`POST /api/submit-order`  
+Example: `https://pos.example.com/api/submit-order`
+
+Headers: `integrator-token`, `organization-token`
+
+## Body
+
+| Field | Required | Notes |
+| --- | --- | --- |
+| Items | Yes | Array of order lines |
+| Payments | Yes | Array of payments |
+| Total | Yes | Order total |
+| Comments | No | Can be `null` |
+
+### Item fields
+
+| Field | Required | Notes |
+| --- | --- | --- |
+| Code | Yes | Product code |
+| SalePrice | Yes | Unit sale price |
+| Quantity | Yes | |
+| Units | Yes | `1` / `2` / `3` (same as menu) |
+| Total | Yes | `SalePrice * Quantity` |
+| Name | No | |
+
+### Payment fields
+
+| Field | Required | Notes |
+| --- | --- | --- |
+| Amount | Yes | |
+| PaymentType | Yes | `1` Cash, `2` Credit card |
+| Comments | No | |
+
+## Example request
+
+```json
+{
+  "Items": [
+    {
+      "Code": 76868,
+      "Name": "Potato",
+      "SalePrice": 12.5,
+      "Quantity": 2,
+      "Units": 2,
+      "Total": 25.0
+    }
+  ],
+  "Payments": [
+    {
+      "Amount": 25.0,
+      "PaymentType": 2,
+      "Comments": null
+    }
+  ],
+  "Comments": "Please deliver to gate 2",
+  "Total": 25.0
+}
+```
+
+## Example response
+
+```json
+{
+  "status": "success",
+  "message": "Order accepted",
+  "posOrderId": "MKT-78456"
+}
+```
+
+<Warning>
+  Validate both tokens before accepting the order. Return `401` if invalid.
+</Warning>
