@@ -48,6 +48,13 @@ Field contracts live in the **API reference** pages generated from `openapi/mark
 
 ## HAAT API (your POS → HAAT)
 
+The following API is already available from HAAT and can be used by the POS for authentication and product synchronization.
+
+| Environment | Base URL |
+| --- | --- |
+| Staging | `http://ext-integration.haat-delivery.io` |
+| Production | `https://integration.internal.haat.delivery` |
+
 1. **Login** — `POST /api/auth/login` → bearer token
 2. **Sync products** — `PATCH /api/external/products`
 
