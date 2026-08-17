@@ -1,0 +1,73 @@
+---
+title: "HAAT Integration API overview"
+description: "POS systems calling HAAT to update status, hours, availability, and orders."
+---
+
+# HAAT Integration API overview
+
+Use this API when your POS needs to **call HAAT** (not the other way around).
+
+## Authentication
+
+```http
+X-Api-Key: <api-key-from-haat>
+```
+
+## HAAT API environments
+
+The following API is already available from HAAT and can be used by the POS for authentication and product synchronization.
+
+| Environment | Base URL |
+| --- | --- |
+| Staging | `http://ext-integration.haat-delivery.io` |
+| Production | `https://integration.internal.haat.delivery` |
+
+## Route patterns
+
+| Type | Pattern |
+| --- | --- |
+| List businesses | `GET /api/pos/businesses` |
+| Business-scoped | `/api/pos/business/{businessId}/...` |
+
+<Tip>
+  Always start with **List businesses** to obtain your `businessId` values.
+</Tip>
+
+## Endpoints
+
+| Method | Purpose |
+| --- | --- |
+| `GET` List businesses | IDs assigned to your key |
+| `GET` Prepare time | Available prep-time options (minutes) |
+| `GET` Request status | Poll async write results |
+| `PUT` Business status | Open (`0`) / close (`1`) with optional expiration |
+| `PUT` Order status | Start prepare (`1`) or cancel (`2`) |
+| `PUT` Working hours | Full weekly schedule replacement |
+| `PUT` Availability | Bulk item availability |
+
+## Write response pattern
+
+All PUT endpoints return:
+
+| Field | Description |
+| --- | --- |
+| `requestId` | Tracking ID |
+| `status` | `Success`, `Pending`, or `Failed` |
+| `message` | Human-readable detail or null |
+
+- HTTP **200** — success or queued
+- HTTP **400** — validation failed (check `message`)
+
+<Warning>
+  If `status` is `Pending`, poll **GET Request Status** until `Success` or `Failed`.
+</Warning>
+
+## Implementation checklist
+
+<Check>API key configured for staging and production</Check>
+<Check>List businesses returns expected branches</Check>
+<Check>Business open/close tested</Check>
+<Check>Order start-prepare includes `estimationMinutes`</Check>
+<Check>Working hours sent as full weekly replacement (UTC `HH:mm`)</Check>
+<Check>Availability updates use onboarding item IDs</Check>
+<Check>Pending writes polled via sync-status</Check>

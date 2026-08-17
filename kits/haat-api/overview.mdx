@@ -9,11 +9,23 @@ Use this kit when the partner POS **calls HAAT** (not the other way around).
 
 Typical uses:
 
+- Authentication and product synchronization  
 - Open / close business  
 - Update order status (start prepare / cancel)  
 - Update working hours  
 - Update item availability  
 - Poll async request status  
+
+## HAAT API environments
+
+The following API is already available from HAAT and can be used by the POS for authentication and product synchronization.
+
+| Environment | Base URL |
+| --- | --- |
+| Staging | `http://ext-integration.haat-delivery.io` |
+| Production | `https://integration.internal.haat.delivery` |
+
+Full setup details: [HAAT API setup](/kits/haat-api/setup).
 
 ## Pages in this kit
 

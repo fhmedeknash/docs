@@ -1,0 +1,68 @@
+---
+title: "Market POS overview"
+description: "How a market / grocery POS integrates with HAAT."
+---
+
+# Market POS overview
+
+How a market’s Point of Sale integrates with HAAT — catalogs, promotions, orders, and price sync.
+
+<Columns cols={2}>
+  <Card title="External API" icon="server" type="tip">
+    **You host.** HAAT builds menu, fetches promotions, and submits orders.
+  </Card>
+  <Card title="HAAT API" icon="cloud" type="info">
+    **HAAT hosts.** Your POS logs in and syncs price / availability.
+  </Card>
+</Columns>
+
+## External API (HAAT → your POS)
+
+Your POS must expose:
+
+1. **Build menu** — full catalog (or equivalent export)
+2. **Get promotions** — `GET /api/promotions`
+3. **Submit order** — `POST /api/submit-order`
+
+Auth headers on every request from HAAT:
+
+- `integrator-token`
+- `organization-token`
+
+Field contracts live in the **API reference** pages generated from `openapi/market-pos.yaml`.
+
+### Unit types
+
+| Value | Meaning |
+| --- | --- |
+| `1` | Countable |
+| `2` | Weighable KG |
+| `3` | Weighable Quantity |
+
+### Payment types (submit order)
+
+| Value | Meaning |
+| --- | --- |
+| `1` | Cash |
+| `2` | Credit card |
+
+## HAAT API (your POS → HAAT)
+
+1. **Login** — `POST /api/auth/login` → bearer token
+2. **Sync products** — `PATCH /api/external/products`
+
+<AccordionGroup>
+  <Accordion title="Recommended sync cadence">
+    - **Daily:** full price/availability refresh
+    - **Every ~2 hours:** delta sync for changed items only
+  </Accordion>
+</AccordionGroup>
+
+## Implementation checklist
+
+<Check>Menu build endpoint or export matches the product schema</Check>
+<Check>Promotions endpoint returns active and upcoming promos</Check>
+<Check>Submit order validates tokens and returns acknowledgment</Check>
+<Check>Login + product sync implemented against staging</Check>
+<Check>`productCode` values stay stable (barcode/SKU)</Check>
+<Check>Discount price equals regular price when there is no discount</Check>

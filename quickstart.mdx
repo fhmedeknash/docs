@@ -1,0 +1,67 @@
+---
+title: "Quickstart"
+description: "Get a POS integration running against HAAT in a few steps."
+---
+
+# Quickstart
+
+Get from credentials to a working integration in five steps.
+
+<Steps>
+  <Step title="Choose your integration type">
+    <Columns cols={2}>
+      <Card title="Market / grocery" icon="store" href="/market-pos/overview" horizontal>
+        Menu build, promotions, submit order, and product sync.
+      </Card>
+      <Card title="Restaurant" icon="utensils" href="/restaurant-pos/overview" horizontal>
+        `GET /api/menu` and `POST /api/orders`.
+      </Card>
+      <Card title="Push updates to HAAT" icon="plug" href="/haat-api/overview" horizontal>
+        Status, hours, and availability via API key.
+      </Card>
+      <Card title="DaaS partner" icon="truck" href="/daas/overview" horizontal>
+        Login, validate, and submit delivery orders.
+      </Card>
+    </Columns>
+
+    Most POS partners implement Market **or** Restaurant outbound APIs, plus the HAAT Integration API for status updates.
+  </Step>
+
+  <Step title="Get credentials">
+    HAAT provides:
+
+    - An **API key** for calling HAAT (`X-Api-Key`)
+    - For Market POS: **integrator-token** and **organization-token**
+    - For Restaurant POS: a **Bearer token** (or HMAC shared secret)
+
+    See [Authentication](/guides/authentication).
+  </Step>
+
+  <Step title="Point at the right environment">
+    Use **staging** first. Base URLs are listed under [Environments](/guides/environments).
+  </Step>
+
+  <Step title="Implement required endpoints">
+    | Integration | Minimum to go live |
+    | --- | --- |
+    | Market POS | Build menu + promotions + submit order; login + product sync |
+    | Restaurant POS | `GET /api/menu` and `POST /api/orders` |
+    | HAAT Integration API | `GET /api/pos/businesses`, then business-scoped PUTs |
+    | DaaS | Login, validate order, submit order |
+  </Step>
+
+  <Step title="Validate">
+    <Check>
+      Auth headers on every call
+    </Check>
+    <Check>
+      Stable `posId` / product IDs across menu syncs
+    </Check>
+    <Check>
+      HAAT write endpoints return `{ requestId, status, message }`
+    </Check>
+    <Check>
+      Poll request status when a PUT returns `"Pending"`
+    </Check>
+  </Step>
+</Steps>

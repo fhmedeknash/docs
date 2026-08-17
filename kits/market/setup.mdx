@@ -25,12 +25,16 @@ For price sync, partner logs in and gets a bearer token:
 - Username / password from HAAT onboarding  
 - Then `Authorization: Bearer <token>` on sync calls  
 
-## Environments
+## HAAT API environments
 
-| Use | Base URL for HAAT-hosted APIs |
+The following API is already available from HAAT and can be used by the POS for authentication and product synchronization.
+
+| Environment | Base URL |
 | --- | --- |
-| Staging | Provided by HAAT during onboarding |
-| Production | Provided by HAAT after go-live approval |
+| Staging | `http://ext-integration.haat-delivery.io` |
+| Production | `https://integration.internal.haat.delivery` |
+
+## Partner POS environments
 
 Partner POS base URL example: `https://pos.example.com` (partner chooses; share with HAAT).
 

@@ -11,10 +11,10 @@ info:
     Response body always includes `requestId`, `status` (`Success` | `Pending` | `Failed`), and `message`.
     If `status` is `Pending`, poll **GET Request Status**.
 servers:
-  - url: https://integration.internal.haat.delivery
-    description: Production
   - url: http://ext-integration.haat-delivery.io
     description: Staging
+  - url: https://integration.internal.haat.delivery
+    description: Production
 tags:
   - name: Businesses
   - name: Orders

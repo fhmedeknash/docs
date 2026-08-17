@@ -1,0 +1,66 @@
+---
+title: "Authentication"
+description: "Auth schemes used across Market POS, Restaurant POS, and the HAAT Integration API."
+---
+
+# Authentication
+
+Each integration surface uses a different auth model. Match the scheme to the **direction** of the call.
+
+<Columns cols={2}>
+  <Card title="You call HAAT" icon="arrow-up-right" type="info">
+    HAAT Integration API, DaaS, and Market product sync use credentials HAAT issues to you.
+  </Card>
+  <Card title="HAAT calls your POS" icon="arrow-down-left" type="tip">
+    Market and Restaurant external APIs validate tokens HAAT sends on every request.
+  </Card>
+</Columns>
+
+## HAAT Integration API (you call HAAT)
+
+```http
+X-Api-Key: <api-key-from-haat>
+```
+
+HAAT provides the key during onboarding. Rotate keys with your HAAT contact if compromised.
+
+## Market POS (HAAT calls your POS)
+
+| Header | Description |
+| --- | --- |
+| `integrator-token` | Shared across HAAT markets for this integrator |
+| `organization-token` | Identifies the market / store |
+
+Validate both before returning menu, promotions, or accepting orders.
+
+## Restaurant POS (HAAT calls your POS)
+
+| Option | How it works |
+| --- | --- |
+| Bearer token | `Authorization: Bearer <token>` |
+| HMAC | Signature in `X-Signature` (shared secret with HAAT) |
+
+Also accept:
+
+| Header | Description |
+| --- | --- |
+| `X-Haat-Version` | API version (currently `1.0`) |
+| `Idempotency-Key` | On order create — treat duplicate keys as the same order |
+| `Content-Type` | `application/json` |
+
+## DaaS (you call HAAT)
+
+1. `POST /api/daas/authentication/login` with onboarding username/password
+2. Use the returned token as `Authorization: Bearer <token>` on subsequent DaaS calls
+
+## Market HAAT API (price sync)
+
+1. `POST /api/auth/login` with market POS credentials
+2. Use the returned `token` as `Authorization: Bearer <token>` for `PATCH /api/external/products`
+
+## Security checklist
+
+<Check>Reject missing or invalid credentials with `401`</Check>
+<Check>Never log full API keys or tokens</Check>
+<Check>Use TLS on all production endpoints your POS exposes</Check>
+<Check>Prefer staging credentials until go-live approval</Check>

@@ -11,9 +11,11 @@ info:
     **HAAT API (HAAT hosts):** Your POS calls HAAT to log in and sync price/availability.
 servers:
   - url: https://pos.example.com
-    description: Your market POS base URL (External API)
-  - url: https://api.example.haat.delivery
-    description: HAAT API base URL (replace with environment URL from HAAT)
+    description: Your market POS base URL (External API — you host)
+  - url: http://ext-integration.haat-delivery.io
+    description: HAAT API — Staging (auth and product sync)
+  - url: https://integration.internal.haat.delivery
+    description: HAAT API — Production (auth and product sync)
 tags:
   - name: External API
     description: Endpoints your POS must host for HAAT

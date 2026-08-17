@@ -47,7 +47,9 @@
           {
             "group": "Start here",
             "pages": [
-              "introduction"
+              "introduction",
+              "partner-guide",
+              "guides/environments"
             ]
           }
         ]

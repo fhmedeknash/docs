@@ -1,3 +1,5 @@
+.tools
+.deploy-tmp
 node_modules
 .mintlify
 haat-docs-for-mintlify.zip

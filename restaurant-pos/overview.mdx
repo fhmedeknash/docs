@@ -1,0 +1,68 @@
+---
+title: "Restaurant POS overview"
+description: "How a restaurant POS exposes menu sync and order create for HAAT."
+---
+
+# Restaurant POS overview
+
+HAAT calls your restaurant POS to sync the menu and create orders in real time.
+
+## Required endpoints
+
+<Columns cols={2}>
+  <Card title="GET /api/menu" icon="book-open" horizontal>
+    Full menu sync — categories, meals, deals, addons.
+  </Card>
+  <Card title="POST /api/orders" icon="shopping-bag" horizontal>
+    Create order in POS with idempotency support.
+  </Card>
+</Columns>
+
+Use the **API reference** group in this tab for full request/response schemas.
+
+## Authentication
+
+- `Authorization: Bearer <token>` **or** HMAC via `X-Signature`
+- `X-Haat-Version: 1.0`
+- On order create, honor `Idempotency-Key` (duplicates must not create duplicate orders)
+
+## Menu sync notes
+
+<AccordionGroup>
+  <Accordion title="Performance and shape">
+    - Return the **full** menu (no pagination)
+    - Target response time under **5 seconds**
+    - Keep `posId` values **stable** across calls
+  </Accordion>
+  <Accordion title="Localization and pricing">
+    - Provide localized dictionaries (`en` required; `he` and `ar` recommended)
+    - Price format uses decimals (e.g. `32.5`, not `3250`)
+    - Addon `groupType`: `addon` (default) or `always_print`
+  </Accordion>
+</AccordionGroup>
+
+HAAT syncs on initial setup, on a schedule (typically daily), on demand, and before processing orders when needed.
+
+## Order create notes
+
+Root fields include `orderId`, `businessId`, `customer`, `items`, `payments`, `payRestaurant`, `deliveryType` (`delivery` | `pickup`), and ISO-8601 UTC timestamps.
+
+Respond with:
+
+```json
+{
+  "status": "success",
+  "message": "Order accepted",
+  "posOrderId": "ORD-78456"
+}
+```
+
+## Implementation checklist
+
+<Check>`GET /api/menu` returns categories with meals and deals</Check>
+<Check>Addon groups include `min` / `max` and nested addons</Check>
+<Check>Auth configured (Bearer or HMAC)</Check>
+<Check>`POST /api/orders` accepts the documented payload</Check>
+<Check>Idempotency key handled correctly</Check>
+<Check>`posOrderId` returned on success</Check>
+<Check>Error handling for `401` / `500`</Check>
