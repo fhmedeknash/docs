@@ -86,45 +86,6 @@ paths:
                           businessName: Pizza Example
                           areaName: Tel Aviv
 
-  /api/daas/{businessId}/update-business:
-    put:
-      tags: [Businesses]
-      operationId: daasUpdateBusiness
-      summary: Update business
-      description: Updates details of an existing business such as name, address, and/or contact information.
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: businessId
-          in: path
-          required: true
-          schema:
-            type: integer
-          example: 180
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateBusinessRequest"
-            examples:
-              sample:
-                value:
-                  businessName: saja's bakery
-                  addressNote: saja's bakery
-                  location:
-                    latitude: "32.51234568"
-                    longitude: "35.51234568"
-                  email: saja@haat.delivery
-                  phoneNumber: "+972542182747"
-      responses:
-        "200":
-          description: Update result
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DaasSimpleResponse"
-
   /api/daas/validate-order:
     post:
       tags: [Orders]
@@ -357,25 +318,6 @@ components:
           properties:
             data:
               type: ["null", object]
-
-    UpdateBusinessRequest:
-      type: object
-      properties:
-        businessName:
-          type: string
-        addressNote:
-          type: string
-        location:
-          type: object
-          properties:
-            latitude:
-              type: string
-            longitude:
-              type: string
-        email:
-          type: string
-        phoneNumber:
-          type: string
 
     DaasOrderItem:
       type: object
