@@ -88,17 +88,17 @@
         ]
       },
       {
-        "tab": "HAAT API",
+        "tab": "Advanced API",
         "icon": "plug",
         "groups": [
           {
-            "group": "HAAT API partner kit",
+            "group": "Advanced API partner kit",
             "pages": [
-              "kits/haat-api/overview",
-              "kits/haat-api/setup",
-              "kits/haat-api/status-and-hours",
-              "kits/haat-api/availability",
-              "kits/haat-api/checklist"
+              "kits/advanced-api/overview",
+              "kits/advanced-api/setup",
+              "kits/advanced-api/status-and-hours",
+              "kits/advanced-api/availability",
+              "kits/advanced-api/checklist"
             ]
           }
         ]

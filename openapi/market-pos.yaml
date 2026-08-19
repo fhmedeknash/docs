@@ -8,18 +8,18 @@ info:
     **External API (you host):** HAAT calls your POS to build the menu, fetch promotions, and submit orders.
     Authenticate with `integrator-token` and `organization-token`.
 
-    **HAAT API (HAAT hosts):** Your POS calls HAAT to log in and sync price/availability.
+    **Advanced API (HAAT hosts):** Your POS calls HAAT to log in and sync price/availability.
 servers:
   - url: https://pos.example.com
     description: Your market POS base URL (External API — you host)
   - url: http://ext-integration.haat-delivery.io
-    description: HAAT API — Staging (auth and product sync)
+    description: Advanced API — Staging (auth and product sync)
   - url: https://integration.internal.haat.delivery
-    description: HAAT API — Production (auth and product sync)
+    description: Advanced API — Production (auth and product sync)
 tags:
   - name: External API
     description: Endpoints your POS must host for HAAT
-  - name: HAAT API
+  - name: Advanced API
     description: Endpoints your POS calls on HAAT
 
 paths:
@@ -153,7 +153,7 @@ paths:
 
   /api/auth/login:
     post:
-      tags: [HAAT API]
+      tags: [Advanced API]
       operationId: marketLogin
       summary: Login
       description: |
@@ -191,7 +191,7 @@ paths:
 
   /api/external/products:
     patch:
-      tags: [HAAT API]
+      tags: [Advanced API]
       operationId: syncProducts
       summary: Sync products
       description: |

@@ -16,7 +16,7 @@ Get from credentials to a working integration in five steps.
       <Card title="Restaurant" icon="utensils" href="/restaurant-pos/overview" horizontal>
         `GET /api/menu` and `POST /api/orders`.
       </Card>
-      <Card title="Push updates to HAAT" icon="plug" href="/haat-api/overview" horizontal>
+      <Card title="Push updates to HAAT" icon="plug" href="/advanced-api/overview" horizontal>
         Status, hours, and availability via API key.
       </Card>
       <Card title="DaaS partner" icon="truck" href="/daas/overview" horizontal>
@@ -24,7 +24,7 @@ Get from credentials to a working integration in five steps.
       </Card>
     </Columns>
 
-    Most POS partners implement Market **or** Restaurant outbound APIs, plus the HAAT Integration API for status updates.
+    Most POS partners implement Market **or** Restaurant outbound APIs, plus the Advanced API for status updates.
   </Step>
 
   <Step title="Get credentials">
@@ -46,7 +46,7 @@ Get from credentials to a working integration in five steps.
     | --- | --- |
     | Market POS | Build menu + promotions + submit order; login + product sync |
     | Restaurant POS | `GET /api/menu` and `POST /api/orders` |
-    | HAAT Integration API | `GET /api/pos/businesses`, then business-scoped PUTs |
+    | Advanced API | `GET /api/pos/businesses`, then business-scoped PUTs |
     | DaaS | Login, validate order, submit order |
   </Step>
 

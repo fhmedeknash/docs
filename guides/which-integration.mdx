@@ -1,6 +1,6 @@
 ---
 title: "Which integration do I need?"
-description: "Choose Market POS, Restaurant POS, HAAT Integration API, or DaaS."
+description: "Choose Market POS, Restaurant POS, Advanced API, or DaaS."
 ---
 
 # Which integration do I need?
@@ -15,10 +15,10 @@ flowchart TD
   start --> q1{Grocery or market catalog?}
   q1 -->|Yes| market[Market POS APIs]
   q1 -->|Restaurant menu| rest[Restaurant POS APIs]
-  market --> haat[Also use HAAT Integration API]
+  market --> haat[Also use Advanced API]
   rest --> haat
   start --> q2{Only pushing status hours availability?}
-  q2 -->|Yes| haatOnly[HAAT Integration API only]
+  q2 -->|Yes| haatOnly[Advanced API only]
   start --> q3{Submitting delivery orders as a DaaS partner?}
   q3 -->|Yes| daas[DaaS External API]
 ```
@@ -49,7 +49,7 @@ flowchart TD
     </Card>
   </Tab>
 
-  <Tab title="HAAT Integration API">
+  <Tab title="Advanced API">
     Choose this when your POS needs to **call HAAT** to:
 
     - List assigned businesses
@@ -59,7 +59,7 @@ flowchart TD
 
     Authenticate with `X-Api-Key`.
 
-    <Card title="HAAT Integration API" icon="plug" href="/haat-api/overview" horizontal cta="Open docs" arrow="true">
+    <Card title="Advanced API" icon="plug" href="/advanced-api/overview" horizontal cta="Open docs" arrow="true">
       Business-scoped write APIs hosted by HAAT.
     </Card>
   </Tab>
@@ -82,7 +82,7 @@ flowchart TD
   Most restaurant and market partners implement:
 
   1. The outbound APIs HAAT calls on their POS (Market or Restaurant tab)
-  2. The HAAT Integration API for pushing operational updates back to HAAT
+  2. The Advanced API for pushing operational updates back to HAAT
 
   DaaS partners use the DaaS tab instead of (or in addition to) POS hosting.
 </Info>
