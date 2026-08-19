@@ -1,0 +1,47 @@
+---
+title: "Special cases & summary"
+description: "Edge cases, one-page POS summary table, and product takeaways."
+---
+
+# Special cases and things that look like a POS but aren't
+
+**Aviv is both.** It's configured as a market POS *and* a restaurant POS. As a market it has the full FTP product/deal sync. As a restaurant it's mapping-and-orders only.
+
+**Airalo** is in the POS type list but isn't a store register — it's a digital eSIM supplier. We pull their packages on a background job and create/update market products from them. Orders are digital.
+
+**Barak** appears in the POS list but is driven by general configuration rather than the market/restaurant flags, so it can look inconsistent next to Comax and All4Shops.
+
+**MarketPrice** shows up inside the POS sync pipeline but is **internal Haat**, not a vendor. Don't include it in vendor-facing docs.
+
+**Unknown** is a placeholder value, not a real system.
+
+---
+
+# One-page summary table
+
+| POS | Market / Restaurant | Catalog sync | Who triggers | Transport | Matching key |
+| --- | --- | --- | --- | --- | --- |
+| Tabit | Restaurant | Full menu + availability | They push | HTTP | PosId (auto) |
+| McDonald's | Restaurant | Full menu + inventory | They push | HTTP | PosId (auto) |
+| EasySolution | Restaurant | Hide + translations | We pull, scheduled | HTTP | PosId |
+| BeecommCloud | Restaurant | POS menu history only | We pull | HTTP | PosId |
+| LeenCopot | Restaurant | POS menu history only | We pull | HTTP | PosId |
+| KubeGet | Restaurant | They read ours | They pull | HTTP | Sku, mapped by them |
+| Generic POS API | Restaurant | Availability + ops state | They push | HTTP | PosId |
+| Comax | Market | Products + deals | Products they push; deals we pull | HTTP, or FTP for deals | Barcode / product code |
+| All4Shops | Market | Prices, barcodes, deals | Prices they push; rest we pull | HTTP | Product code |
+| Aviv | Market + Restaurant | Products, prices, deals | We pull | **FTP** | Barcode / product code |
+| Barak | Market | Products + deals | We pull | **FTP** | Product code |
+| Airalo | Digital | Packages → products | We pull | HTTP | n/a |
+| Beecomm, PayPo, NetLunch, Elpos, PizzaHut, Presto, Beteavon, Iron, Kaman | Restaurant | None | — | Orders: HTTP (Presto: FTP) | PosId, mapped manually |
+| Yango, Erp | Market | None | — | HTTP | — |
+
+---
+
+# Takeaways for product
+
+1. **Only Tabit and McDonald's can build a menu for us.** Everything else assumes the menu already exists in Haat.
+2. **Restaurants need manual mapping work** before any sync or order flow works. That's ops effort per restaurant, and it's the usual source of "the order went to the POS wrong."
+3. **Markets need clean barcodes and product codes.** No mapping table means no safety net — a wrong barcode silently means "product not found."
+4. **FTP means delay.** Aviv and Barak are batch CSV pulls on a schedule, so their prices are as fresh as the last run, not real-time.
+5. **The generic POS API is the strategic path.** New vendors should be onboarded there instead of getting a bespoke integration.

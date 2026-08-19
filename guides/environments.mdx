@@ -1,0 +1,60 @@
+---
+title: "Environments"
+description: "Staging and production base URLs for HAAT integrations."
+---
+
+# Environments
+
+Pick staging first, then promote credentials and base URLs to production.
+
+<Columns cols={2}>
+  <Card title="Staging" icon="flask-conical" type="tip">
+    Use for development and certification before go-live.
+  </Card>
+  <Card title="Production" icon="rocket" type="warning">
+    Switch only after HAAT approves your integration.
+  </Card>
+</Columns>
+
+## Advanced API (HAAT-hosted)
+
+The following API is already available from HAAT and can be used by the POS for authentication and product synchronization.
+
+| Environment | Base URL |
+| --- | --- |
+| Staging | `http://ext-integration.haat-delivery.io` |
+| Production | `https://integration.internal.haat.delivery` |
+
+Route patterns:
+
+| Type | Pattern |
+| --- | --- |
+| List businesses | `GET /api/pos/businesses` |
+| Business-scoped | `/api/pos/business/{businessId}/...` |
+
+`businessId` is the HAAT business ID. Call **GET List Businesses** to retrieve IDs assigned to your API key.
+
+## Market and Restaurant POS (you host)
+
+Your POS chooses the public base URL (for example `https://pos.example.com`). Share that URL and credentials with HAAT during onboarding.
+
+| Integration | Examples |
+| --- | --- |
+| Market POS | Menu build, `GET /api/promotions`, `POST /api/submit-order` |
+| Restaurant POS | `GET /api/menu`, `POST /api/orders` |
+
+## DaaS (HAAT-hosted)
+
+HAAT provides the DaaS environment base URL during partner onboarding (shown in OpenAPI as a placeholder server). Paths are under `/api/daas/...`.
+
+## Variables
+
+| Variable | Description |
+| --- | --- |
+| `baseUrl` | Advanced API base URL for the target environment |
+| `businessId` | HAAT business ID from List Businesses |
+| `apiKey` | Value for `X-Api-Key` |
+
+<Tip>
+  Develop and certify against **staging**, then switch `baseUrl` and credentials to production for go-live.
+</Tip>

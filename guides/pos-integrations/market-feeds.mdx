@@ -1,0 +1,39 @@
+---
+title: "Market feeds"
+description: "Group 3 — market product, price, and promotion feeds (Comax, All4Shops, Aviv, Barak)."
+---
+
+# Group 3 — Market product, price, and promotion feeds
+
+All four are markets. The pattern is: **update existing products, and create/update deals.** They generally do not invent new SKUs, with one exception noted below.
+
+## Comax (markets)
+
+- **Products:** Comax pushes to us. `POST /api/products` is the **add new products** path. `PATCH /api/products` **updates** price and availability on existing products.
+- **Deals:** **We pull**, daily at 05:00, plus on-demand from backoffice. Transport is either their **HTTP SOAP** service or **FTP**, depending on how that market's certificate is configured.
+- **Matching key:** products match on **barcode or product code**; deals match on **product code**.
+
+## All4Shops (markets)
+
+- **Prices & availability:** All4Shops pushes via `PATCH /api/external/products`. Updates only — no new SKUs.
+- **Barcodes:** **We pull** daily at 01:00 to align their codes/barcodes with ours, and email a mismatch report.
+- **Deals:** **We pull** daily at 05:00, plus on-demand.
+- **Matching key:** **product code** throughout.
+
+## Aviv (markets — and also restaurants)
+
+- **Who starts it:** **We do.** This one is FTP-based.
+- **Transport:** **FTP.** We download CSV files from their server.
+- **Schedule:** daily for the product file and the deals file; **every 2 hours** for the price file.
+- **What it changes:** Updates price, availability, and product details. Creates/updates deals.
+- **Matching key:** products by **barcode**; deals by **product code**.
+
+See [Special cases](/guides/pos-integrations/special-cases-and-summary) — Aviv is both market and restaurant.
+
+## Barak (markets)
+
+- **Who starts it:** **We do.**
+- **Transport:** **FTP** CSV, configured through general configuration rather than the POS certificate.
+- **Schedule:** daily plus a periodic run.
+- **What it changes:** Updates price/availability; creates/updates deals. After reading, the file is moved to an `OLD` folder on their FTP so we don't reprocess it.
+- **Matching key:** **product code** (`ItemCode`).

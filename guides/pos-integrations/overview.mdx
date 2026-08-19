@@ -1,0 +1,44 @@
+---
+title: "POS integrations (plain English)"
+description: "Internal guide — what POS means at Haat, matching keys, and how each vendor syncs."
+---
+
+# Point of Sale (POS) Integrations — Plain-English Guide
+
+<Info>
+  Internal guide for Market, Menu, Product, and Ops. Partner kits live under Market, Restaurant, Advanced API, and DaaS.
+</Info>
+
+## 1. What is a POS, in one paragraph
+
+A POS ("point of sale") is the software the **business already used before Haat** — the cash register in a restaurant, or the inventory/pricing system in a supermarket. When a business joins Haat, they don't want to maintain their menu twice. So we connect to their POS.
+
+A business is "connected" when it has a **POS certificate** in our database — a record saying *"business #123 uses Tabit, and here are the credentials."*
+
+## 2. Every integration does one or two of these three things
+
+**A. We send orders to them.** Customer orders on Haat → we push the order into their register so the kitchen/cashier sees it. Nearly every POS does this.
+
+**B. They send us catalog info.** Their menu, prices, stock, promotions → we update Haat.
+
+**C. They read our catalog.** Rare — only one POS does this.
+
+When people say "the POS sync," they almost always mean **B**.
+
+## 3. The single most important concept: the matching key
+
+For any sync to work, we need to know *"their item #58821 is our item #4417."* How we do that splits cleanly into two worlds.
+
+**Restaurants → we use `PosId`.** We keep a mapping table (`PosMappings`) where each Haat menu entity (a meal, a deal, a topping, a group) is paired with the POS's own item ID. Someone from ops fills this in from backoffice, or the POS itself creates it during first menu sync. When we send an order, **we translate to their IDs before sending.** We do not send Haat IDs and ask them to figure it out.
+
+**Markets → we use barcode and/or product code.** No mapping table. We look up `Product.Barcode` or `Product.ProductCode` for that specific market. Barcodes are already a shared global language, so no mapping is needed.
+
+That answers the question directly: **we do the mapping, not them.** The one exception is KubeGet (see [They read our catalog](/guides/pos-integrations/read-catalog-orders-only)).
+
+## Pages in this guide
+
+1. [Full menu sync](/guides/pos-integrations/full-menu-sync) — Tabit, McDonald's  
+2. [Availability & ops updates](/guides/pos-integrations/availability-and-ops) — EasySolution, BeecommCloud, LeenCopot, Generic POS API  
+3. [Market feeds](/guides/pos-integrations/market-feeds) — Comax, All4Shops, Aviv, Barak  
+4. [Read catalog & orders-only](/guides/pos-integrations/read-catalog-orders-only) — KubeGet + orders-only vendors  
+5. [Special cases & summary](/guides/pos-integrations/special-cases-and-summary) — edge cases, table, product takeaways  

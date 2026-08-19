@@ -47,7 +47,9 @@
           {
             "group": "Start here",
             "pages": [
-              "introduction"
+              "introduction",
+              "partner-guide",
+              "guides/environments"
             ]
           }
         ]
@@ -113,6 +115,23 @@
               "kits/daas/businesses",
               "kits/daas/orders",
               "kits/daas/checklist"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "POS Guide",
+        "icon": "book-open",
+        "groups": [
+          {
+            "group": "Plain-English guide",
+            "pages": [
+              "guides/pos-integrations/overview",
+              "guides/pos-integrations/full-menu-sync",
+              "guides/pos-integrations/availability-and-ops",
+              "guides/pos-integrations/market-feeds",
+              "guides/pos-integrations/read-catalog-orders-only",
+              "guides/pos-integrations/special-cases-and-summary"
             ]
           }
         ]
