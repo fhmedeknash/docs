@@ -236,7 +236,9 @@ paths:
       tags: [Orders]
       operationId: daasOrderStatus
       summary: Order status
-      description: DaaS org JWT.
+      description: |
+        DaaS org JWT.
+        `data.orderDetails` is null if the order does not exist.
       security:
         - BearerAuth: []
       parameters:
@@ -252,7 +254,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DaasSimpleResponse"
+                $ref: "#/components/schemas/DaasOrderStatusResponse"
+              examples:
+                sample:
+                  value:
+                    status: success
+                    message: null
+                    data:
+                      orderDetails:
+                        orderDate: "2025-09-09T23:45:00"
+                        driverAssignmentTime: "2025-09-09T23:50:00"
+                        pickupTime: "2025-09-10T00:05:00"
+                        deliveryTime: null
+                        bags: 2
 
   /api/daas/orders/{orderId}/cancel:
     put:
@@ -483,6 +497,38 @@ components:
           properties:
             data:
               type: ["null", object]
+
+    DaasOrderStatusDetails:
+      type: object
+      properties:
+        orderDate:
+          type: ["string", "null"]
+          format: date-time
+        driverAssignmentTime:
+          type: ["string", "null"]
+          format: date-time
+        pickupTime:
+          type: ["string", "null"]
+          format: date-time
+        deliveryTime:
+          type: ["string", "null"]
+          format: date-time
+        bags:
+          type: number
+
+    DaasOrderStatusResponse:
+      allOf:
+        - $ref: "#/components/schemas/DaasEnvelope"
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                orderDetails:
+                  description: null if the order does not exist
+                  oneOf:
+                    - type: "null"
+                    - $ref: "#/components/schemas/DaasOrderStatusDetails"
 
     DaasBusinessesResponse:
       allOf:

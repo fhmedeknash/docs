@@ -154,6 +154,26 @@ Same body as submit (§ Submit order). Dry-run only.
 | --- | --- | --- | --- |
 | orderId | int | required | Haat order id |
 
+### Response example
+
+```json
+{
+  "status": "success | failure",
+  "message": "null | error description",
+  "data": {
+    "orderDetails": {
+      "orderDate": "datetime or null",
+      "driverAssignmentTime": "datetime or null",
+      "pickupTime": "datetime or null",
+      "deliveryTime": "datetime or null",
+      "bags": "number"
+    }
+  }
+}
+```
+
+`orderDetails` is `null` if the order does not exist.
+
 ---
 
 ## Cancel order
