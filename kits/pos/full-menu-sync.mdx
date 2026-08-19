@@ -1,0 +1,27 @@
+---
+title: "Full menu sync"
+description: "Group 1 — POS vendors that can build the Haat menu (Tabit, McDonald's)."
+---
+
+# Group 1 — The POS sends us a full menu
+
+These are the deepest integrations. The POS can literally build the Haat menu.
+
+## Tabit (restaurants)
+
+- **Who starts it:** Tabit does. They POST to `/api/external/tabit/menu-call-back` with their organization token.
+- **Transport:** HTTP (our API). Not FTP.
+- **What it changes:** If the restaurant has *no* menu yet, we **build everything from scratch** — categories, meals, deals, groups — and **auto-create the PosId mappings**. If a menu already exists, we only update **availability / hide**, and optionally add brand-new items in a hidden state for ops to review. Also supports franchise fan-out to branches.
+- **Matching key:** `PosId`, created automatically on first sync.
+- **Also:** Tabit calls us back with order status updates.
+
+## McDonald's (restaurants)
+
+- **Who starts it:** McDonald's does, on several endpoints — menu, inventory, branch status, working hours, order cancel, "done preparing."
+- **Transport:** HTTP.
+- **What it changes:** Menu sync **creates and updates** categories, dishes, toppings, meal groups, and mappings. Inventory calls toggle stock on already-mapped items.
+- **Matching key:** `PosId`, created automatically during menu sync.
+
+<Tip>
+  Only Tabit and McDonald's can build a menu for us. Everything else assumes the menu already exists in Haat.
+</Tip>

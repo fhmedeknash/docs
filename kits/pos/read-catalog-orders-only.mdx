@@ -1,0 +1,29 @@
+---
+title: "Read catalog & orders-only"
+description: "Group 4 and 5 — KubeGet reads our catalog; other POS are orders only."
+---
+
+# Group 4 — They read our catalog
+
+## KubeGet (restaurants)
+
+The only integration that runs backwards.
+
+- **Who starts it:** KubeGet does. They call `GET /api/external/kubeGet/restaurants/{restaurantId}`.
+- **What happens:** We hand them our menu. Each item carries an `Id` (our Haat ID) and a `Sku`, which is the mapped `PosId` when one exists and falls back to the Haat ID when it doesn't.
+- **Who maps:** **They do**, on their side, using `Sku`. This is the one case where mapping isn't our job.
+
+---
+
+# Group 5 — Orders only, no catalog sync
+
+For these, the menu is maintained manually in Haat and mapped by ops in backoffice. We push orders out; nothing flows back into the catalog automatically.
+
+**Restaurants:** Beecomm, PayPo, NetLunch, Elpos, PizzaHut, Presto, Beteavon, Iron, Kaman.
+
+**Markets:** Yango, Erp.
+
+Two details worth knowing:
+
+- **PayPo and Beecomm** do send us **order status callbacks** — just not menu data.
+- **Presto** is the odd one out on transport: we deliver its **orders over FTP** by uploading an order file, rather than calling an HTTP API.

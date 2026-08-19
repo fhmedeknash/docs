@@ -47,9 +47,7 @@
           {
             "group": "Start here",
             "pages": [
-              "introduction",
-              "partner-guide",
-              "guides/environments"
+              "introduction"
             ]
           }
         ]
@@ -83,6 +81,23 @@
               "kits/restaurant/menu-sync",
               "kits/restaurant/create-order",
               "kits/restaurant/checklist"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "POS",
+        "icon": "monitor-smartphone",
+        "groups": [
+          {
+            "group": "POS integrations",
+            "pages": [
+              "kits/pos/overview",
+              "kits/pos/full-menu-sync",
+              "kits/pos/availability-and-ops",
+              "kits/pos/market-feeds",
+              "kits/pos/read-catalog-orders-only",
+              "kits/pos/special-cases-and-summary"
             ]
           }
         ]
