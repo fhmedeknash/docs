@@ -1,48 +1,130 @@
 ---
 title: "DaaS orders"
-description: "Validate, submit, status, and cancel delivery orders."
+description: "Validate, submit, status, and cancel delivery orders — nested fields as tables."
 ---
 
 # DaaS orders
 
+Base path: `/api/daas`
+
+**Auth for all endpoints on this page:** DaaS org JWT (`Authorization: Bearer <token>`)
+
 ## Validate then submit
 
-1. `POST /api/daas/validate-order`  
-2. `POST /api/daas/submit-order`  
+1. `POST /api/daas/validate-order` — dry-run; returns pickup/delivery estimates; **does not create** an order  
+2. `POST /api/daas/submit-order` — creates the order  
 
-Same body shape for both.
+Both use the same body: `SubmitDaaSOrderRequest` (tables below).
 
-### Important rules
+---
 
-- If HAAT maps businesses, leave `BusinessId` empty and send `posBusinessId`
-- If `isCashOrder` is `true`, every item needs `Price`
+## Validate order
 
-### Example body (shortened)
+`POST /api/daas/validate-order`
+
+Same body as submit (§ Submit order). Dry-run only.
+
+---
+
+## Submit order
+
+`POST /api/daas/submit-order`
+
+### Body — `SubmitDaaSOrderRequest`
+
+| Param | Type | Required | Description |
+| --- | --- | --- | --- |
+| businessId | int | required unless `posBusinessId` is set | Haat business id |
+| posBusinessId | string? | optional | If set, overrides `businessId` |
+| daaSOrderId | string | required in practice | Partner order id |
+| userDetails | object | required | See `userDetails` table |
+| orderDetails | object | required for cash | See `orderDetails` table |
+| estimatedPickupTime | DateTime | required | Israel local time, converted to UTC |
+| bags | short | optional | Ignored if org `BagsInputRequired`; `<= 0` = no bags |
+| isCashOrder | bool? | optional | `true` only if org cash is enabled |
+| customerNotes | string? | optional | Else uses `userDetails.address.notes` |
+| totalAmount | decimal? | optional | Cash: order price if set |
+| deliveryFee | decimal? | optional | Cash: added on top of total |
+| language | string? | optional | Default Hebrew (`he`) |
+
+### `userDetails` — `SubmitDaaSOrderUserDetails`
+
+| Param | Type | Required | Description |
+| --- | --- | --- | --- |
+| name | string | required when creating a new user | Customer name |
+| phoneNumber | string | required on submit | Lookup/create user; SMS |
+| location | object | required | See `userDetails.location` |
+| address | object | required | See `userDetails.address` (fields may be empty) |
+
+### `userDetails.location` — `SubmitDaaSOrderUserDetailsLocation`
+
+| Param | Type | Required | Description |
+| --- | --- | --- | --- |
+| latitude | double | required | `0,0` = location not shared yet |
+| longitude | double | required | `0,0` = location not shared yet |
+
+### `userDetails.address` — `SubmitDaaSOrderUserDetailsAddress`
+
+| Param | Type | Required | Description |
+| --- | --- | --- | --- |
+| city | string | optional | |
+| street | string | optional | |
+| buildingNumber | string | optional | |
+| notes | string | optional | Fallback customer notes |
+
+### `orderDetails` — `SubmitDaaSCourierOrderDetails`
+
+| Param | Type | Required | Description |
+| --- | --- | --- | --- |
+| items | array of objects | required for cash pricing | See `orderDetails.items[]` |
+
+### `orderDetails.items[]` — `SubmitDaaSCourierOrderItem`
+
+| Param | Type | Required | Description |
+| --- | --- | --- | --- |
+| id | int | optional | Line item id (default `0`) |
+| name | string | optional | Item name |
+| quantity | int | required for cash pricing | Count |
+| price | decimal | required for cash pricing | Unit price |
+
+### Example body
 
 ```json
 {
-  "BusinessId": 180,
+  "businessId": 180,
   "posBusinessId": "POS-12345-ABC",
-  "DaaSOrderId": "DAAS-987654321",
-  "UserDetails": {
-    "Name": "John Doe",
-    "Location": { "Latitude": 32.522, "Longitude": 35.148 },
-    "Address": {
-      "City": "Umm El Fahem",
-      "Street": "Abu Lahem",
-      "BuildingNumber": "123",
-      "Notes": "Ring the bell"
+  "daaSOrderId": "DAAS-987654321",
+  "userDetails": {
+    "name": "John Doe",
+    "phoneNumber": "+972544774783",
+    "location": {
+      "latitude": 32.522,
+      "longitude": 35.148
     },
-    "PhoneNumber": "+972544774783"
+    "address": {
+      "city": "Umm El Fahem",
+      "street": "Abu Lahem",
+      "buildingNumber": "123",
+      "notes": "Ring the bell"
+    }
   },
-  "OrderDetails": {
-    "Items": [
-      { "Id": 1, "Name": "Chicken Shawarma Wrap", "Quantity": 2, "Price": 35.5 }
+  "orderDetails": {
+    "items": [
+      {
+        "id": 1,
+        "name": "Chicken Shawarma Wrap",
+        "quantity": 2,
+        "price": 35.5
+      }
     ]
   },
-  "EstimatedPickupTime": "2025-09-09T23:45:00Z",
-  "Bags": 2,
-  "isCashOrder": true
+  "estimatedPickupTime": "2025-09-09T23:45:00",
+  "bags": 2,
+  "isCashOrder": true,
+  "customerNotes": null,
+  "totalAmount": 71.0,
+  "deliveryFee": 15.0,
+  "language": "he"
 }
 ```
 
@@ -60,12 +142,30 @@ Same body shape for both.
 }
 ```
 
+---
+
 ## Order status
 
-`GET /api/daas/orders/{haatOrderId}/status`
+`GET /api/daas/orders/{orderId}/status`
 
-## Cancel
+### Path
 
-`PUT /api/daas/orders/{haatOrderId}/cancel`
+| Param | Type | Required | Description |
+| --- | --- | --- | --- |
+| orderId | int | required | Haat order id |
 
-Denied if already picked up or delivered.
+---
+
+## Cancel order
+
+`PUT /api/daas/orders/{orderId}/cancel`
+
+### Path
+
+| Param | Type | Required | Description |
+| --- | --- | --- | --- |
+| orderId | int | required | Haat order id |
+
+No body.
+
+Denied if the order was already picked up or delivered.

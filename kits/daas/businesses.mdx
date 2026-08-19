@@ -1,0 +1,52 @@
+---
+title: "DaaS businesses"
+description: "Update linked business details for a DaaS organization."
+---
+
+# DaaS businesses
+
+Base path: `/api/daas`
+
+## Update business
+
+`PUT /api/daas/{businessId}/update-business`
+
+**Auth:** DaaS org JWT
+
+### Path
+
+| Param | Type | Required | Description |
+| --- | --- | --- | --- |
+| businessId | int | required | Must belong to the current org |
+
+### Body — `UpdateDaaSBusinessDetailsRequest`
+
+| Param | Type | Required | Description |
+| --- | --- | --- | --- |
+| businessName | string | required in practice | Hebrew translation name |
+| addressNote | string | optional | Translation address |
+| location | object | required | See `location` table below |
+| email | string | optional | Finance email |
+| phoneNumber | string | required | Must be `+972` + 8–9 digits |
+
+### `location` — `DaaSBusinessLocationRequest`
+
+| Param | Type | Required | Description |
+| --- | --- | --- | --- |
+| latitude | double | required | Business lat |
+| longitude | double | required | Business lng |
+
+### Example
+
+```json
+{
+  "businessName": "saja's bakery",
+  "addressNote": "saja's bakery",
+  "location": {
+    "latitude": 32.51234568,
+    "longitude": 35.51234568
+  },
+  "email": "saja@haat.delivery",
+  "phoneNumber": "+972542182747"
+}
+```

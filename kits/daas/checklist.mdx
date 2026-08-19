@@ -6,12 +6,13 @@ description: "Go-live checklist for DaaS partners."
 # DaaS checklist
 
 - [ ] Staging credentials received
-- [ ] Login returns a usable token
-- [ ] Businesses list matches expected branches
-- [ ] Validate order works
-- [ ] Submit order returns `haatOrderId`
-- [ ] Cash orders include item prices
-- [ ] Status endpoint tested
+- [ ] `POST /api/daas/authentication/login` returns a usable token
+- [ ] `GET /api/daas/businesses` matches expected branches
+- [ ] Update business tested (if partner uses it)
+- [ ] `POST /api/daas/validate-order` returns estimates (no order created)
+- [ ] `POST /api/daas/submit-order` returns `haatOrderId`
+- [ ] Cash orders include item `quantity` / `price` when `isCashOrder` is true
+- [ ] `GET /api/daas/orders/{orderId}/status` tested
 - [ ] Cancel rules understood / tested
 - [ ] Staging certification approved
 - [ ] Production credentials issued

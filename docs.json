@@ -112,6 +112,7 @@
             "pages": [
               "kits/daas/overview",
               "kits/daas/setup",
+              "kits/daas/businesses",
               "kits/daas/orders",
               "kits/daas/checklist"
             ]

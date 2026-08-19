@@ -1,20 +1,25 @@
 openapi: 3.1.0
 info:
   title: HAAT DaaS External API
-  version: "1.0.0"
+  version: "1.1.0"
   description: |
     Delivery-as-a-Service (DaaS) APIs for external partners.
 
-    1. Authenticate with username/password to receive a bearer token
+    Base path: `/api/daas`
+
+    1. Authenticate with username/password to receive a DaaS org JWT
     2. Call businesses and order endpoints with `Authorization: Bearer <token>`
 
-    If business ID mapping is handled by HAAT, leave `BusinessId` empty and provide only `posBusinessId`.
-    When `isCashOrder` is `true`, item prices are required.
+    Admin endpoints (`/register/*`) require an admin JWT and are used during onboarding only.
+
+    `businessId` is required unless `posBusinessId` is set (then `posBusinessId` overrides).
+    When `isCashOrder` is `true`, item quantity and price are required for cash pricing.
 servers:
   - url: https://external-partners.example.haat.delivery
     description: Replace with the DaaS environment URL provided during onboarding
 tags:
   - name: Authentication
+  - name: Admin
   - name: Businesses
   - name: Orders
 
@@ -23,22 +28,15 @@ paths:
     post:
       tags: [Authentication]
       operationId: daasLogin
-      summary: Authentication
-      description: |
-        As part of onboarding a new DaaS partner, credentials are provided for the relevant environment.
+      summary: Login
+      description: Org DaaS username/password. No auth header required.
       security: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required: [username, password]
-              properties:
-                username:
-                  type: string
-                password:
-                  type: string
+              $ref: "#/components/schemas/LoginUserDto"
             examples:
               sample:
                 value:
@@ -51,20 +49,57 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DaasLoginResponse"
-              examples:
-                sample:
-                  value:
-                    status: success
-                    message: null
-                    data:
-                      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+  /api/daas/register/business:
+    post:
+      tags: [Admin]
+      operationId: daasRegisterBusiness
+      summary: Register business to DaaS
+      description: Admin JWT. Links a Haat business to a DaaS organization.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterBusinessToDaaSRequest"
+      responses:
+        "200":
+          description: Register result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DaasSimpleResponse"
+
+  /api/daas/register/organization:
+    post:
+      tags: [Admin]
+      operationId: daasRegisterOrganization
+      summary: Register DaaS organization
+      description: Admin JWT. Creates DaaS org credentials. userName is stored lowercase.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterDaaSOrganizationRequest"
+      responses:
+        "200":
+          description: Register result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DaasSimpleResponse"
 
   /api/daas/businesses:
     get:
       tags: [Businesses]
       operationId: daasListBusinesses
       summary: List businesses
-      description: Retrieves all businesses linked to the authenticated operator.
+      description: DaaS org JWT. No params. Returns businesses linked to the authenticated organization.
       security:
         - BearerAuth: []
       responses:
@@ -74,17 +109,45 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DaasBusinessesResponse"
-              examples:
-                sample:
-                  value:
-                    status: success
-                    message: null
-                    data:
-                      organizationId: 1
-                      businesses:
-                        - businessId: 121
-                          businessName: Pizza Example
-                          areaName: Tel Aviv
+
+  /api/daas/{businessId}/update-business:
+    put:
+      tags: [Businesses]
+      operationId: daasUpdateBusiness
+      summary: Update business
+      description: DaaS org JWT. businessId must belong to the current org.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: businessId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Must belong to the current org
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateDaaSBusinessDetailsRequest"
+            examples:
+              sample:
+                value:
+                  businessName: saja's bakery
+                  addressNote: saja's bakery
+                  location:
+                    latitude: 32.51234568
+                    longitude: 35.51234568
+                  email: saja@haat.delivery
+                  phoneNumber: "+972542182747"
+      responses:
+        "200":
+          description: Update result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DaasSimpleResponse"
 
   /api/daas/validate-order:
     post:
@@ -92,9 +155,8 @@ paths:
       operationId: daasValidateOrder
       summary: Validate order
       description: |
-        Validate a new order to HAAT Delivery, including customer details and order items.
-        If business ID mapping is handled by HAAT, leave `BusinessId` empty and provide only `posBusinessId`.
-        When `isCashOrder` is `true`, prices on items are required.
+        DaaS org JWT. Same body as submit-order.
+        Dry-run only; returns pickup/delivery estimates. Does not create an order.
       security:
         - BearerAuth: []
       requestBody:
@@ -102,54 +164,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DaasOrderRequest"
-            examples:
-              sample:
-                value:
-                  BusinessId: 180
-                  posBusinessId: POS-12345-ABC
-                  DaaSOrderId: DAAS-987654321
-                  UserDetails:
-                    Name: Saja
-                    Location:
-                      Latitude: 32.518689
-                      Longitude: 35.1550089
-                    Address:
-                      City: Haifa
-                      Street: Abu Lahem
-                      BuildingNumber: "123"
-                      Notes: "تست بالعربي"
-                    PhoneNumber: "+972542182747"
-                  OrderDetails:
-                    Items:
-                      - Id: 1
-                        Name: Chicken Shawarma Wrap
-                        Quantity: 2
-                        Price: 35.5
-                      - Id: 2
-                        Name: French Fries (Large)
-                        Quantity: 1
-                        Price: 15.0
-                  EstimatedPickupTime: "2025-09-09T23:45:00Z"
-                  Bags: 1
-                  isCashOrder: true
+              $ref: "#/components/schemas/SubmitDaaSOrderRequest"
       responses:
         "200":
-          description: Validation result
+          description: Validation / estimate result
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DaasOrderActionResponse"
+                $ref: "#/components/schemas/DaasOrderResponse"
 
   /api/daas/submit-order:
     post:
       tags: [Orders]
       operationId: daasSubmitOrder
       summary: Submit order
-      description: |
-        Submit a new order to HAAT Delivery, including customer details and order items.
-        If business ID mapping is handled by HAAT, leave `BusinessId` empty and provide only `posBusinessId`.
-        When `isCashOrder` is `true`, prices on items are required.
+      description: DaaS org JWT. Creates the delivery order in HAAT.
       security:
         - BearerAuth: []
       requestBody:
@@ -157,48 +186,41 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DaasOrderRequest"
+              $ref: "#/components/schemas/SubmitDaaSOrderRequest"
             examples:
               sample:
                 value:
-                  BusinessId: 180
+                  businessId: 180
                   posBusinessId: POS-12345-ABC
-                  DaaSOrderId: DAAS-987654321
-                  UserDetails:
-                    Name: John Doe
-                    Location:
-                      Latitude: 32.52207198163078
-                      Longitude: 35.148554281429554
-                    Address:
-                      City: Umm El Fahem
-                      Street: Abu Lahem
-                      BuildingNumber: "123"
-                      Notes: Ring the bell at apartment 4B
-                    PhoneNumber: "+972544774783"
-                  OrderDetails:
-                    Items:
-                      - Id: 1
-                        Name: Chicken Shawarma Wrap
-                        Quantity: 2
-                        Price: 35.5
-                      - Id: 2
-                        Name: French Fries (Large)
-                        Quantity: 1
-                        Price: 15.0
-                      - Id: 3
-                        Name: Coca Cola 500ml
-                        Quantity: 2
-                        Price: 8.9
-                  EstimatedPickupTime: "2025-09-09T23:45:00Z"
-                  Bags: 2
+                  daaSOrderId: DAAS-987654321
+                  userDetails:
+                    name: John Doe
+                    phoneNumber: "+972544774783"
+                    location:
+                      latitude: 32.522
+                      longitude: 35.148
+                    address:
+                      city: Umm El Fahem
+                      street: Abu Lahem
+                      buildingNumber: "123"
+                      notes: Ring the bell
+                  orderDetails:
+                    items:
+                      - id: 1
+                        name: Chicken Shawarma Wrap
+                        quantity: 2
+                        price: 35.5
+                  estimatedPickupTime: "2025-09-09T23:45:00"
+                  bags: 2
                   isCashOrder: true
+                  language: he
       responses:
         "200":
           description: Submit result
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DaasOrderActionResponse"
+                $ref: "#/components/schemas/DaasOrderResponse"
               examples:
                 sample:
                   value:
@@ -209,45 +231,44 @@ paths:
                       estimatedPickupTime: "09-09-2025 23:56:19"
                       estimatedDeliveryTime: "10-09-2025 00:16:19"
 
-  /api/daas/orders/{haatOrderId}/status:
+  /api/daas/orders/{orderId}/status:
     get:
       tags: [Orders]
       operationId: daasOrderStatus
-      summary: Get order status
-      description: Retrieves the current status of a specific order by its HAAT Order ID.
+      summary: Order status
+      description: DaaS org JWT.
       security:
         - BearerAuth: []
       parameters:
-        - name: haatOrderId
+        - name: orderId
           in: path
           required: true
           schema:
             type: integer
-          example: 5887995
+          description: Haat order id
       responses:
         "200":
-          description: Order status
+          description: Status result
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DaasOrderStatusResponse"
+                $ref: "#/components/schemas/DaasSimpleResponse"
 
-  /api/daas/orders/{haatOrderId}/cancel:
+  /api/daas/orders/{orderId}/cancel:
     put:
       tags: [Orders]
       operationId: daasCancelOrder
       summary: Cancel order
-      description: |
-        Cancels an existing order if it has not been picked up by courier or delivered.
+      description: DaaS org JWT. No body. Denied if already picked up or delivered.
       security:
         - BearerAuth: []
       parameters:
-        - name: haatOrderId
+        - name: orderId
           in: path
           required: true
           schema:
             type: integer
-          example: 5887995
+          description: Haat order id
       responses:
         "200":
           description: Cancel result
@@ -255,28 +276,194 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DaasSimpleResponse"
-              examples:
-                sample:
-                  value:
-                    status: success
-                    message: Order was cancelled successfully
-                    data: null
 
 components:
   securitySchemes:
     BearerAuth:
       type: http
       scheme: bearer
+      bearerFormat: JWT
 
   schemas:
+    LoginUserDto:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          description: Org DaaS username
+        password:
+          type: string
+          description: Password (BCrypt)
+
+    RegisterBusinessToDaaSRequest:
+      type: object
+      required: [businessId, daaSOrganizationId]
+      properties:
+        businessId:
+          type: integer
+          description: Haat business to link
+        daaSOrganizationId:
+          type: integer
+          description: Target DaaS org
+
+    RegisterDaaSOrganizationRequest:
+      type: object
+      required: [userName, password]
+      properties:
+        userName:
+          type: string
+          description: Unique; stored lowercase
+        password:
+          type: string
+          description: Hashed with BCrypt
+
+    DaaSBusinessLocationRequest:
+      type: object
+      required: [latitude, longitude]
+      properties:
+        latitude:
+          type: number
+          format: double
+          description: Business lat
+        longitude:
+          type: number
+          format: double
+          description: Business lng
+
+    UpdateDaaSBusinessDetailsRequest:
+      type: object
+      required: [location, phoneNumber]
+      properties:
+        businessName:
+          type: string
+          description: Hebrew translation name (required in practice)
+        addressNote:
+          type: string
+          description: Translation address
+        location:
+          $ref: "#/components/schemas/DaaSBusinessLocationRequest"
+        email:
+          type: string
+          description: Finance email
+        phoneNumber:
+          type: string
+          description: Must be +972 + 8–9 digits
+
+    SubmitDaaSOrderUserDetailsLocation:
+      type: object
+      required: [latitude, longitude]
+      properties:
+        latitude:
+          type: number
+          format: double
+          description: 0,0 = location not shared yet
+        longitude:
+          type: number
+          format: double
+          description: 0,0 = location not shared yet
+
+    SubmitDaaSOrderUserDetailsAddress:
+      type: object
+      properties:
+        city:
+          type: string
+        street:
+          type: string
+        buildingNumber:
+          type: string
+        notes:
+          type: string
+          description: Fallback customer notes
+
+    SubmitDaaSOrderUserDetails:
+      type: object
+      required: [phoneNumber, location, address]
+      properties:
+        name:
+          type: string
+          description: Required when creating a new user
+        phoneNumber:
+          type: string
+          description: Lookup/create user; SMS
+        location:
+          $ref: "#/components/schemas/SubmitDaaSOrderUserDetailsLocation"
+        address:
+          $ref: "#/components/schemas/SubmitDaaSOrderUserDetailsAddress"
+
+    SubmitDaaSCourierOrderItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Line item id (default 0)
+        name:
+          type: string
+        quantity:
+          type: integer
+          description: Required for cash pricing
+        price:
+          type: number
+          format: double
+          description: Unit price; required for cash pricing
+
+    SubmitDaaSCourierOrderDetails:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/SubmitDaaSCourierOrderItem"
+          description: Required for cash pricing
+
+    SubmitDaaSOrderRequest:
+      type: object
+      required: [userDetails, estimatedPickupTime]
+      properties:
+        businessId:
+          type: integer
+          description: Required unless posBusinessId is set
+        posBusinessId:
+          type: ["string", "null"]
+          description: If set, overrides businessId
+        daaSOrderId:
+          type: string
+          description: Partner order id (required in practice)
+        userDetails:
+          $ref: "#/components/schemas/SubmitDaaSOrderUserDetails"
+        orderDetails:
+          $ref: "#/components/schemas/SubmitDaaSCourierOrderDetails"
+        estimatedPickupTime:
+          type: string
+          format: date-time
+          description: Israel local time, converted to UTC
+        bags:
+          type: integer
+          description: Ignored if org BagsInputRequired; <= 0 = no bags
+        isCashOrder:
+          type: ["boolean", "null"]
+          description: true only if org cash is enabled
+        customerNotes:
+          type: ["string", "null"]
+        totalAmount:
+          type: ["number", "null"]
+          format: double
+          description: Cash — order price if set
+        deliveryFee:
+          type: ["number", "null"]
+          format: double
+          description: Cash — added on top of total
+        language:
+          type: ["string", "null"]
+          description: Default Hebrew (he)
+
     DaasEnvelope:
       type: object
       properties:
         status:
           type: string
-          description: "success or failure"
         message:
-          type: [string, "null"]
+          type: ["string", "null"]
 
     DaasLoginResponse:
       allOf:
@@ -288,6 +475,14 @@ components:
               properties:
                 token:
                   type: string
+
+    DaasSimpleResponse:
+      allOf:
+        - $ref: "#/components/schemas/DaasEnvelope"
+        - type: object
+          properties:
+            data:
+              type: ["null", object]
 
     DaasBusinessesResponse:
       allOf:
@@ -309,86 +504,9 @@ components:
                       businessName:
                         type: string
                       areaName:
-                        type: [string, "null"]
+                        type: string
 
-    DaasSimpleResponse:
-      allOf:
-        - $ref: "#/components/schemas/DaasEnvelope"
-        - type: object
-          properties:
-            data:
-              type: ["null", object]
-
-    DaasOrderItem:
-      type: object
-      required: [Id, Name, Quantity]
-      properties:
-        Id:
-          type: integer
-        Name:
-          type: string
-        Quantity:
-          type: number
-        Price:
-          type: number
-          format: double
-          description: Required when isCashOrder is true
-
-    DaasOrderRequest:
-      type: object
-      required: [DaaSOrderId, UserDetails, OrderDetails]
-      properties:
-        BusinessId:
-          type: [integer, "null"]
-          description: Omit or leave empty when HAAT maps via posBusinessId
-        posBusinessId:
-          type: string
-        DaaSOrderId:
-          type: string
-        UserDetails:
-          type: object
-          required: [Name, Location, Address, PhoneNumber]
-          properties:
-            Name:
-              type: string
-            Location:
-              type: object
-              required: [Latitude, Longitude]
-              properties:
-                Latitude:
-                  type: number
-                Longitude:
-                  type: number
-            Address:
-              type: object
-              properties:
-                City:
-                  type: string
-                Street:
-                  type: string
-                BuildingNumber:
-                  type: string
-                Notes:
-                  type: string
-            PhoneNumber:
-              type: string
-        OrderDetails:
-          type: object
-          required: [Items]
-          properties:
-            Items:
-              type: array
-              items:
-                $ref: "#/components/schemas/DaasOrderItem"
-        EstimatedPickupTime:
-          type: string
-          format: date-time
-        Bags:
-          type: integer
-        isCashOrder:
-          type: boolean
-
-    DaasOrderActionResponse:
+    DaasOrderResponse:
       allOf:
         - $ref: "#/components/schemas/DaasEnvelope"
         - type: object
@@ -397,31 +515,8 @@ components:
               type: object
               properties:
                 haatOrderId:
-                  type: [integer, "null"]
+                  type: integer
                 estimatedPickupTime:
-                  type: [string, "null"]
+                  type: string
                 estimatedDeliveryTime:
-                  type: [string, "null"]
-
-    DaasOrderStatusResponse:
-      allOf:
-        - $ref: "#/components/schemas/DaasEnvelope"
-        - type: object
-          properties:
-            data:
-              type: object
-              properties:
-                orderDetails:
-                  type: [object, "null"]
-                  description: null if the order does not exist
-                  properties:
-                    orderDate:
-                      type: [string, "null"]
-                    driverAssignmentTime:
-                      type: [string, "null"]
-                    pickupTime:
-                      type: [string, "null"]
-                    deliveryTime:
-                      type: [string, "null"]
-                    bags:
-                      type: [number, "null"]
+                  type: string

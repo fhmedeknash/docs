@@ -1,13 +1,26 @@
 ---
 title: "DaaS setup"
-description: "Login and environments for DaaS partners."
+description: "Login, register (admin), and list businesses for DaaS partners."
 ---
 
 # DaaS setup
 
-## Login
+Base path: `/api/daas`
+
+HAAT provides staging and production DaaS base URLs during onboarding.
+
+## 1. Login
 
 `POST /api/daas/authentication/login`
+
+**Auth:** none
+
+**Body:** `LoginUserDto`
+
+| Param | Type | Required | Description |
+| --- | --- | --- | --- |
+| username | string | required | Org DaaS username |
+| password | string | required | Password (BCrypt) |
 
 ```json
 {
@@ -16,18 +29,52 @@ description: "Login and environments for DaaS partners."
 }
 ```
 
-Response includes a token. Use on all other calls:
+Use the returned token on all other partner calls:
 
 ```http
 Authorization: Bearer <token>
 ```
 
-## Base URL
+## 2. Register business (admin)
 
-HAAT provides staging and production DaaS base URLs during onboarding.
+`POST /api/daas/register/business`
 
-## List businesses
+**Auth:** admin JWT
+
+**Body:** `RegisterBusinessToDaaSRequest`
+
+| Param | Type | Required | Description |
+| --- | --- | --- | --- |
+| businessId | int | required | Haat business to link |
+| daaSOrganizationId | int | required | Target DaaS org |
+
+<Info>
+  Admin-only. Partners do not call this during day-to-day order flow.
+</Info>
+
+## 3. Register organization (admin)
+
+`POST /api/daas/register/organization`
+
+**Auth:** admin JWT
+
+**Body:** `RegisterDaaSOrganizationRequest`
+
+| Param | Type | Required | Description |
+| --- | --- | --- | --- |
+| userName | string | required | Unique; stored lowercase |
+| password | string | required | Hashed with BCrypt |
+
+<Info>
+  Admin-only. Used when onboarding a new DaaS organization.
+</Info>
+
+## 4. List businesses
 
 `GET /api/daas/businesses`
 
-Use returned `businessId` values when updating a business or submitting orders (unless HAAT maps via `posBusinessId` only).
+**Auth:** DaaS org JWT
+
+No params.
+
+Returns businesses linked to the authenticated organization. Use `businessId` on order and update-business calls (unless you use `posBusinessId` mapping).
