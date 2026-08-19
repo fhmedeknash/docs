@@ -28,8 +28,6 @@ sequenceDiagram
 | Method | Path | Auth | Purpose |
 | --- | --- | --- | --- |
 | `POST` | `/api/daas/authentication/login` | none | Get bearer token |
-| `POST` | `/api/daas/register/business` | admin JWT | Link Haat business to DaaS org |
-| `POST` | `/api/daas/register/organization` | admin JWT | Create DaaS org credentials |
 | `GET` | `/api/daas/businesses` | DaaS org JWT | List linked businesses |
 | `PUT` | `/api/daas/{businessId}/update-business` | DaaS org JWT | Update business details |
 | `POST` | `/api/daas/validate-order` | DaaS org JWT | Dry-run estimates (no order) |

@@ -10,8 +10,6 @@ info:
     1. Authenticate with username/password to receive a DaaS org JWT
     2. Call businesses and order endpoints with `Authorization: Bearer <token>`
 
-    Admin endpoints (`/register/*`) require an admin JWT and are used during onboarding only.
-
     `businessId` is required unless `posBusinessId` is set (then `posBusinessId` overrides).
     When `isCashOrder` is `true`, item quantity and price are required for cash pricing.
 servers:
@@ -19,7 +17,6 @@ servers:
     description: Replace with the DaaS environment URL provided during onboarding
 tags:
   - name: Authentication
-  - name: Admin
   - name: Businesses
   - name: Orders
 
@@ -49,50 +46,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DaasLoginResponse"
-
-  /api/daas/register/business:
-    post:
-      tags: [Admin]
-      operationId: daasRegisterBusiness
-      summary: Register business to DaaS
-      description: Admin JWT. Links a Haat business to a DaaS organization.
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/RegisterBusinessToDaaSRequest"
-      responses:
-        "200":
-          description: Register result
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DaasSimpleResponse"
-
-  /api/daas/register/organization:
-    post:
-      tags: [Admin]
-      operationId: daasRegisterOrganization
-      summary: Register DaaS organization
-      description: Admin JWT. Creates DaaS org credentials. userName is stored lowercase.
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/RegisterDaaSOrganizationRequest"
-      responses:
-        "200":
-          description: Register result
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DaasSimpleResponse"
 
   /api/daas/businesses:
     get:
@@ -309,28 +262,6 @@ components:
         password:
           type: string
           description: Password (BCrypt)
-
-    RegisterBusinessToDaaSRequest:
-      type: object
-      required: [businessId, daaSOrganizationId]
-      properties:
-        businessId:
-          type: integer
-          description: Haat business to link
-        daaSOrganizationId:
-          type: integer
-          description: Target DaaS org
-
-    RegisterDaaSOrganizationRequest:
-      type: object
-      required: [userName, password]
-      properties:
-        userName:
-          type: string
-          description: Unique; stored lowercase
-        password:
-          type: string
-          description: Hashed with BCrypt
 
     DaaSBusinessLocationRequest:
       type: object

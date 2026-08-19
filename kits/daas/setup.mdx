@@ -1,6 +1,6 @@
 ---
 title: "DaaS setup"
-description: "Login, register (admin), and list businesses for DaaS partners."
+description: "Login and list businesses for DaaS partners."
 ---
 
 # DaaS setup
@@ -35,41 +35,7 @@ Use the returned token on all other partner calls:
 Authorization: Bearer <token>
 ```
 
-## 2. Register business (admin)
-
-`POST /api/daas/register/business`
-
-**Auth:** admin JWT
-
-**Body:** `RegisterBusinessToDaaSRequest`
-
-| Param | Type | Required | Description |
-| --- | --- | --- | --- |
-| businessId | int | required | Haat business to link |
-| daaSOrganizationId | int | required | Target DaaS org |
-
-<Info>
-  Admin-only. Partners do not call this during day-to-day order flow.
-</Info>
-
-## 3. Register organization (admin)
-
-`POST /api/daas/register/organization`
-
-**Auth:** admin JWT
-
-**Body:** `RegisterDaaSOrganizationRequest`
-
-| Param | Type | Required | Description |
-| --- | --- | --- | --- |
-| userName | string | required | Unique; stored lowercase |
-| password | string | required | Hashed with BCrypt |
-
-<Info>
-  Admin-only. Used when onboarding a new DaaS organization.
-</Info>
-
-## 4. List businesses
+## 2. List businesses
 
 `GET /api/daas/businesses`
 
