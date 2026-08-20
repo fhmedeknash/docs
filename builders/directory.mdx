@@ -1,0 +1,68 @@
+---
+title: "POS directory"
+description: "Look up a POS name and see what it can change on the menu."
+---
+
+# POS directory
+
+Use this when you open a business and think: *what will this POS actually do to my menu?*
+
+## Restaurants
+
+| POS | Can it build the HAAT menu? | What it can change | Who starts it | Code you must get right |
+| --- | --- | --- | --- | --- |
+| Tabit | **Yes** (first time) | Full menu + hide / stock | They send it | PosId (filled automatically) |
+| McDonald's | **Yes** | Full menu + stock | They send it | PosId (filled automatically) |
+| BeecommCloud | No | Nothing on our menu. Refreshes *their* item list | We pull | PosId (you fill it) |
+| LeenCopot | No | Nothing on our menu. Refreshes *their* item list | We pull | PosId (you fill it) |
+| KubeGet, Kaman | They copy **our** menu | — | They pull | They match on their side |
+| Beecomm, PayPo, NetLunch, Elpos, PizzaHut, Presto, Beteavon, Iron | No | Nothing. Orders only | — | PosId (you fill it) |
+| Aviv (as restaurant) | No | Nothing. Orders only | — | PosId (you fill it) |
+
+## Markets
+
+| POS | Can it add new products? | What it can change | Who starts it | Code you must get right |
+| --- | --- | --- | --- | --- |
+| Comax | **Yes** | Products + deals | They send products. We pull deals | Barcode or product code. Deals = product code |
+| All4Shops | **No** | Price, availability, barcodes, deals | They send prices. We pull the rest | Product code |
+| Aviv | Updates what exists | Products, prices, deals | We download files | Barcode for products. Product code for deals |
+| Barak | Updates what exists | Products + deals | We download files | Product code (`ItemCode`) |
+
+## Words in the table
+
+| Word | Meaning |
+| --- | --- |
+| **They send it** | The partner starts the update. |
+| **We pull** | Our system goes and gets their data on a schedule. |
+| **File (FTP)** | Not live. Aviv and Barak send CSV files. Prices wait until the next run. |
+| **PosId** | Their restaurant item number, saved on our item. |
+| **Barcode / product code** | Copied from their market file. Must match exactly. |
+
+## Special notes
+
+- **Aviv** works as a **market** (files for products and deals) **and** as a **restaurant** (you map PosId, orders only).
+- **Barak** is set up a bit differently in HAAT than Comax / All4Shops. The builder job is still: match `ItemCode`.
+- **Unknown** is an empty placeholder. It is not a real POS.
+- **MarketPrice** is internal HAAT. Do not describe it to partners.
+
+## If something looks wrong
+
+### Restaurant
+
+| What you see | What to do |
+| --- | --- |
+| The kitchen ticket has the wrong items | Check **PosId** on each item — the name can look right while the number is wrong |
+| A new dish never appears | Only **Tabit** and **McDonald's** can create meals. For other POS types, you add it in HAAT and map PosId |
+| An item disappeared | McDonald's (and some others) can hide items when they are out of stock. Check the POS type before you unhide it |
+
+### Market
+
+| What you see | What to do |
+| --- | --- |
+| The shop gets the wrong product | The **barcode** or **product code** does not match their file. Copy it again, exactly |
+| Prices look old | Aviv / Barak: wait for the next file, or ask for a pull. Comax / All4Shops: check the last update they sent |
+| A deal does not work | Deals match on **product code**. Check if there is a **mismatch email** |
+| An All4Shops row never updates | Open the **mismatch email** and fix the product code |
+| The order was sent to the partner app, but it does not appear on the POS | Check the **picker app**. The order may be sitting there instead of on the POS |
+
+More detail: [Restaurant builders](/builders/restaurants) · [Market builders](/builders/markets)
