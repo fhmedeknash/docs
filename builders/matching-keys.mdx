@@ -15,17 +15,18 @@ How we do that is different for restaurants and markets.
 
 Think of **PosId** as “their item number,” saved next to our item in HAAT.
 
-You (or the first menu sync) fill this in for:
+**Every item that can be ordered has a PosId:**
 
-- Meals
-- Deals
-- Toppings
-- Groups
+- Meal
+- Deal
+- Ingredient
+
+You (or the first menu sync) fill this in.
 
 When a customer orders, HAAT **changes our numbers into their numbers**, then sends the order.
 
 <Warning>
-  If a meal is live on HAAT with **no PosId**, the customer can buy it, and the kitchen will not know what it is. Map everything that can be ordered — including toppings.
+  If an item is live on HAAT with **no PosId**, the customer can buy it, and the kitchen will not know what it is. Map every meal, deal, and ingredient.
 </Warning>
 
 ### Who fills in PosId?
@@ -59,7 +60,7 @@ Copy the value **exactly** from their file. Do not drop a zero. Do not add a spa
 
 <Check>The business has a POS certificate (it is really connected).</Check>
 <Check>You have their item list with **numbers**, not only names or a photo.</Check>
-<Check>Restaurants: every item that can be ordered has a PosId.</Check>
+<Check>Restaurants: every item that can be ordered has a PosId — meal, deal, and ingredient.</Check>
 <Check>Markets: barcode and product code match the file character by character.</Check>
 <Check>You placed a **test order** and the shop screen shows the same items.</Check>
 <Check>When they change items later, you update HAAT the same day.</Check>
