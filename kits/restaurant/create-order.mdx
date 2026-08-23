@@ -1,77 +1,74 @@
 ---
-title: "Create order"
-description: "Orders HAAT sends into the restaurant POS."
+title: "Create order in POS"
+description: "HAAT sends a new customer order to your POS in real time."
+api: "POST https://pos.example.com/api/orders"
 ---
 
-# Create order
+Reply with your `posOrderId`. The same `Idempotency-Key` must not create a second order.
 
-`POST /api/orders`
+**Example:**
 
-## Headers
-
-```http
-Authorization: Bearer REPLACE_ME
-Content-Type: application/json
+<pre class="redoc-example"><code>Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 X-Haat-Version: 1.0
-Idempotency-Key: 7dda287d-21de-4159-a058-e60618e9b786
+Idempotency-Key: 7dda287d-21de-4159-a058-e60618e9b786</code></pre>
+
+<div class="redoc-schema-label">REQUEST BODY SCHEMA: <strong>application/json</strong></div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>orderId</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>HAAT order id.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>businessId</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>HAAT business id.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>customer</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object</div><p><code>name</code> and <code>phone</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>items</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Each line has <code>id</code> (PosId), <code>quantity</code>, and <code>price</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>payments</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>How the customer paid.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>payRestaurant</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Amount the restaurant should receive.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>deliveryType</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>For example <code>delivery</code>.</p></div>
+  </div>
+</div>
+
+## Responses
+
+<details class="redoc-response" open>
+  <summary><span class="redoc-code">200</span> Order accepted</summary>
+  <div class="redoc-response-body">Return <code>status</code>, <code>message</code>, and <code>posOrderId</code>.</div>
+</details>
+
+<details class="redoc-response redoc-response-error">
+  <summary><span class="redoc-code">401</span> Invalid or missing authentication token</summary>
+  <div class="redoc-response-body">Check Bearer or <code>X-Signature</code>.</div>
+</details>
+
+<RequestExample>
+```bash cURL
+curl -X POST https://pos.example.com/api/orders \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "X-Haat-Version: 1.0" \
+  -H "Content-Type: application/json" \
+  -d '{"orderId":87452,"businessId":1021,"customer":{"name":"John Cohen","phone":"+972501234567"},"items":[{"id":5012,"quantity":2,"price":32.5}],"payments":[{"paymentType":"credit_card","amount":84.9}],"payRestaurant":84.9,"deliveryType":"delivery"}'
 ```
+</RequestExample>
 
-## Body (main fields)
-
-| Field | Required | Notes |
-| --- | --- | --- |
-| orderId | Yes | HAAT order id |
-| businessId | Yes | Store on HAAT side |
-| customer | Yes | `name`, `phone` |
-| items | Yes | POS item id, qty, price, optional variations |
-| payments | Yes | `credit_card` or `cash` + amount |
-| payRestaurant | Yes | Total to restaurant |
-| deliveryType | Yes | `delivery` or `pickup` |
-| formatCreatedDate | Yes | ISO-8601 UTC |
-| formatDeliveryDate | Yes | ISO-8601 UTC |
-| customerNotes | No | |
-
-## Example request
-
-```json
-{
-  "orderId": 87452,
-  "businessId": 1021,
-  "customer": {
-    "name": "John Cohen",
-    "phone": "+972501234567"
-  },
-  "items": [
-    {
-      "id": 5012,
-      "quantity": 2,
-      "price": 32.5,
-      "variations": [
-        { "id": 9001, "quantity": 1, "price": 0.0 }
-      ]
-    }
-  ],
-  "payments": [
-    { "paymentType": "credit_card", "amount": 84.9 }
-  ],
-  "payRestaurant": 84.9,
-  "deliveryType": "delivery",
-  "customerNotes": "Please remove onions from one burger.",
-  "formatCreatedDate": "2025-10-05T12:45:00Z",
-  "formatDeliveryDate": "2025-10-05T13:20:00Z"
-}
+<ResponseExample>
+```json 200
+{"status":"success","message":"Order accepted","posOrderId":"ORD-78456"}
 ```
-
-## Example response
-
-```json
-{
-  "status": "success",
-  "message": "Order accepted",
-  "posOrderId": "ORD-78456"
-}
-```
-
-<Warning>
-  Same `Idempotency-Key` must return the same accepted order — do not create duplicates.
-</Warning>
+</ResponseExample>

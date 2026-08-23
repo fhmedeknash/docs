@@ -7,28 +7,27 @@ description: "When to use the Market partner kit."
 
 Use this kit for **grocery / market** partners (barcodes, weighable items, promotions).
 
+Each endpoint page in the sidebar shows **headers, body fields, and example responses** on the right.
+
 ## Who does what
 
 | Direction | Who hosts | Purpose |
 | --- | --- | --- |
-| External API | Partner POS | HAAT reads menu & promotions, submits orders |
-| Advanced API | HAAT | Partner syncs price & availability |
+| Catalog + Orders | Partner POS | HAAT reads menu and promotions, then submits orders |
+| Sync to HAAT | HAAT | Partner logs in and pushes price and availability |
 
-## Advanced API environments
+## How to read an endpoint
 
-The following API is already available from HAAT and can be used by the POS for authentication and product synchronization.
+1. Open the page in the left menu (for example **Build menu**).
+2. Read the required headers and fields in the middle.
+3. Use the sample request and `200` / error responses on the right.
 
-| Environment | Base URL |
-| --- | --- |
-| Staging | `http://ext-integration.haat-delivery.io` |
-| Production | `https://integration.internal.haat.delivery` |
+## Start here
 
-## Pages in this kit
-
-1. [Setup](/kits/market/setup) — tokens and environments  
-2. [Menu and promotions](/kits/market/menu-and-promotions) — catalog HAAT pulls  
-3. [Submit order](/kits/market/submit-order) — orders HAAT sends to POS  
-4. [Sync to HAAT](/kits/market/sync-to-haat) — price/availability partner pushes  
+1. [Setup](/kits/market/setup) — tokens and environments
+2. **Catalog** — `GET /api/menu/build`, `GET /api/promotions`
+3. **Orders** — `POST /api/submit-order`
+4. **Sync to HAAT** — login, then `PATCH /api/external/products`
 5. [Checklist](/kits/market/checklist) — go-live
 
 <Info>

@@ -1,0 +1,55 @@
+---
+title: "Update order status"
+description: "Start prepare or cancel an order."
+api: "PUT http://ext-integration.haat-delivery.io/api/pos/business/{businessId}/order-status"
+---
+
+`status` `1` = Start Prepare. `status` `2` = Cancel.
+
+**Example:**
+
+<pre class="redoc-example"><code>X-Api-Key: YOUR_API_KEY</code></pre>
+
+<div class="redoc-schema-label">REQUEST BODY SCHEMA: <strong>application/json</strong></div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>orderId</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>HAAT order id.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>status</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p><code>1</code> start prepare, <code>2</code> cancel.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>estimationMinutes</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Required for start prepare. Use a value from Get prepare time options.</p></div>
+  </div>
+</div>
+
+## Responses
+
+<details class="redoc-response" open>
+  <summary><span class="redoc-code">200</span> Success or queued</summary>
+  <div class="redoc-response-body">If <code>status</code> is <code>Pending</code>, poll Get request status.</div>
+</details>
+
+<details class="redoc-response redoc-response-error">
+  <summary><span class="redoc-code">400</span> Validation failed</summary>
+  <div class="redoc-response-body">Start prepare without <code>estimationMinutes</code> fails.</div>
+</details>
+
+<RequestExample>
+```bash cURL
+curl -X PUT http://ext-integration.haat-delivery.io/api/pos/business/1021/order-status \
+  -H "X-Api-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"orderId":98765,"status":1,"estimationMinutes":20}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{"requestId":"6651a3f2e1b2c3d4e5f60001","status":"Success","message":"Updated successfully"}
+```
+</ResponseExample>

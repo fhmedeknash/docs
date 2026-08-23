@@ -1,0 +1,44 @@
+---
+title: "Get request status"
+description: "Poll a write that returned Pending."
+api: "GET http://ext-integration.haat-delivery.io/api/pos/business/{businessId}/sync-status/{requestId}"
+---
+
+When a PUT returns `"Pending"`, call this until `"Success"` or `"Failed"`.
+
+**Example:**
+
+<pre class="redoc-example"><code>X-Api-Key: YOUR_API_KEY</code></pre>
+
+<div class="redoc-schema-label">PATH SCHEMA</div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>businessId</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>From List businesses.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>requestId</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Tracking id from the original PUT response.</p></div>
+  </div>
+</div>
+
+## Responses
+
+<details class="redoc-response" open>
+  <summary><span class="redoc-code">200</span> Current request status</summary>
+  <div class="redoc-response-body"><code>status</code> is <code>Success</code>, <code>Pending</code>, or <code>Failed</code>.</div>
+</details>
+
+<RequestExample>
+```bash cURL
+curl http://ext-integration.haat-delivery.io/api/pos/business/1021/sync-status/6651a3f2e1b2c3d4e5f60001 \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{"requestId":"6651a3f2e1b2c3d4e5f60001","status":"Success","message":null}
+```
+</ResponseExample>

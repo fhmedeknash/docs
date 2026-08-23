@@ -1,0 +1,54 @@
+---
+title: "Update business"
+description: "Update details for a DaaS business you own."
+api: "PUT https://external-partners.example.haat.delivery/api/daas/{businessId}/update-business"
+---
+
+`businessId` must belong to the current org.
+
+**Example:**
+
+<pre class="redoc-example"><code>Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code></pre>
+
+<div class="redoc-schema-label">REQUEST BODY SCHEMA: <strong>application/json</strong></div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>businessName</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Hebrew name. Required in practice.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>location</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object</div><p><code>latitude</code> and <code>longitude</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>phoneNumber</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Must be <code>+972</code> plus 8–9 digits.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>email</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Finance email.</p></div>
+  </div>
+</div>
+
+## Responses
+
+<details class="redoc-response" open>
+  <summary><span class="redoc-code">200</span> Update result</summary>
+  <div class="redoc-response-body"><code>status</code> is <code>success</code> when the update is saved.</div>
+</details>
+
+<RequestExample>
+```bash cURL
+curl -X PUT https://external-partners.example.haat.delivery/api/daas/180/update-business \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"businessName":"bakery","location":{"latitude":32.51,"longitude":35.51},"phoneNumber":"+972542182747"}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{"status":"success","message":null,"data":null}
+```
+</ResponseExample>

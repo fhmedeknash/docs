@@ -1,0 +1,37 @@
+---
+title: "Validate order"
+description: "Dry-run a delivery order. Does not create an order."
+api: "POST https://external-partners.example.haat.delivery/api/daas/validate-order"
+---
+
+Same body as [Submit order](/kits/daas/submit-order). Returns pickup and delivery estimates only.
+
+**Example:**
+
+<pre class="redoc-example"><code>Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code></pre>
+
+<div class="redoc-schema-label">REQUEST BODY SCHEMA: <strong>application/json</strong></div>
+
+<p>Use the same fields as Submit order (<code>userDetails</code>, <code>estimatedPickupTime</code>, and the rest).</p>
+
+## Responses
+
+<details class="redoc-response" open>
+  <summary><span class="redoc-code">200</span> Validation result</summary>
+  <div class="redoc-response-body">Estimates only. No <code>haatOrderId</code> is created.</div>
+</details>
+
+<RequestExample>
+```bash cURL
+curl -X POST https://external-partners.example.haat.delivery/api/daas/validate-order \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"businessId":180,"daaSOrderId":"DAAS-1","userDetails":{"name":"John Doe","phoneNumber":"+972544774783","location":{"latitude":32.522,"longitude":35.148},"address":{"city":"Umm El Fahem"}},"estimatedPickupTime":"2025-09-09T23:45:00"}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{"status":"success","data":{"estimatedPickupTime":"09-09-2025 23:56:19","estimatedDeliveryTime":"10-09-2025 00:16:19"}}
+```
+</ResponseExample>

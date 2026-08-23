@@ -1,0 +1,40 @@
+---
+title: "Order status"
+description: "Get the status of a DaaS delivery order."
+api: "GET https://external-partners.example.haat.delivery/api/daas/orders/{orderId}/status"
+---
+
+`data.orderDetails` is `null` if the order does not exist.
+
+**Example:**
+
+<pre class="redoc-example"><code>Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code></pre>
+
+<div class="redoc-schema-label">PATH SCHEMA</div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>orderId</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>HAAT order id from Submit order.</p></div>
+  </div>
+</div>
+
+## Responses
+
+<details class="redoc-response" open>
+  <summary><span class="redoc-code">200</span> Status result</summary>
+  <div class="redoc-response-body">Includes <code>orderDate</code>, <code>pickupTime</code>, <code>deliveryTime</code>, and <code>bags</code>.</div>
+</details>
+
+<RequestExample>
+```bash cURL
+curl https://external-partners.example.haat.delivery/api/daas/orders/5887966/status \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{"status":"success","data":{"orderDetails":{"orderDate":"2025-09-09T23:45:00","pickupTime":"2025-09-10T00:05:00","deliveryTime":null,"bags":2}}}
+```
+</ResponseExample>

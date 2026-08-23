@@ -1,0 +1,98 @@
+---
+title: "Login"
+description: "Get a DaaS org access token."
+api: "POST https://external-partners.example.haat.delivery/api/daas/authentication/login"
+---
+
+**Rate Limiting:** If you send too many requests in a short time, you will receive a <span class="status-429">429 Too Many Requests</span> response.
+
+**Example:**
+
+<pre class="redoc-example"><code>Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code></pre>
+
+This login call itself does not need that header. Send the returned token on every other DaaS call.
+
+<div class="redoc-schema-label">REQUEST BODY SCHEMA: <strong>application/json</strong></div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name">
+      <code>username</code>
+      <span class="redoc-required">required</span>
+    </div>
+    <div class="redoc-field-meta">
+      <div class="redoc-type">string</div>
+      <p>Org DaaS username from onboarding.</p>
+    </div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name">
+      <code>password</code>
+      <span class="redoc-required">required</span>
+    </div>
+    <div class="redoc-field-meta">
+      <div class="redoc-type">string</div>
+      <p>Password from onboarding.</p>
+    </div>
+  </div>
+</div>
+
+## Responses
+
+<details class="redoc-response" open>
+  <summary><span class="redoc-code">200</span> Successfully retrieved access token</summary>
+  <div class="redoc-response-body">
+    Returns <code>data.token</code>. Use it as <code>Authorization: Bearer &lt;token&gt;</code> on the next calls.
+  </div>
+</details>
+
+<details class="redoc-response redoc-response-error">
+  <summary><span class="redoc-code">401</span> Invalid username or password</summary>
+  <div class="redoc-response-body">
+    Wrong credentials. Check the values from onboarding.
+  </div>
+</details>
+
+<details class="redoc-response redoc-response-error">
+  <summary><span class="redoc-code">429</span> Too Many Requests</summary>
+  <div class="redoc-response-body">
+    You sent too many login calls. Wait and retry.
+  </div>
+</details>
+
+<RequestExample>
+```bash cURL
+curl -X POST https://external-partners.example.haat.delivery/api/daas/authentication/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"username","password":"password!@123"}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "Bearer",
+  "expires_in": 7200,
+  "status": "success",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
+}
+```
+
+```json 401
+{
+  "status": "failed",
+  "message": "Invalid username or password",
+  "data": null
+}
+```
+
+```json 429
+{
+  "status": "failed",
+  "message": "Too Many Requests"
+}
+```
+</ResponseExample>

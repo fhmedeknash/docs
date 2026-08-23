@@ -1,0 +1,79 @@
+---
+title: "Login"
+description: "Get a bearer token for Market sync to HAAT."
+api: "POST http://ext-integration.haat-delivery.io/api/auth/login"
+---
+
+**Rate Limiting:** If you send too many requests in a short time, you will receive a <span class="status-429">429 Too Many Requests</span> response.
+
+**Example:**
+
+<pre class="redoc-example"><code>Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code></pre>
+
+This login call itself does not need that header. Send the returned token on **Sync products**.
+
+<div class="redoc-schema-label">REQUEST BODY SCHEMA: <strong>application/json</strong></div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name">
+      <code>username</code>
+      <span class="redoc-required">required</span>
+    </div>
+    <div class="redoc-field-meta">
+      <div class="redoc-type">string</div>
+      <p>POS username from HAAT onboarding.</p>
+    </div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name">
+      <code>password</code>
+      <span class="redoc-required">required</span>
+    </div>
+    <div class="redoc-field-meta">
+      <div class="redoc-type">string</div>
+      <p>Password from HAAT onboarding.</p>
+    </div>
+  </div>
+</div>
+
+## Responses
+
+<details class="redoc-response" open>
+  <summary><span class="redoc-code">200</span> Successfully retrieved access token</summary>
+  <div class="redoc-response-body">
+    Returns <code>token</code>. Use it as <code>Authorization: Bearer &lt;token&gt;</code> on sync calls.
+  </div>
+</details>
+
+<details class="redoc-response redoc-response-error">
+  <summary><span class="redoc-code">401</span> Invalid username or password</summary>
+  <div class="redoc-response-body">
+    Wrong credentials. Check staging values first.
+  </div>
+</details>
+
+<RequestExample>
+```bash cURL
+curl -X POST http://ext-integration.haat-delivery.io/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"pos.test","password":"your-password"}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "Bearer",
+  "name": "Test POS",
+  "imagesServer": "https://im-staging.haat.delivery"
+}
+```
+
+```json 401
+{
+  "message": "Invalid username or password"
+}
+```
+</ResponseExample>

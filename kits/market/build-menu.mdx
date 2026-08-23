@@ -1,0 +1,78 @@
+---
+title: "Build menu"
+description: "Return the full market catalog so HAAT can build the store menu."
+api: "GET https://pos.example.com/api/menu/build"
+---
+
+HAAT calls **your** POS. Unit values: `1` = Countable, `2` = Weighable KG, `3` = Weighable Quantity.
+
+**Rate Limiting:** If you send too many requests in a short time, you will receive a <span class="status-429">429 Too Many Requests</span> response.
+
+**Example:**
+
+<pre class="redoc-example"><code>integrator-token: YOUR_INTEGRATOR_TOKEN
+organization-token: YOUR_ORGANIZATION_TOKEN</code></pre>
+
+<div class="redoc-schema-label">HEADER SCHEMA</div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>integrator-token</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Shared across all HAAT markets for this integrator.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>organization-token</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Identifies the specific market / store.</p></div>
+  </div>
+</div>
+
+<div class="redoc-schema-label">RESPONSE BODY SCHEMA: <strong>application/json</strong></div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>ProductID</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Unique POS id. Keep it stable.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>Price</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Number, for example <code>12.5</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>Barcode</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Product barcode.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>ImageURL</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Public image URL.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>Unit</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p><code>1</code> Countable, <code>2</code> Weighable KG, <code>3</code> Weighable Quantity.</p></div>
+  </div>
+</div>
+
+## Responses
+
+<details class="redoc-response" open>
+  <summary><span class="redoc-code">200</span> Menu products for the market</summary>
+  <div class="redoc-response-body">Array of products with the fields above.</div>
+</details>
+
+<details class="redoc-response redoc-response-error">
+  <summary><span class="redoc-code">401</span> Missing or invalid tokens</summary>
+  <div class="redoc-response-body">Reject the request if either token is missing or wrong.</div>
+</details>
+
+<RequestExample>
+```bash cURL
+curl https://pos.example.com/api/menu/build \
+  -H "integrator-token: YOUR_INTEGRATOR_TOKEN" \
+  -H "organization-token: YOUR_ORGANIZATION_TOKEN"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+[{"ProductID":76868,"ProdNameEn":"Potato","Price":12.5,"Barcode":"7893dah97","ImageURL":"https://cdn.example.com/potato.jpg","Unit":2}]
+```
+</ResponseExample>

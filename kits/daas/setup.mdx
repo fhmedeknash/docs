@@ -9,38 +9,13 @@ Base path: `/api/daas`
 
 HAAT provides staging and production DaaS base URLs during onboarding.
 
-## 1. Login
+## Credentials
 
-`POST /api/daas/authentication/login`
+| You get | Used for |
+| --- | --- |
+| Username / password | **Login** — then use the returned token |
+| Bearer token | All other DaaS calls: `Authorization: Bearer <token>` |
 
-**Auth:** none
+Open **Login** in the left menu for the request body and the sample `200` response.
 
-**Body:** `LoginUserDto`
-
-| Param | Type | Required | Description |
-| --- | --- | --- | --- |
-| username | string | required | Org DaaS username |
-| password | string | required | Password (BCrypt) |
-
-```json
-{
-  "username": "username",
-  "password": "••••••••"
-}
-```
-
-Use the returned token on all other partner calls:
-
-```http
-Authorization: Bearer <token>
-```
-
-## 2. List businesses
-
-`GET /api/daas/businesses`
-
-**Auth:** DaaS org JWT
-
-No params.
-
-Returns businesses linked to the authenticated organization. Use `businessId` on order and update-business calls (unless you use `posBusinessId` mapping).
+After login, open **List businesses** to get `businessId` values for orders (unless you use `posBusinessId` mapping).

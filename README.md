@@ -4,7 +4,8 @@ Partner kits for Market, Restaurant, Advanced API, and DaaS.
 
 **Owned by:** Integration department  
 **Edit in:** [Mintlify Web Editor](https://app.mintlify.com/editor) (no Git required)  
-**Live site:** https://haat.mintlify.app
+**Live site (partners):** https://haat.mintlify.app  
+**Internal builders site:** `internal/` → https://haat-internal.mintlify.app (separate Mintlify deployment, keep Private)
 
 ## For Integration (day-to-day)
 
@@ -19,6 +20,7 @@ Full instructions: page **How we edit these docs** (`partner-guide.mdx`) on the 
 | Kit | Folder |
 | --- | --- |
 | Home | `introduction.mdx`, `partner-guide.mdx` |
+| Menu builders (internal, separate site) | `internal/` |
 | Market | `kits/market/` |
 | Restaurant | `kits/restaurant/` |
 | Advanced API | `kits/advanced-api/` |
@@ -33,6 +35,6 @@ npm run dev
 
 ## For R&D only
 
-OpenAPI specs under `openapi/` are reference material. Integration maintains the kit MDX pages as the partner-facing source of truth.
+OpenAPI specs under `openapi/` drive the endpoint pages (headers, fields, and sample responses). Overview, setup, and checklist pages stay in `kits/`.
 
 Legacy overview pages under `market-pos/`, `restaurant-pos/`, `advanced-api/`, `daas/`, and `guides/` are **not** in the main navigation anymore.

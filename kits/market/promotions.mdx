@@ -1,0 +1,76 @@
+---
+title: "Get promotions"
+description: "Return current and upcoming market promotions."
+api: "GET https://pos.example.com/api/promotions"
+---
+
+HAAT calls **your** POS.
+
+**Example:**
+
+<pre class="redoc-example"><code>integrator-token: YOUR_INTEGRATOR_TOKEN
+organization-token: YOUR_ORGANIZATION_TOKEN</code></pre>
+
+<div class="redoc-schema-label">HEADER SCHEMA</div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>integrator-token</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Shared across all HAAT markets for this integrator.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>organization-token</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Identifies the specific market / store.</p></div>
+  </div>
+</div>
+
+<div class="redoc-schema-label">RESPONSE BODY SCHEMA: <strong>application/json</strong></div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>Code</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Promotion id.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>Qty</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Quantity in the deal. Example: 3 Cola bottles.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>Price</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Deal price. Example: 10.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>Products</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Product codes in the deal, for example <code>1322666</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>IsActive</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p><code>1</code> = active.</p></div>
+  </div>
+</div>
+
+## Responses
+
+<details class="redoc-response" open>
+  <summary><span class="redoc-code">200</span> List of promotions</summary>
+  <div class="redoc-response-body">Include current and upcoming promotions.</div>
+</details>
+
+<details class="redoc-response redoc-response-error">
+  <summary><span class="redoc-code">401</span> Missing or invalid tokens</summary>
+  <div class="redoc-response-body">Reject the request if either token is missing or wrong.</div>
+</details>
+
+<RequestExample>
+```bash cURL
+curl https://pos.example.com/api/promotions \
+  -H "integrator-token: YOUR_INTEGRATOR_TOKEN" \
+  -H "organization-token: YOUR_ORGANIZATION_TOKEN"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+[{"Code":1001,"Name":"3 Cola for 10","IsActive":1,"Qty":3,"Price":10,"Products":"1322666"}]
+```
+</ResponseExample>

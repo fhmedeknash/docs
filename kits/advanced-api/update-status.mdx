@@ -1,0 +1,51 @@
+---
+title: "Update business status"
+description: "Open or close a business."
+api: "PUT http://ext-integration.haat-delivery.io/api/pos/business/{businessId}/status"
+---
+
+`status` `0` = Online (open). `status` `1` = Offline (closed). When closing, `closeExpirationDate` is required.
+
+**Example:**
+
+<pre class="redoc-example"><code>X-Api-Key: YOUR_API_KEY</code></pre>
+
+<div class="redoc-schema-label">REQUEST BODY SCHEMA: <strong>application/json</strong></div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>status</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p><code>0</code> open, <code>1</code> closed.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>closeExpirationDate</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Required when closing. Example: <code>2026-07-01T23:59:59</code>.</p></div>
+  </div>
+</div>
+
+## Responses
+
+<details class="redoc-response" open>
+  <summary><span class="redoc-code">200</span> Success or queued</summary>
+  <div class="redoc-response-body">If <code>status</code> is <code>Pending</code>, poll Get request status.</div>
+</details>
+
+<details class="redoc-response redoc-response-error">
+  <summary><span class="redoc-code">400</span> Validation failed</summary>
+  <div class="redoc-response-body">Closing without <code>closeExpirationDate</code> fails.</div>
+</details>
+
+<RequestExample>
+```bash cURL
+curl -X PUT http://ext-integration.haat-delivery.io/api/pos/business/1021/status \
+  -H "X-Api-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"status":0}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{"requestId":"6651a3f2e1b2c3d4e5f60001","status":"Success","message":"Updated successfully"}
+```
+</ResponseExample>

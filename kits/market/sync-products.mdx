@@ -1,0 +1,61 @@
+---
+title: "Sync products"
+description: "Push price and availability from the market POS into HAAT."
+api: "PATCH http://ext-integration.haat-delivery.io/api/external/products"
+---
+
+Call this after [Login](/kits/market/login). Full list once a day, plus a smaller list about every 2 hours.
+
+**Example:**
+
+<pre class="redoc-example"><code>Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code></pre>
+
+<div class="redoc-schema-label">REQUEST BODY SCHEMA: <strong>application/json</strong></div>
+
+<p>Send an <strong>array</strong> of products.</p>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>productCode</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Barcode or SKU.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>isAvailable</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">boolean</div><p><code>true</code> if the product can be sold.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>price</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Regular price.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>discountPrice</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Same as <code>price</code> when there is no discount.</p></div>
+  </div>
+</div>
+
+## Responses
+
+<details class="redoc-response" open>
+  <summary><span class="redoc-code">200</span> Products updated</summary>
+  <div class="redoc-response-body">HAAT confirms which product codes were updated.</div>
+</details>
+
+<details class="redoc-response redoc-response-error">
+  <summary><span class="redoc-code">401</span> Missing or invalid token</summary>
+  <div class="redoc-response-body">Login again and retry with a fresh bearer token.</div>
+</details>
+
+<RequestExample>
+```bash cURL
+curl -X PATCH http://ext-integration.haat-delivery.io/api/external/products \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '[{"productCode":"346960","isAvailable":true,"price":16,"discountPrice":16}]'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+"products updated successfully"
+```
+</ResponseExample>

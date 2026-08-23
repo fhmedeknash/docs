@@ -1,0 +1,45 @@
+---
+title: "List businesses"
+description: "Businesses linked to the authenticated DaaS organization."
+api: "GET https://external-partners.example.haat.delivery/api/daas/businesses"
+---
+
+Call this after [Login](/kits/daas/login).
+
+**Example:**
+
+<pre class="redoc-example"><code>Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code></pre>
+
+<div class="redoc-schema-label">HEADER SCHEMA</div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>Authorization</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>DaaS org JWT from Login.</p></div>
+  </div>
+</div>
+
+## Responses
+
+<details class="redoc-response" open>
+  <summary><span class="redoc-code">200</span> Businesses for the operator</summary>
+  <div class="redoc-response-body">No query params. Returns the businesses for this org.</div>
+</details>
+
+<details class="redoc-response redoc-response-error">
+  <summary><span class="redoc-code">401</span> Missing or invalid token</summary>
+  <div class="redoc-response-body">Login again and retry.</div>
+</details>
+
+<RequestExample>
+```bash cURL
+curl https://external-partners.example.haat.delivery/api/daas/businesses \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{"status":"success","data":[{"businessId":180,"businessName":"saja's bakery"}]}
+```
+</ResponseExample>

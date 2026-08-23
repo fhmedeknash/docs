@@ -1,0 +1,62 @@
+---
+title: "Submit order"
+description: "Create a delivery order in HAAT."
+api: "POST https://external-partners.example.haat.delivery/api/daas/submit-order"
+---
+
+`businessId` is required unless `posBusinessId` is set. When `isCashOrder` is `true`, item quantity and price are required.
+
+**Example:**
+
+<pre class="redoc-example"><code>Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code></pre>
+
+<div class="redoc-schema-label">REQUEST BODY SCHEMA: <strong>application/json</strong></div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>businessId</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Required unless <code>posBusinessId</code> is set.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>daaSOrderId</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Your order id.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>userDetails</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object</div><p><code>phoneNumber</code>, <code>location</code> (<code>latitude</code>/<code>longitude</code>), and <code>address</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>estimatedPickupTime</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Israel local time, converted to UTC.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>isCashOrder</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">boolean</div><p><code>true</code> only if cash is enabled for the org.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>language</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string <span class="redoc-default">Default: <code>he</code></span></div><p>Default Hebrew.</p></div>
+  </div>
+</div>
+
+## Responses
+
+<details class="redoc-response" open>
+  <summary><span class="redoc-code">200</span> Order submitted</summary>
+  <div class="redoc-response-body">Returns <code>data.haatOrderId</code> for status and cancel.</div>
+</details>
+
+<RequestExample>
+```bash cURL
+curl -X POST https://external-partners.example.haat.delivery/api/daas/submit-order \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"businessId":180,"daaSOrderId":"DAAS-987654321","userDetails":{"name":"John Doe","phoneNumber":"+972544774783","location":{"latitude":32.522,"longitude":35.148},"address":{"city":"Umm El Fahem"}},"estimatedPickupTime":"2025-09-09T23:45:00"}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{"status":"success","data":{"haatOrderId":5887966,"estimatedPickupTime":"09-09-2025 23:56:19"}}
+```
+</ResponseExample>

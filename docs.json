@@ -38,6 +38,15 @@
       }
     }
   },
+  "api": {
+    "playground": {
+      "display": "interactive"
+    },
+    "examples": {
+      "languages": ["curl", "javascript", "python"],
+      "defaults": "required"
+    }
+  },
   "navigation": {
     "tabs": [
       {
@@ -53,34 +62,39 @@
         ]
       },
       {
-        "tab": "Builders",
-        "icon": "clipboard-list",
-        "groups": [
-          {
-            "group": "POS for Content",
-            "pages": [
-              "builders/overview",
-              "builders/matching-keys",
-              "builders/restaurants",
-              "builders/markets",
-              "builders/directory",
-              "builders/process"
-            ]
-          }
-        ]
-      },
-      {
         "tab": "Market",
         "icon": "store",
         "groups": [
           {
-            "group": "Market partner kit",
+            "group": "Start here",
             "pages": [
               "kits/market/overview",
-              "kits/market/setup",
-              "kits/market/menu-and-promotions",
-              "kits/market/submit-order",
-              "kits/market/sync-to-haat",
+              "kits/market/setup"
+            ]
+          },
+          {
+            "group": "Catalog",
+            "pages": [
+              "kits/market/build-menu",
+              "kits/market/promotions"
+            ]
+          },
+          {
+            "group": "Orders",
+            "pages": [
+              "kits/market/submit-order"
+            ]
+          },
+          {
+            "group": "Sync to HAAT",
+            "pages": [
+              "kits/market/login",
+              "kits/market/sync-products"
+            ]
+          },
+          {
+            "group": "Go-live",
+            "pages": [
               "kits/market/checklist"
             ]
           }
@@ -91,12 +105,27 @@
         "icon": "utensils",
         "groups": [
           {
-            "group": "Restaurant partner kit",
+            "group": "Start here",
             "pages": [
               "kits/restaurant/overview",
-              "kits/restaurant/setup",
-              "kits/restaurant/menu-sync",
-              "kits/restaurant/create-order",
+              "kits/restaurant/setup"
+            ]
+          },
+          {
+            "group": "Menu",
+            "pages": [
+              "kits/restaurant/get-menu"
+            ]
+          },
+          {
+            "group": "Orders",
+            "pages": [
+              "kits/restaurant/create-order"
+            ]
+          },
+          {
+            "group": "Go-live",
+            "pages": [
               "kits/restaurant/checklist"
             ]
           }
@@ -107,12 +136,37 @@
         "icon": "plug",
         "groups": [
           {
-            "group": "Advanced API partner kit",
+            "group": "Start here",
             "pages": [
               "kits/advanced-api/overview",
-              "kits/advanced-api/setup",
-              "kits/advanced-api/status-and-hours",
-              "kits/advanced-api/availability",
+              "kits/advanced-api/setup"
+            ]
+          },
+          {
+            "group": "Businesses",
+            "pages": [
+              "kits/advanced-api/list-businesses",
+              "kits/advanced-api/update-status",
+              "kits/advanced-api/working-hours",
+              "kits/advanced-api/availability"
+            ]
+          },
+          {
+            "group": "Orders",
+            "pages": [
+              "kits/advanced-api/prepare-time",
+              "kits/advanced-api/order-status"
+            ]
+          },
+          {
+            "group": "Sync",
+            "pages": [
+              "kits/advanced-api/request-status"
+            ]
+          },
+          {
+            "group": "Go-live",
+            "pages": [
               "kits/advanced-api/checklist"
             ]
           }
@@ -123,12 +177,37 @@
         "icon": "truck",
         "groups": [
           {
-            "group": "DaaS partner kit",
+            "group": "Start here",
             "pages": [
               "kits/daas/overview",
-              "kits/daas/setup",
-              "kits/daas/businesses",
-              "kits/daas/orders",
+              "kits/daas/setup"
+            ]
+          },
+          {
+            "group": "Authentication",
+            "pages": [
+              "kits/daas/login"
+            ]
+          },
+          {
+            "group": "Businesses",
+            "pages": [
+              "kits/daas/list-businesses",
+              "kits/daas/update-business"
+            ]
+          },
+          {
+            "group": "Orders",
+            "pages": [
+              "kits/daas/validate-order",
+              "kits/daas/submit-order",
+              "kits/daas/order-status",
+              "kits/daas/cancel-order"
+            ]
+          },
+          {
+            "group": "Go-live",
+            "pages": [
               "kits/daas/checklist"
             ]
           }

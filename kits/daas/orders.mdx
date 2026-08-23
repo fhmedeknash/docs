@@ -11,8 +11,8 @@ Base path: `/api/daas`
 
 ## Validate then submit
 
-1. `POST /api/daas/validate-order` — dry-run; returns pickup/delivery estimates; **does not create** an order
-2. `POST /api/daas/submit-order` — creates the order
+1. `POST /api/daas/validate-order` — dry-run; returns pickup/delivery estimates; **does not create** an order  
+2. `POST /api/daas/submit-order` — creates the order  
 
 Both use the same body: `SubmitDaaSOrderRequest` (tables below).
 
@@ -30,7 +30,7 @@ Same body as submit (§ Submit order). Dry-run only.
 
 `POST /api/daas/submit-order`
 
-### Body 
+### Body — `SubmitDaaSOrderRequest`
 
 | Param | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -47,7 +47,7 @@ Same body as submit (§ Submit order). Dry-run only.
 | deliveryFee | decimal? | optional | Cash: added on top of total |
 | language | string? | optional | Default Hebrew (`he`) |
 
-### `User Details` 
+### `userDetails` — `SubmitDaaSOrderUserDetails`
 
 | Param | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -56,29 +56,29 @@ Same body as submit (§ Submit order). Dry-run only.
 | location | object | required | See `userDetails.location` |
 | address | object | required | See `userDetails.address` (fields may be empty) |
 
-### `UserDetails.location`
+### `userDetails.location` — `SubmitDaaSOrderUserDetailsLocation`
 
 | Param | Type | Required | Description |
 | --- | --- | --- | --- |
 | latitude | double | required | `0,0` = location not shared yet |
 | longitude | double | required | `0,0` = location not shared yet |
 
-### `UserDetails.address` 
+### `userDetails.address` — `SubmitDaaSOrderUserDetailsAddress`
 
 | Param | Type | Required | Description |
 | --- | --- | --- | --- |
-| city | string | optional |  |
-| street | string | optional |  |
-| buildingNumber | string | optional |  |
+| city | string | optional | |
+| street | string | optional | |
+| buildingNumber | string | optional | |
 | notes | string | optional | Fallback customer notes |
 
-### `OrderDetails` 
+### `orderDetails` — `SubmitDaaSCourierOrderDetails`
 
 | Param | Type | Required | Description |
 | --- | --- | --- | --- |
 | items | array of objects | required for cash pricing | See `orderDetails.items[]` |
 
-### `OrderDetails Items`
+### `orderDetails.items[]` — `SubmitDaaSCourierOrderItem`
 
 | Param | Type | Required | Description |
 | --- | --- | --- | --- |

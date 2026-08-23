@@ -1,0 +1,40 @@
+---
+title: "List businesses"
+description: "Businesses assigned to your Advanced API key."
+api: "GET http://ext-integration.haat-delivery.io/api/pos/businesses"
+---
+
+Use `businessId` from this response in every other Advanced API path.
+
+**Example:**
+
+<pre class="redoc-example"><code>X-Api-Key: YOUR_API_KEY</code></pre>
+
+<div class="redoc-schema-label">HEADER SCHEMA</div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>X-Api-Key</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>API key from HAAT onboarding.</p></div>
+  </div>
+</div>
+
+## Responses
+
+<details class="redoc-response" open>
+  <summary><span class="redoc-code">200</span> Businesses assigned to your API key</summary>
+  <div class="redoc-response-body">Each row has <code>businessId</code>, <code>businessName</code>, and <code>areaName</code>.</div>
+</details>
+
+<RequestExample>
+```bash cURL
+curl http://ext-integration.haat-delivery.io/api/pos/businesses \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+[{"businessId":1021,"businessName":"My Restaurant - Main Branch","areaName":"Tel Aviv"}]
+```
+</ResponseExample>

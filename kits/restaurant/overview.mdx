@@ -7,18 +7,26 @@ description: "When to use the Restaurant partner kit."
 
 Use this kit for **restaurant** partners with meals, addons, deals, and real-time orders.
 
+Each endpoint page in the sidebar shows **headers, body fields, and example responses** on the right.
+
 ## Who does what
 
 | Direction | Who hosts | Purpose |
 | --- | --- | --- |
-| Menu + Orders APIs | Partner POS | HAAT syncs menu and creates orders |
+| Menu + Orders | Partner POS | HAAT syncs the menu and creates orders |
 
-## Pages in this kit
+## How to read an endpoint
 
-1. [Setup](/kits/restaurant/setup)  
-2. [Menu sync](/kits/restaurant/menu-sync)  
-3. [Create order](/kits/restaurant/create-order)  
-4. [Checklist](/kits/restaurant/checklist)
+1. Open the page in the left menu (for example **Get menu from POS**).
+2. Read the required headers and fields in the middle.
+3. Use the sample request and `200` / error responses on the right.
+
+## Start here
+
+1. [Setup](/kits/restaurant/setup) — auth headers
+2. **Menu** — `GET /api/menu`
+3. **Orders** — `POST /api/orders`
+4. [Checklist](/kits/restaurant/checklist) — go-live
 
 <Info>
   Grocery / barcode catalog? Use the [Market kit](/kits/market/overview).

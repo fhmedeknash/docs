@@ -1,0 +1,72 @@
+---
+title: "Get menu from POS"
+description: "HAAT fetches the full restaurant menu from your POS."
+api: "GET https://pos.example.com/api/menu"
+---
+
+Return the **full** menu. Keep `posId` stable. `en` is required on names.
+
+**Example:**
+
+<pre class="redoc-example"><code>Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+X-Haat-Version: 1.0</code></pre>
+
+<div class="redoc-schema-label">HEADER SCHEMA</div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>Authorization</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p><code>Bearer &lt;token&gt;</code>, or HMAC via <code>X-Signature</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>X-Haat-Version</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string <span class="redoc-default">Default: <code>1.0</code></span></div><p>Always <code>1.0</code>.</p></div>
+  </div>
+</div>
+
+<div class="redoc-schema-label">RESPONSE BODY SCHEMA: <strong>application/json</strong></div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>posId</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Their item number for the category, meal, deal, or ingredient.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>name</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized names. <code>en</code> is required.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>price</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">number</div><p>On meals, deals, and ingredients.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>availability</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">boolean</div><p>In stock or not.</p></div>
+  </div>
+</div>
+
+## Responses
+
+<details class="redoc-response" open>
+  <summary><span class="redoc-code">200</span> Menu successfully retrieved</summary>
+  <div class="redoc-response-body">Full menu: categories, meals, deals, and addons.</div>
+</details>
+
+<details class="redoc-response redoc-response-error">
+  <summary><span class="redoc-code">401</span> Invalid or missing authentication token</summary>
+  <div class="redoc-response-body">Check Bearer or <code>X-Signature</code>.</div>
+</details>
+
+<RequestExample>
+```bash cURL
+curl https://pos.example.com/api/menu \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "X-Haat-Version: 1.0"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+[{"posId":1,"name":{"en":"Burgers"},"meals":[{"posId":101,"name":{"en":"Classic Burger"},"price":32.5,"availability":true}],"deals":[]}]
+```
+</ResponseExample>

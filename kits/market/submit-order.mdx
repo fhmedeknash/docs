@@ -1,83 +1,61 @@
 ---
 title: "Submit order"
-description: "Orders HAAT sends into the market POS."
+description: "Accept a customer order from HAAT into the market POS."
+api: "POST https://pos.example.com/api/submit-order"
 ---
 
-# Submit order
+HAAT posts the order to **your** POS.
 
-HAAT posts customer orders to the partner POS.
+**Example:**
 
-## Endpoint
+<pre class="redoc-example"><code>integrator-token: YOUR_INTEGRATOR_TOKEN
+organization-token: YOUR_ORGANIZATION_TOKEN</code></pre>
 
-`POST /api/submit-order`  
-Example: `https://pos.example.com/api/submit-order`
+<div class="redoc-schema-label">REQUEST BODY SCHEMA: <strong>application/json</strong></div>
 
-Headers: `integrator-token`, `organization-token`
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>Items</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Order lines. Each item needs <code>Code</code>, <code>SalePrice</code>, <code>Quantity</code>, <code>Units</code> (<code>1</code>/<code>2</code>/<code>3</code>), and <code>Total</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>Payments</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p><code>Amount</code> and <code>PaymentType</code> (<code>1</code> Cash, <code>2</code> Credit card).</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>Total</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Order total.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>Comments</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Optional note. Can be <code>null</code>.</p></div>
+  </div>
+</div>
 
-## Body
+## Responses
 
-| Field | Required | Notes |
-| --- | --- | --- |
-| Items | Yes | Array of order lines |
-| Payments | Yes | Array of payments |
-| Total | Yes | Order total |
-| Comments | No | Can be `null` |
+<details class="redoc-response" open>
+  <summary><span class="redoc-code">200</span> Order accepted</summary>
+  <div class="redoc-response-body">Return <code>posOrderId</code> from your POS.</div>
+</details>
 
-### Item fields
+<details class="redoc-response redoc-response-error">
+  <summary><span class="redoc-code">401</span> Missing or invalid tokens</summary>
+  <div class="redoc-response-body">Validate both tokens before accepting the order.</div>
+</details>
 
-| Field | Required | Notes |
-| --- | --- | --- |
-| Code | Yes | Product code |
-| SalePrice | Yes | Unit sale price |
-| Quantity | Yes | |
-| Units | Yes | `1` / `2` / `3` (same as menu) |
-| Total | Yes | `SalePrice * Quantity` |
-| Name | No | |
-
-### Payment fields
-
-| Field | Required | Notes |
-| --- | --- | --- |
-| Amount | Yes | |
-| PaymentType | Yes | `1` Cash, `2` Credit card |
-| Comments | No | |
-
-## Example request
-
-```json
-{
-  "Items": [
-    {
-      "Code": 76868,
-      "Name": "Potato",
-      "SalePrice": 12.5,
-      "Quantity": 2,
-      "Units": 2,
-      "Total": 25.0
-    }
-  ],
-  "Payments": [
-    {
-      "Amount": 25.0,
-      "PaymentType": 2,
-      "Comments": null
-    }
-  ],
-  "Comments": "Please deliver to gate 2",
-  "Total": 25.0
-}
+<RequestExample>
+```bash cURL
+curl -X POST https://pos.example.com/api/submit-order \
+  -H "integrator-token: YOUR_INTEGRATOR_TOKEN" \
+  -H "organization-token: YOUR_ORGANIZATION_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"Items":[{"Code":76868,"SalePrice":12.5,"Quantity":2,"Units":2,"Total":25}],"Payments":[{"Amount":25,"PaymentType":2}],"Total":25}'
 ```
+</RequestExample>
 
-## Example response
-
-```json
-{
-  "status": "success",
-  "message": "Order accepted",
-  "posOrderId": "MKT-78456"
-}
+<ResponseExample>
+```json 200
+{"status":"success","message":"Order accepted","posOrderId":"MKT-78456"}
 ```
-
-<Warning>
-  Validate both tokens before accepting the order. Return `401` if invalid.
-</Warning>
+</ResponseExample>

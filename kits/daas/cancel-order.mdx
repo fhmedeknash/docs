@@ -1,0 +1,45 @@
+---
+title: "Cancel order"
+description: "Cancel a DaaS delivery order."
+api: "PUT https://external-partners.example.haat.delivery/api/daas/orders/{orderId}/cancel"
+---
+
+No body. Denied if the order is already picked up or delivered.
+
+**Example:**
+
+<pre class="redoc-example"><code>Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code></pre>
+
+<div class="redoc-schema-label">PATH SCHEMA</div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>orderId</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>HAAT order id from Submit order.</p></div>
+  </div>
+</div>
+
+## Responses
+
+<details class="redoc-response" open>
+  <summary><span class="redoc-code">200</span> Cancel result</summary>
+  <div class="redoc-response-body"><code>status</code> is <code>success</code> when the order is cancelled.</div>
+</details>
+
+<details class="redoc-response redoc-response-error">
+  <summary><span class="redoc-code">400</span> Already picked up or delivered</summary>
+  <div class="redoc-response-body">You cannot cancel after pickup or delivery.</div>
+</details>
+
+<RequestExample>
+```bash cURL
+curl -X PUT https://external-partners.example.haat.delivery/api/daas/orders/5887966/cancel \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{"status":"success","message":null,"data":null}
+```
+</ResponseExample>

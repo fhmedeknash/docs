@@ -1,0 +1,40 @@
+---
+title: "Get prepare time options"
+description: "Prepare-time options in minutes for a business."
+api: "GET http://ext-integration.haat-delivery.io/api/pos/business/{businessId}/prepare-time"
+---
+
+Use these minutes when you send **Start Prepare**.
+
+**Example:**
+
+<pre class="redoc-example"><code>X-Api-Key: YOUR_API_KEY</code></pre>
+
+<div class="redoc-schema-label">QUERY SCHEMA</div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>orderId</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>If set, returns options for that order.</p></div>
+  </div>
+</div>
+
+## Responses
+
+<details class="redoc-response" open>
+  <summary><span class="redoc-code">200</span> Prepare-time options in minutes</summary>
+  <div class="redoc-response-body">Array of integers, for example <code>[10, 15, 20, 30]</code>.</div>
+</details>
+
+<RequestExample>
+```bash cURL
+curl "http://ext-integration.haat-delivery.io/api/pos/business/1021/prepare-time" \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+[10, 15, 20, 25, 30, 45, 60]
+```
+</ResponseExample>

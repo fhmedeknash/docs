@@ -1,35 +1,51 @@
 ---
-title: "Availability"
-description: "Bulk update menu item availability in HAAT."
+title: "Update availability"
+description: "Turn menu items available or unavailable in bulk."
+api: "PUT http://ext-integration.haat-delivery.io/api/pos/business/{businessId}/availability"
 ---
 
-# Availability
+`items` are your item identifiers as agreed in onboarding.
 
-`PUT /api/pos/business/{businessId}/availability`
+**Example:**
 
-| Field | Required | Notes |
-| --- | --- | --- |
-| items | Yes | Partner item ids from onboarding (at least one) |
-| available | Yes | `true` or `false` |
+<pre class="redoc-example"><code>X-Api-Key: YOUR_API_KEY</code></pre>
 
-Mark unavailable:
+<div class="redoc-schema-label">REQUEST BODY SCHEMA: <strong>application/json</strong></div>
 
-```json
-{
-  "items": ["ITEM-001", "ITEM-002", "DEAL-010"],
-  "available": false
-}
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>items</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string[]</div><p>Item ids, for example <code>ITEM-001</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>available</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">boolean</div><p><code>true</code> = sell, <code>false</code> = out of stock.</p></div>
+  </div>
+</div>
+
+## Responses
+
+<details class="redoc-response" open>
+  <summary><span class="redoc-code">200</span> Success or queued</summary>
+  <div class="redoc-response-body">If <code>status</code> is <code>Pending</code>, poll Get request status.</div>
+</details>
+
+<details class="redoc-response redoc-response-error">
+  <summary><span class="redoc-code">400</span> Validation failed</summary>
+  <div class="redoc-response-body">Empty <code>items</code> or a missing <code>available</code> flag.</div>
+</details>
+
+<RequestExample>
+```bash cURL
+curl -X PUT http://ext-integration.haat-delivery.io/api/pos/business/1021/availability \
+  -H "X-Api-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"items":["ITEM-001","ITEM-002"],"available":false}'
 ```
+</RequestExample>
 
-Restore:
-
-```json
-{
-  "items": ["ITEM-001", "ITEM-002"],
-  "available": true
-}
+<ResponseExample>
+```json 200
+{"requestId":"6651a3f2e1b2c3d4e5f60001","status":"Success","message":"Updated successfully"}
 ```
-
-<Tip>
-  If the response `status` is `"Pending"`, poll request status with the returned `requestId`.
-</Tip>
+</ResponseExample>
