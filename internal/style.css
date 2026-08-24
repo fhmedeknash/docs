@@ -1,0 +1,49 @@
+/* HAAT Integration Docs — brand atmosphere */
+
+:root {
+  --haat-ember: #e85d04;
+  --haat-flame: #ff9f1c;
+  --haat-ink: #1c1410;
+  --haat-sand: #fff7ed;
+  --haat-mist: #fff1e6;
+}
+
+/* Soft warm page wash behind content */
+body {
+  background-image:
+    radial-gradient(1200px 500px at 10% -10%, rgba(232, 93, 4, 0.12), transparent 60%),
+    radial-gradient(900px 420px at 95% 0%, rgba(255, 159, 28, 0.10), transparent 55%);
+  background-attachment: fixed;
+}
+
+/* Stronger brand mark in navbar */
+#navbar {
+  backdrop-filter: blur(10px);
+}
+
+/* Card polish without heavy shadows */
+card,
+[data-component="card"] {
+  border-radius: 14px;
+  transition: transform 160ms ease, border-color 160ms ease;
+}
+
+card:hover,
+[data-component="card"]:hover {
+  transform: translateY(-1px);
+}
+
+/* Code blocks: warmer frame */
+pre {
+  border-radius: 12px;
+}
+
+/* Tables: slightly tighter, clearer headers */
+table th {
+  letter-spacing: 0.02em;
+}
+
+/* Footer breathing room */
+footer {
+  border-top: 1px solid rgba(232, 93, 4, 0.12);
+}

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 148 36" fill="none">
+  <defs>
+    <linearGradient id="mark" x1="4" y1="2" x2="30" y2="34" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF9F1C"/>
+      <stop offset="1" stop-color="#E85D04"/>
+    </linearGradient>
+  </defs>
+  <rect width="36" height="36" rx="10" fill="url(#mark)"/>
+  <path d="M10.5 25V11h4.6c2.95 0 4.8 1.55 4.8 3.95 0 1.6-.85 2.85-2.25 3.4L21.2 25h-3.35l-3.15-5.05H13.4V25H10.5zm2.95-7.65h1.55c1.3 0 2.05-.65 2.05-1.7s-.75-1.7-2.05-1.7h-1.55v3.4z" fill="white"/>
+  <text x="48" y="24" font-family="Sora, Manrope, system-ui, sans-serif" font-size="16" font-weight="700" fill="#1C1410" letter-spacing="-0.02em">HAAT Docs</text>
+</svg>

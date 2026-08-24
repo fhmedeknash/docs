@@ -1,0 +1,117 @@
+---
+title: "Market builders"
+description: "What each market POS can change, and which codes you must copy exactly."
+---
+
+# Market builders
+
+Markets use **barcode** and **product code**. There is no PosId table. Read [Matching keys](/builders/matching-keys) if that is new.
+
+Most market POS types **update products that already exist**, and they create or update **deals**. They usually **do not** add brand-new products. The exception is **Comax**, which can add new products.
+
+<Warning>
+  There is no safety net. One extra space or a missing zero on the barcode will not show a red error. The order simply will not match on their side.
+</Warning>
+
+## Your steps on every market
+
+<Steps>
+  <Step title="Which POS is it?">
+    Comax, All4Shops, Aviv, Barak — or a fully manual catalog.
+  </Step>
+  <Step title="Get their file">
+    CSV or JSON. Copy barcode and product code **exactly**.
+  </Step>
+  <Step title="Build or align the HAAT catalog">
+    Do not invent extra product codes if this POS only updates existing products.
+  </Step>
+  <Step title="Fill both codes">
+    **Barcode** finds the product for Comax and Aviv. **Product code** finds the product for All4Shops and Barak — and it is what **deals** use.
+  </Step>
+  <Step title="Send a test order">
+    Confirm the same products appear on their side.
+  </Step>
+</Steps>
+
+## Comax
+
+**What it does**
+
+- They can **add** new products.
+- They can **update** price and availability on products that already exist.
+- We pull **deals** every day at **05:00** (and you can ask for an extra pull from backoffice).
+
+**Match on:** barcode **or** product code for products. **Product code** for deals.
+
+**What you do**
+
+- New products may appear from Comax. Still check the codes on anything you add by hand.
+- If a deal does not show, the product code does not match.
+
+## All4Shops
+
+**What it does**
+
+- They send **price and availability** only. They **cannot** create a new product.
+- We pull barcodes every day at **01:00** and email a **mismatch report**.
+- We pull deals every day at **05:00**.
+
+**Match on:** **product code** for everything.
+
+**What you do**
+
+- Create the HAAT product **first**. Then their price can land on it.
+- Open the mismatch email. Those rows will never update until you fix the product code.
+
+## Aviv
+
+**What it does**
+
+- **We** download their CSV files.
+- Product file and deals file: **once a day**.
+- Price file: **every 2 hours**.
+- Updates price, availability, and product details. Creates/updates deals.
+
+**Match on:** **barcode** for products. **Product code** for deals.
+
+**What you do**
+
+- Build from **their** file. Do not make up a second set of codes.
+- Prices are only as new as the last 2-hour file — not live.
+
+Aviv is also a restaurant POS (mapping + orders only). See [Restaurant builders](/builders/restaurants).
+
+## Barak
+
+**What it does**
+
+- **We** download their CSV.
+- After we read a file, it is moved to an **OLD** folder on their side so we do not read it twice.
+- Updates price/availability and deals.
+
+**Match on:** **product code** (they call it `ItemCode`).
+
+**What you do**
+
+- HAAT `ItemCode` must match their file.
+- If they say “we already sent the file,” it may already be in **OLD**. Ask for a **new** file, or a pull from backoffice.
+
+## Remember
+
+<AccordionGroup>
+  <Accordion title="Copy codes exactly">
+    Wrong barcode or product code = the product is “not found.” You will not always see an error in HAAT.
+  </Accordion>
+  <Accordion title="Most POS types cannot create new products">
+    Only Comax is expected to add new SKUs. All4Shops will never create a product for you.
+  </Accordion>
+  <Accordion title="Deals use product code">
+    Even when the product itself matches on barcode (Aviv, Comax).
+  </Accordion>
+  <Accordion title="Aviv and Barak are not real-time">
+    They send files on a schedule. If a price looks old, wait for the next file or ask for a pull.
+  </Accordion>
+  <Accordion title="Read the All4Shops mismatch email">
+    Unfixed rows will never get a price update.
+  </Accordion>
+</AccordionGroup>

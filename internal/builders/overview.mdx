@@ -1,0 +1,64 @@
+---
+title: "POS for builders"
+description: "A simple guide to POS for Market and Restaurant builders."
+---
+
+# POS for builders
+
+This guide is for **people who build menus** in HAAT — Market builders and Restaurant builders.
+
+## What is a POS?
+
+**POS** means the system the business already uses in the store.
+
+- In a **restaurant**, it is the cash register / kitchen screen (for example Tabit).
+- In a **market**, it is the system that holds products, barcodes, and prices (for example Comax).
+
+When someone orders on HAAT, the order appears on **their** screen.
+
+## The three jobs a POS can do
+
+Not every POS does all three.
+
+| Job | In simple words | Almost every POS? |
+| --- | --- | --- |
+| **Send them the order** | Customer orders on HAAT → their kitchen / cashier sees it | Yes |
+| **Send us catalog info** | They send us menu, prices, or stock. This is what people call “the sync” | Yes |
+| **Read our catalog** | They copy our menu. **KubeGet** and **Kaman** do this | No |
+
+## What you must get right
+
+This is the whole job in two lines.
+
+<CardGroup cols={2}>
+  <Card title="Restaurant builder" icon="utensils">
+    Every item that can be ordered has a **PosId** — meal, deal, and ingredient. Tabit and McDonald's often fill this for you.
+  </Card>
+  <Card title="Market builder" icon="store">
+    Copy the **barcode** and **product code** exactly as they are in the POS file. There is no pairing table.
+  </Card>
+</CardGroup>
+
+<Warning>
+  If the number is wrong, the customer can still order on HAAT — but the shop will see the wrong item, or “item not found.”
+</Warning>
+
+## Start here
+
+<CardGroup cols={2}>
+  <Card title="1. Matching keys" icon="key-round" href="/builders/matching-keys">
+    The one rule: how we know “their item” is “our item.”
+  </Card>
+  <Card title="2. Restaurant builders" icon="utensils" href="/builders/restaurants">
+    What each restaurant POS does, and what you map.
+  </Card>
+  <Card title="3. Market builders" icon="store" href="/builders/markets">
+    What each market POS does, and which codes to copy.
+  </Card>
+  <Card title="4. POS directory" icon="table" href="/builders/directory">
+    One table. Look up a POS name and see what it can change.
+  </Card>
+  <Card title="5. How we work together" icon="users" href="/builders/process">
+    Who talks to the partner, who builds the menu, who fixes tech.
+  </Card>
+</CardGroup>

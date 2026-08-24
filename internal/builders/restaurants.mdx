@@ -1,0 +1,109 @@
+---
+title: "Restaurant builders"
+description: "What each restaurant POS can change, and what you need to map."
+---
+
+# Restaurant builders
+
+Restaurants use **PosId** (their item number). Read [Matching keys](/builders/matching-keys) if that is new.
+
+<Info>
+  **Only Tabit and McDonald's can build the HAAT menu for you.** For every other restaurant POS, you build the menu first, then you map PosId.
+</Info>
+
+## Your steps on every restaurant
+
+<Steps>
+  <Step title="Get their item list">
+    Ask for a file with **IDs**, not only names.
+  </Step>
+  <Step title="Build or check the HAAT menu">
+    Same items, names, and prices as their list.
+  </Step>
+  <Step title="Fill PosId">
+    Every item that can be ordered has a PosId — meal, deal, and ingredient. Skip this only if Tabit or McDonald's already created the mapping.
+  </Step>
+  <Step title="Send a test order">
+    The ticket on their screen must show the same items. Wrong PosId is the usual reason an order “went to the POS wrong.”
+  </Step>
+  <Step title="Keep it updated">
+    If they add or replace items on the POS, update HAAT the same day.
+  </Step>
+</Steps>
+
+## Which POS can build the menu?
+
+### Tabit
+
+**What it does**
+
+- First time (no HAAT menu yet): builds the whole menu and **fills PosId for you**.
+- If a menu already exists: only updates **in stock / hidden**. New items may arrive **hidden** for you to review.
+- Can copy the menu out to franchise branches.
+- Also sends us order status (preparing, done, and similar).
+
+**What you do**
+
+- First-time Tabit: **review** the menu they built. Check hidden new items. They are not live until you review them.
+- Do not change PosId unless there is a duplicate, or the restaurant wants a HAAT-only item.
+
+### McDonald's
+
+**What it does**
+
+- Creates and updates the menu (categories, dishes, toppings, groups) and the PosId mapping.
+- Stock updates turn items available / unavailable.
+
+**What you do**
+
+- Review the synced menu.
+- If McDonald's marked something out of stock, **do not unhide it by hand** — their inventory is in charge.
+
+## Which POS only updates hide / text?
+
+These **cannot** create new meals. The HAAT menu and PosId must already exist.
+
+### BeecommCloud and LeenCopot
+
+- **We** pull their item list so our copy stays fresh.
+- This does **not** change the HAAT menu by itself.
+
+**What you do:** Use that list when you map. New HAAT meals will not appear on their own.
+
+## KubeGet and Kaman (they copy our menu)
+
+These work **backwards**. They pull our menu and match items **on their side**.
+
+**What you do:** Keep the HAAT menu clean. You do not have to map for them. If you *do* set PosId, their matching is easier.
+
+## Orders only — you build everything
+
+These POS types do **not** update the catalog. You build the menu by hand and map every PosId before the first live order.
+
+**Beecomm, PayPo, NetLunch, Elpos, PizzaHut, Presto, Beteavon, Iron**
+
+- PayPo and Beecomm **do** send us order status (preparing / cancelled). They still do not send menu updates.
+- Presto gets the order as a **file**, not a live API call. For you, the mapping work is the same.
+
+## Aviv restaurants
+
+Aviv is also used for **markets**. As a **restaurant**, it is mapping + orders only. No product file for the restaurant menu.
+
+See [Market builders](/builders/markets) for Aviv markets.
+
+## Remember
+
+<AccordionGroup>
+  <Accordion title="Only two POS types can build a restaurant menu">
+    Tabit and McDonald's. Everything else needs you to build and map first.
+  </Accordion>
+  <Accordion title="Wrong kitchen ticket? Check PosId">
+    That is the most common cause. Names can look right while the number is wrong.
+  </Accordion>
+  <Accordion title="Hidden Tabit items are waiting for you">
+    New items can be created hidden. They are not live until you review them.
+  </Accordion>
+  <Accordion title="A missing dish may be a stock update">
+    Check the POS type before you “fix” it. McDonald's can hide items on purpose.
+  </Accordion>
+</AccordionGroup>

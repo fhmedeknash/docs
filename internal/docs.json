@@ -1,0 +1,83 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "maple",
+  "name": "HAAT Builders (internal)",
+  "description": "Internal POS guide for Market and Restaurant Content. Not for partners.",
+  "colors": {
+    "primary": "#E85D04",
+    "light": "#FF9F1C",
+    "dark": "#9B2226"
+  },
+  "favicon": "/favicon.svg",
+  "appearance": {
+    "default": "system"
+  },
+  "fonts": {
+    "family": "Manrope",
+    "heading": {
+      "family": "Sora",
+      "weight": 700
+    },
+    "body": {
+      "family": "Manrope",
+      "weight": 400
+    }
+  },
+  "icons": {
+    "library": "lucide"
+  },
+  "background": {
+    "decoration": "gradient"
+  },
+  "styling": {
+    "eyebrows": "breadcrumbs",
+    "codeblocks": {
+      "theme": {
+        "light": "github-light",
+        "dark": "github-dark"
+      }
+    }
+  },
+  "banner": {
+    "content": "Internal HAAT Content guide. Do not share with partners.",
+    "dismissible": false
+  },
+  "seo": {
+    "metatags": {
+      "robots": "noindex"
+    }
+  },
+  "navigation": {
+    "groups": [
+      {
+        "group": "POS for Content",
+        "pages": [
+          "builders/overview",
+          "builders/matching-keys",
+          "builders/restaurants",
+          "builders/markets",
+          "builders/directory",
+          "builders/process"
+        ]
+      }
+    ]
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "href": "/"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "HAAT",
+        "href": "https://haat.delivery"
+      }
+    ]
+  },
+  "footer": {
+    "socials": {
+      "website": "https://haat.delivery"
+    }
+  }
+}

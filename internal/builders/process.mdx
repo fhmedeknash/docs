@@ -1,0 +1,80 @@
+---
+title: "How we work together"
+description: "Who talks to the partner, who builds the menu, and who fixes the tech."
+---
+
+# How we work together
+
+When a new POS (or middleware) comes in, three teams share the work.
+
+<Warning>
+  **Sales / Account Manager owns the partner.** They chase the client, book calls, and keep the process moving. Product and Content do not own that relationship.
+</Warning>
+
+## Who does what
+
+<Tabs>
+  <Tab title="Commercial (SE / AM)">
+    Owns the partner from start to finish.
+
+    - Talk to the partner
+    - Book meetings
+    - Make sure the client answers
+    - Set expectations on time and what is included
+  </Tab>
+  <Tab title="Content (builders)">
+    Owns the menu quality.
+
+    - Collect the files (JSON or CSV) with real IDs
+    - Build the menu with the correct **PosId** (restaurants) or **barcode / product code** (markets)
+    - Update those values when the POS changes items
+    - Place a test order and confirm it works
+    - Help when an order fails
+    - Send real tech bugs to Product / R&D
+    - Follow up if you are stuck waiting for a file
+  </Tab>
+  <Tab title="Product / R&D">
+    Join **after** Commercial has checked the request is worth doing.
+
+    - Size the work
+    - Decide a small first version vs full integration
+    - Technical kickoff with the POS
+    - Build or turn on the connection
+    - They do **not** replace Commercial as the partner contact
+  </Tab>
+</Tabs>
+
+## Before Product starts
+
+Commercial answers these so we do not waste a technical deep-dive.
+
+**About the business**
+
+- Market, restaurant, or both?
+- Do they have their own tech team?
+
+**About priority**
+
+- Total number of businesses using the POS
+- Number of existing HAAT partners using this POS
+- Presence of enterprise clients (for example franchises, chains, large retailers)
+
+## After it is approved
+
+<Steps>
+  <Step title="Name the people">
+    One contact on the POS side, one on the HAAT side. Agree Slack or email.
+  </Step>
+  <Step title="Kickoff">
+    Agree what is in the first version, and the dates.
+  </Step>
+  <Step title="Content gets the catalog">
+    A file with stable IDs. Restaurants: fill PosId. Markets: copy barcode and product code.
+  </Step>
+  <Step title="Pilot">
+    First shops go live. Success = test orders look correct on their screen and stay stable.
+  </Step>
+  <Step title="After launch">
+    Order mistakes → Content first. Broken connection / certificate → Product / R&D.
+  </Step>
+</Steps>

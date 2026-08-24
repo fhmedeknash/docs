@@ -1,0 +1,66 @@
+---
+title: "Matching keys"
+description: "How we connect their item to our item — PosId in restaurants, barcode and product code in markets."
+---
+
+# Matching keys
+
+HAAT and the POS each have their own item numbers.
+
+Example: they call a burger **#58821**. We call it **#4417**. Sync and orders only work if we know those two are the **same item**.
+
+How we do that is different for restaurants and markets.
+
+## Restaurants = PosId
+
+Think of **PosId** as “their item number,” saved next to our item in HAAT.
+
+**Every item that can be ordered has a PosId:**
+
+- Meal
+- Deal
+- Ingredient
+
+You (or the first menu sync) fill this in.
+
+When a customer orders, HAAT **changes our numbers into their numbers**, then sends the order.
+
+<Warning>
+  If an item is live on HAAT with **no PosId**, the customer can buy it, and the kitchen will not know what it is. Map every meal, deal, and ingredient.
+</Warning>
+
+### Who fills in PosId?
+
+| POS | Who puts the number in? |
+| --- | --- |
+| **Tabit** or **McDonald's** (first full menu) | **Automatic** — created with the menu |
+| **BeecommCloud**, **LeenCopot**, Beecomm, PayPo, PizzaHut, Iron, and similar | **You**, before go-live |
+| **KubeGet**, **Kaman** | **They** do it on their side |
+
+## Markets = barcode and product code
+
+Markets have **no pairing table**. We find the product by the code written on it.
+
+| Code you copy | Used for |
+| --- | --- |
+| **Barcode** | Finding the product (Comax, Aviv) |
+| **Product code** | Finding the product (All4Shops, Barak) **and** attaching **deals** |
+
+Copy the value **exactly** from their file. Do not drop a zero. Do not add a space.
+
+<Warning>
+  Deals use **product code**, not barcode. If the product code on the deal does not match the file, the promotion will not work.
+</Warning>
+
+## Who does the matching?
+
+**We do** — except **KubeGet** and **Kaman**, who match on their side.
+
+## Before you finish a build
+
+<Check>The business has a POS certificate (it is really connected).</Check>
+<Check>You have their item list with **numbers**, not only names or a photo.</Check>
+<Check>Restaurants: every item that can be ordered has a PosId — meal, deal, and ingredient.</Check>
+<Check>Markets: barcode and product code match the file character by character.</Check>
+<Check>You placed a **test order** and the shop screen shows the same items.</Check>
+<Check>When they change items later, you update HAAT the same day.</Check>
