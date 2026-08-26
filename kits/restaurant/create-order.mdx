@@ -12,36 +12,138 @@ Reply with your `posOrderId`. The same `Idempotency-Key` must not create a secon
 X-Haat-Version: 1.0
 Idempotency-Key: 7dda287d-21de-4159-a058-e60618e9b786</code></pre>
 
+<div class="redoc-schema-label">HEADER SCHEMA</div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>Authorization</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p><code>Bearer &lt;token&gt;</code>, or HMAC via <code>X-Signature</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>X-Haat-Version</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Always <code>1.0</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>Idempotency-Key</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>UUID. The same key must not create a second order.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>Content-Type</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p><code>application/json</code>.</p></div>
+  </div>
+</div>
+
 <div class="redoc-schema-label">REQUEST BODY SCHEMA: <strong>application/json</strong></div>
 
 <div class="redoc-tree">
   <div class="redoc-field">
     <div class="redoc-field-name"><code>orderId</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>HAAT order id.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Unique order id assigned by HAAT.</p></div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>businessId</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>HAAT business id.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Restaurant / store id on the HAAT side.</p></div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>customer</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">object</div><p><code>name</code> and <code>phone</code>.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Customer who placed the order.</p></div>
+  </div>
+  <div class="redoc-children">
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>name</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Customer name.</p></div>
+    </div>
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>phone</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-meta"><div class="redoc-type">string</div><p>E.164 format recommended, for example <code>+972501234567</code>.</p></div>
+    </div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>items</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Each line has <code>id</code> (PosId), <code>quantity</code>, and <code>price</code>.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Order lines. <code>id</code> is the POS item id.</p></div>
+  </div>
+  <div class="redoc-children">
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>id</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>POS item id (<code>posId</code>).</p></div>
+    </div>
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>quantity</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Quantity ordered.</p></div>
+    </div>
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>price</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Unit price with exact decimal precision.</p></div>
+    </div>
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>variations</code></div>
+      <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Add-ons, sides, or nested sub-items. Same shape as an item.</p></div>
+    </div>
+    <div class="redoc-children">
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>id</code><span class="redoc-required">required</span></div>
+        <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>POS variation / addon id.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>quantity</code><span class="redoc-required">required</span></div>
+        <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Variation quantity.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>price</code><span class="redoc-required">required</span></div>
+        <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Additional price. <code>0.0</code> if free.</p></div>
+      </div>
+    </div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>payments</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>How the customer paid.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>How the customer paid. Amounts must align with <code>payRestaurant</code>.</p></div>
+  </div>
+  <div class="redoc-children">
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>paymentType</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-meta"><div class="redoc-type">string</div><p><code>credit_card</code> or <code>cash</code>.</p></div>
+    </div>
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>amount</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Payment amount.</p></div>
+    </div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>payRestaurant</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Amount the restaurant should receive.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Total amount payable to the restaurant.</p></div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>deliveryType</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>For example <code>delivery</code>.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p><code>delivery</code> or <code>pickup</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>customerNotes</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Customer note. Can be <code>null</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>formatCreatedDate</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>ISO-8601 UTC timestamp when the order was created.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>formatDeliveryDate</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Scheduled delivery or pickup time (ISO-8601 UTC).</p></div>
+  </div>
+</div>
+
+<div class="redoc-schema-label">RESPONSE BODY SCHEMA: <strong>application/json</strong></div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>status</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>For example <code>success</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>message</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>For example <code>Order accepted</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>posOrderId</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Your POS order id.</p></div>
   </div>
 </div>
 

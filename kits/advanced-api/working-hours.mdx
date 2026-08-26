@@ -10,12 +10,62 @@ Full replacement. Any day you leave out is treated as closed. `day`: 1 = Sunday 
 
 <pre class="redoc-example"><code>X-Api-Key: YOUR_API_KEY</code></pre>
 
+<div class="redoc-schema-label">PATH SCHEMA</div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>businessId</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>HAAT business id from List businesses.</p></div>
+  </div>
+</div>
+
 <div class="redoc-schema-label">REQUEST BODY SCHEMA: <strong>application/json</strong></div>
 
 <div class="redoc-tree">
   <div class="redoc-field">
     <div class="redoc-field-name"><code>days</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Each day has <code>day</code>, optional <code>type</code> (<code>0</code> scheduled, <code>2</code> 24 hours), and <code>hours</code> as <code>fromHour</code>/<code>toHour</code> in UTC.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Weekly hours. Any day you leave out is treated as closed.</p></div>
+  </div>
+  <div class="redoc-children">
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>day</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-meta"><div class="redoc-type">integer</div><p><code>1</code> Sunday … <code>7</code> Saturday.</p></div>
+    </div>
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>type</code></div>
+      <div class="redoc-field-meta"><div class="redoc-type">integer</div><p><code>0</code> open during <code>hours</code>, <code>2</code> open 24 hours.</p></div>
+    </div>
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>hours</code></div>
+      <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>UTC ranges. Must not overlap.</p></div>
+    </div>
+    <div class="redoc-children">
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>fromHour</code><span class="redoc-required">required</span></div>
+        <div class="redoc-field-meta"><div class="redoc-type">string</div><p><code>HH:mm</code> UTC, 24-hour clock. Example: <code>08:00</code>.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>toHour</code><span class="redoc-required">required</span></div>
+        <div class="redoc-field-meta"><div class="redoc-type">string</div><p><code>HH:mm</code> UTC, 24-hour clock. Example: <code>14:00</code>.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="redoc-schema-label">RESPONSE BODY SCHEMA: <strong>application/json</strong></div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>requestId</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Tracking id. Use it on Get request status.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>status</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p><code>Success</code>, <code>Pending</code>, or <code>Failed</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>message</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Human-readable result.</p></div>
   </div>
 </div>
 

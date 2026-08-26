@@ -19,6 +19,23 @@ No body. Denied if the order is already picked up or delivered.
   </div>
 </div>
 
+<div class="redoc-schema-label">RESPONSE BODY SCHEMA: <strong>application/json</strong></div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>status</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>For example <code>success</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>message</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Human-readable result.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>data</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object | null</div><p>Usually <code>null</code> on this call.</p></div>
+  </div>
+</div>
+
 ## Responses
 
 <details class="redoc-response" open>

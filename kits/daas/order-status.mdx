@@ -19,6 +19,51 @@ api: "GET https://external-partners.example.haat.delivery/api/daas/orders/{order
   </div>
 </div>
 
+<div class="redoc-schema-label">RESPONSE BODY SCHEMA: <strong>application/json</strong></div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>status</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>For example <code>success</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>message</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Human-readable result.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>data</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Status payload.</p></div>
+  </div>
+  <div class="redoc-children">
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>orderDetails</code></div>
+      <div class="redoc-field-meta"><div class="redoc-type">object | null</div><p><code>null</code> if the order does not exist.</p></div>
+    </div>
+    <div class="redoc-children">
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>orderDate</code></div>
+        <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>When the order was created.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>driverAssignmentTime</code></div>
+        <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>When a driver was assigned.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>pickupTime</code></div>
+        <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>When the order was picked up.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>deliveryTime</code></div>
+        <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>When the order was delivered.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>bags</code></div>
+        <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Bag count.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 ## Responses
 
 <details class="redoc-response" open>

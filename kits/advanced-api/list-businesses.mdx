@@ -19,6 +19,25 @@ Use `businessId` from this response in every other Advanced API path.
   </div>
 </div>
 
+<div class="redoc-schema-label">RESPONSE BODY SCHEMA: <strong>application/json</strong></div>
+
+<p>Return an <strong>array</strong> of businesses. Each row has these fields:</p>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>businessId</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Use this id in every other Advanced API path.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>businessName</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Business name.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>areaName</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Area name. Can be <code>null</code>.</p></div>
+  </div>
+</div>
+
 ## Responses
 
 <details class="redoc-response" open>

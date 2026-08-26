@@ -26,10 +26,28 @@ organization-token: YOUR_ORGANIZATION_TOKEN</code></pre>
 
 <div class="redoc-schema-label">RESPONSE BODY SCHEMA: <strong>application/json</strong></div>
 
+<p>Return an <strong>array</strong> of promotions. Each promotion has these fields:</p>
+
 <div class="redoc-tree">
   <div class="redoc-field">
     <div class="redoc-field-name"><code>Code</code><span class="redoc-required">required</span></div>
     <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Promotion id.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>Name</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Promotion name. Can be <code>null</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>FromDate</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Start date. Can be <code>null</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>ToDate</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>End date. Can be <code>null</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>IsActive</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p><code>0</code> inactive, <code>1</code> active.</p></div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>Qty</code><span class="redoc-required">required</span></div>
@@ -41,11 +59,11 @@ organization-token: YOUR_ORGANIZATION_TOKEN</code></pre>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>Products</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Product codes in the deal, for example <code>1322666</code>.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Product codes in the deal, for example <code>1322666</code> or <code>1322666,6518864</code>.</p></div>
   </div>
   <div class="redoc-field">
-    <div class="redoc-field-name"><code>IsActive</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p><code>1</code> = active.</p></div>
+    <div class="redoc-field-name"><code>LimitPerOrder</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer | null</div><p>Max times this promotion can apply on one order. Can be <code>null</code>.</p></div>
   </div>
 </div>
 

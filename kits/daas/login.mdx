@@ -37,6 +37,29 @@ This login call itself does not need that header. Send the returned token on eve
   </div>
 </div>
 
+<div class="redoc-schema-label">RESPONSE BODY SCHEMA: <strong>application/json</strong></div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>status</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>For example <code>success</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>message</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Human-readable result.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>data</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Login payload.</p></div>
+  </div>
+  <div class="redoc-children">
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>token</code></div>
+      <div class="redoc-field-meta"><div class="redoc-type">string</div><p>DaaS org JWT. Send it as <code>Authorization: Bearer &lt;token&gt;</code>.</p></div>
+    </div>
+  </div>
+</div>
+
 ## Responses
 
 <details class="redoc-response" open>

@@ -18,24 +18,149 @@ api: "POST https://external-partners.example.haat.delivery/api/daas/submit-order
     <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Required unless <code>posBusinessId</code> is set.</p></div>
   </div>
   <div class="redoc-field">
-    <div class="redoc-field-name"><code>daaSOrderId</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Your order id.</p></div>
+    <div class="redoc-field-name"><code>posBusinessId</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>If set, overrides <code>businessId</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>daaSOrderId</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Your order id. Required in practice.</p></div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>userDetails</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">object</div><p><code>phoneNumber</code>, <code>location</code> (<code>latitude</code>/<code>longitude</code>), and <code>address</code>.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Customer details.</p></div>
+  </div>
+  <div class="redoc-children">
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>name</code></div>
+      <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Required when creating a new user.</p></div>
+    </div>
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>phoneNumber</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Lookup or create the user. Used for SMS.</p></div>
+    </div>
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>location</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Customer coordinates. <code>0,0</code> means location is not shared yet.</p></div>
+    </div>
+    <div class="redoc-children">
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>latitude</code><span class="redoc-required">required</span></div>
+        <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Customer latitude.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>longitude</code><span class="redoc-required">required</span></div>
+        <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Customer longitude.</p></div>
+      </div>
+    </div>
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>address</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Customer address.</p></div>
+    </div>
+    <div class="redoc-children">
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>city</code></div>
+        <div class="redoc-field-meta"><div class="redoc-type">string</div><p>City.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>street</code></div>
+        <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Street.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>buildingNumber</code></div>
+        <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Building number.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>notes</code></div>
+        <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Fallback customer notes.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>orderDetails</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Required for cash pricing.</p></div>
+  </div>
+  <div class="redoc-children">
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>items</code></div>
+      <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Line items. Required for cash pricing.</p></div>
+    </div>
+    <div class="redoc-children">
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>id</code></div>
+        <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Line item id. Default <code>0</code>.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>name</code></div>
+        <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Item name.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>quantity</code></div>
+        <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Required for cash pricing.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>price</code></div>
+        <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Unit price. Required for cash pricing.</p></div>
+      </div>
+    </div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>estimatedPickupTime</code><span class="redoc-required">required</span></div>
     <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Israel local time, converted to UTC.</p></div>
   </div>
   <div class="redoc-field">
+    <div class="redoc-field-name"><code>bags</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Ignored if the org requires bags input. <code>&lt;= 0</code> means no bags.</p></div>
+  </div>
+  <div class="redoc-field">
     <div class="redoc-field-name"><code>isCashOrder</code></div>
-    <div class="redoc-field-meta"><div class="redoc-type">boolean</div><p><code>true</code> only if cash is enabled for the org.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">boolean | null</div><p><code>true</code> only if cash is enabled for the org.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>customerNotes</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Customer note.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>totalAmount</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">number | null</div><p>Cash — order price if set.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>deliveryFee</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">number | null</div><p>Cash — added on top of total.</p></div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>language</code></div>
-    <div class="redoc-field-meta"><div class="redoc-type">string <span class="redoc-default">Default: <code>he</code></span></div><p>Default Hebrew.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string | null <span class="redoc-default">Default: <code>he</code></span></div><p>Default Hebrew.</p></div>
+  </div>
+</div>
+
+<div class="redoc-schema-label">RESPONSE BODY SCHEMA: <strong>application/json</strong></div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>status</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>For example <code>success</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>message</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Human-readable result.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>data</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Submit result.</p></div>
+  </div>
+  <div class="redoc-children">
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>haatOrderId</code></div>
+      <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Use this id for status and cancel.</p></div>
+    </div>
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>estimatedPickupTime</code></div>
+      <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Estimated pickup time.</p></div>
+    </div>
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>estimatedDeliveryTime</code></div>
+      <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Estimated delivery time.</p></div>
+    </div>
   </div>
 </div>
 

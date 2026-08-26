@@ -19,6 +19,47 @@ Call this after [Login](/kits/daas/login).
   </div>
 </div>
 
+<div class="redoc-schema-label">RESPONSE BODY SCHEMA: <strong>application/json</strong></div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>status</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>For example <code>success</code>.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>message</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Human-readable result.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>data</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Businesses for this org.</p></div>
+  </div>
+  <div class="redoc-children">
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>organizationId</code></div>
+      <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Authenticated organization id.</p></div>
+    </div>
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>businesses</code></div>
+      <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Businesses linked to the org.</p></div>
+    </div>
+    <div class="redoc-children">
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>businessId</code></div>
+        <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Use this id on later DaaS calls.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>businessName</code></div>
+        <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Business name.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>areaName</code></div>
+        <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Area name.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 ## Responses
 
 <details class="redoc-response" open>
