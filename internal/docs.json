@@ -48,24 +48,36 @@
     }
   },
   "navigation": {
-    "groups": [
+    "tabs": [
       {
-        "group": "POS for Content",
-        "pages": [
-          "builders/overview",
-          "builders/matching-keys",
-          "builders/restaurants",
-          "builders/markets",
-          "builders/directory",
-          "builders/process"
+        "tab": "POS for Content",
+        "icon": "clipboard-list",
+        "groups": [
+          {
+            "group": "Guide",
+            "pages": [
+              "builders/overview",
+              "builders/matching-keys",
+              "builders/restaurants",
+              "builders/markets",
+              "builders/directory",
+              "builders/process"
+            ]
+          }
         ]
       }
     ]
   },
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/builders/overview"
+    }
+  ],
   "logo": {
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg",
-    "href": "/"
+    "href": "/builders/overview"
   },
   "navbar": {
     "links": [
