@@ -4,3 +4,4 @@ node_modules
 .mintlify
 haat-docs-for-mintlify.zip
 package-lock.json
+internal
