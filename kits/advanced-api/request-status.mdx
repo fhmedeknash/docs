@@ -23,23 +23,6 @@ When a PUT returns `"Pending"`, call this until `"Success"` or `"Failed"`.
   </div>
 </div>
 
-<div class="redoc-schema-label">RESPONSE BODY SCHEMA: <strong>application/json</strong></div>
-
-<div class="redoc-tree">
-  <div class="redoc-field">
-    <div class="redoc-field-name"><code>requestId</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Same tracking id you sent in the path.</p></div>
-  </div>
-  <div class="redoc-field">
-    <div class="redoc-field-name"><code>status</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">string</div><p><code>Success</code>, <code>Pending</code>, or <code>Failed</code>.</p></div>
-  </div>
-  <div class="redoc-field">
-    <div class="redoc-field-name"><code>message</code></div>
-    <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Human-readable result. Can be <code>null</code>.</p></div>
-  </div>
-</div>
-
 ## Responses
 
 <details class="redoc-response" open>

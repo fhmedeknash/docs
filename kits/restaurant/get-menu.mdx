@@ -26,7 +26,7 @@ X-Haat-Version: 1.0</code></pre>
 
 <div class="redoc-schema-label">RESPONSE BODY SCHEMA: <strong>application/json</strong></div>
 
-<p>Return an <strong>array</strong> of categories. Each category has these fields:</p>
+<p>Return an <strong>array</strong> of categories.</p>
 
 <div class="redoc-tree">
   <div class="redoc-field">
@@ -35,7 +35,7 @@ X-Haat-Version: 1.0</code></pre>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>name</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized names. <code>en</code> is required.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized names.</p></div>
   </div>
   <div class="redoc-children">
     <div class="redoc-field">
@@ -53,7 +53,7 @@ X-Haat-Version: 1.0</code></pre>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>image</code></div>
-    <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Category image URL.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Public image URL.</p></div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>meals</code><span class="redoc-required">required</span></div>
@@ -62,23 +62,23 @@ X-Haat-Version: 1.0</code></pre>
   <div class="redoc-children">
     <div class="redoc-field">
       <div class="redoc-field-name"><code>posId</code><span class="redoc-required">required</span></div>
-      <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Your POS meal id.</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>POS meal id.</p></div>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>name</code><span class="redoc-required">required</span></div>
-      <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized names. Same shape as category <code>name</code> (<code>en</code>, <code>he</code>, <code>ar</code>).</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized names. <code>en</code> is required.</p></div>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>description</code></div>
-      <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized descriptions. Same shape as <code>name</code>.</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized descriptions.</p></div>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>price</code><span class="redoc-required">required</span></div>
-      <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Unit price with decimal precision, for example <code>32.5</code> not <code>3250</code>.</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Unit price with decimals, for example <code>32.5</code> not <code>3250</code>.</p></div>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>image</code></div>
-      <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Meal image URL.</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Public image URL.</p></div>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>availability</code><span class="redoc-required">required</span></div>
@@ -86,20 +86,20 @@ X-Haat-Version: 1.0</code></pre>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>discount</code></div>
-      <div class="redoc-field-meta"><div class="redoc-type">number | null</div><p>Discount amount. Can be <code>null</code>.</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">number | null</div><p>Discount amount, if any.</p></div>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>addons</code></div>
-      <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Addon groups on this meal.</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Addon groups on the meal.</p></div>
     </div>
     <div class="redoc-children">
       <div class="redoc-field">
         <div class="redoc-field-name"><code>posId</code><span class="redoc-required">required</span></div>
-        <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Addon group id.</p></div>
+        <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>POS addon-group id.</p></div>
       </div>
       <div class="redoc-field">
         <div class="redoc-field-name"><code>name</code><span class="redoc-required">required</span></div>
-        <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized group name.</p></div>
+        <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized group name. <code>en</code> is required.</p></div>
       </div>
       <div class="redoc-field">
         <div class="redoc-field-name"><code>min</code><span class="redoc-required">required</span></div>
@@ -115,24 +115,24 @@ X-Haat-Version: 1.0</code></pre>
       </div>
       <div class="redoc-field">
         <div class="redoc-field-name"><code>addons</code><span class="redoc-required">required</span></div>
-        <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Ingredients / choices in this group.</p></div>
+        <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Ingredients in the group.</p></div>
       </div>
       <div class="redoc-children">
         <div class="redoc-field">
           <div class="redoc-field-name"><code>posId</code><span class="redoc-required">required</span></div>
-          <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Ingredient id.</p></div>
+          <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>POS ingredient id.</p></div>
         </div>
         <div class="redoc-field">
           <div class="redoc-field-name"><code>name</code><span class="redoc-required">required</span></div>
-          <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized ingredient name.</p></div>
+          <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized name. <code>en</code> is required.</p></div>
         </div>
         <div class="redoc-field">
           <div class="redoc-field-name"><code>price</code><span class="redoc-required">required</span></div>
-          <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Additional price. <code>0.0</code> if free.</p></div>
+          <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Additional price. Use <code>0.0</code> if free.</p></div>
         </div>
         <div class="redoc-field">
           <div class="redoc-field-name"><code>image</code></div>
-          <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Ingredient image URL.</p></div>
+          <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Public image URL.</p></div>
         </div>
         <div class="redoc-field">
           <div class="redoc-field-name"><code>availability</code><span class="redoc-required">required</span></div>
@@ -143,28 +143,20 @@ X-Haat-Version: 1.0</code></pre>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>deals</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Deals in this category. Same addon shape as meals, plus:</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Deals in this category. Same shape as meals, plus <code>priority</code>.</p></div>
   </div>
   <div class="redoc-children">
     <div class="redoc-field">
       <div class="redoc-field-name"><code>posId</code><span class="redoc-required">required</span></div>
-      <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Your POS deal id.</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>POS deal id.</p></div>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>name</code><span class="redoc-required">required</span></div>
-      <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized deal name.</p></div>
-    </div>
-    <div class="redoc-field">
-      <div class="redoc-field-name"><code>description</code></div>
-      <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized deal description.</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized names. <code>en</code> is required.</p></div>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>price</code><span class="redoc-required">required</span></div>
       <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Deal price.</p></div>
-    </div>
-    <div class="redoc-field">
-      <div class="redoc-field-name"><code>image</code></div>
-      <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Deal image URL.</p></div>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>availability</code><span class="redoc-required">required</span></div>
@@ -173,10 +165,6 @@ X-Haat-Version: 1.0</code></pre>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>priority</code></div>
       <div class="redoc-field-meta"><div class="redoc-type">integer | null</div><p>Higher values are shown first.</p></div>
-    </div>
-    <div class="redoc-field">
-      <div class="redoc-field-name"><code>discount</code></div>
-      <div class="redoc-field-meta"><div class="redoc-type">number | null</div><p>Discount amount. Can be <code>null</code>.</p></div>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>addons</code></div>

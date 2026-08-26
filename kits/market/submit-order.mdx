@@ -16,16 +16,16 @@ organization-token: YOUR_ORGANIZATION_TOKEN</code></pre>
 <div class="redoc-tree">
   <div class="redoc-field">
     <div class="redoc-field-name"><code>Items</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Order lines from HAAT.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Order lines.</p></div>
   </div>
   <div class="redoc-children">
     <div class="redoc-field">
       <div class="redoc-field-name"><code>Code</code><span class="redoc-required">required</span></div>
-      <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Product code from the catalog.</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Product code.</p></div>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>Name</code></div>
-      <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Product name. Can be <code>null</code>.</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Product name.</p></div>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>SalePrice</code><span class="redoc-required">required</span></div>
@@ -33,7 +33,7 @@ organization-token: YOUR_ORGANIZATION_TOKEN</code></pre>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>Quantity</code><span class="redoc-required">required</span></div>
-      <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Ordered quantity.</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Quantity ordered.</p></div>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>Units</code><span class="redoc-required">required</span></div>
@@ -59,33 +59,16 @@ organization-token: YOUR_ORGANIZATION_TOKEN</code></pre>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>Comments</code></div>
-      <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Payment note. Can be <code>null</code>.</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Optional payment note.</p></div>
     </div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>Comments</code></div>
-    <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Order note. Can be <code>null</code>.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Optional order note.</p></div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>Total</code><span class="redoc-required">required</span></div>
     <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Order total.</p></div>
-  </div>
-</div>
-
-<div class="redoc-schema-label">RESPONSE BODY SCHEMA: <strong>application/json</strong></div>
-
-<div class="redoc-tree">
-  <div class="redoc-field">
-    <div class="redoc-field-name"><code>status</code></div>
-    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Result status, for example <code>success</code>.</p></div>
-  </div>
-  <div class="redoc-field">
-    <div class="redoc-field-name"><code>message</code></div>
-    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Human-readable result.</p></div>
-  </div>
-  <div class="redoc-field">
-    <div class="redoc-field-name"><code>posOrderId</code></div>
-    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Your POS order id.</p></div>
   </div>
 </div>
 
