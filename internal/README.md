@@ -8,10 +8,14 @@ This is a **separate Mintlify site**. It is not part of the public partner docs.
 
 ## Local preview
 
-From this folder:
+Do **not** run Mintlify from `HAAT/internal` while the public docs `docs.json` sits in the parent folder. Mintlify walks up, loads the partner site, and the builders sidebar list disappears.
+
+Copy this folder somewhere outside the public docs repo, then preview:
 
 ```bash
-npx mintlify dev --port 3001
+rsync -a --delete --exclude README.md /Users/fhme.deknash/HAAT/internal/ /tmp/haat-builders-preview/
+cd /tmp/haat-builders-preview
+npx mintlify dev --port 3001 --no-open
 ```
 
 Then open http://127.0.0.1:3001/builders/overview

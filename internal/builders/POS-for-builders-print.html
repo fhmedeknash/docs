@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>POS for builders — HAAT</title>
+  <style>
+    @page { size: A4; margin: 16mm 14mm; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      color: #1a1a1a;
+      font-size: 11pt;
+      line-height: 1.45;
+      margin: 0;
+    }
+    h1 { font-size: 22pt; margin: 0 0 8px; color: #9B2226; page-break-after: avoid; }
+    h2 { font-size: 15pt; margin: 22px 0 8px; color: #E85D04; page-break-after: avoid; border-bottom: 1px solid #f0d0c0; padding-bottom: 4px; }
+    h3 { font-size: 12.5pt; margin: 16px 0 6px; color: #333; page-break-after: avoid; }
+    p, li { margin: 0 0 8px; }
+    ul, ol { margin: 0 0 10px; padding-left: 22px; }
+    .cover {
+      border-bottom: 4px solid #E85D04;
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+    }
+    .kicker { color: #E85D04; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; font-size: 9.5pt; }
+    .sub { color: #555; font-size: 12pt; margin: 0; }
+    .note, .warn, .card {
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin: 10px 0 14px;
+      page-break-inside: avoid;
+    }
+    .note { background: #fff6ef; border-left: 4px solid #E85D04; }
+    .warn { background: #fff1f1; border-left: 4px solid #9B2226; }
+    .card-row { display: flex; gap: 10px; margin: 10px 0 14px; }
+    .card { flex: 1; background: #f7f7f7; border-left: 4px solid #E85D04; }
+    .card strong { display: block; margin-bottom: 4px; }
+    table { width: 100%; border-collapse: collapse; margin: 8px 0 16px; font-size: 9.5pt; page-break-inside: auto; }
+    th, td { border: 1px solid #ddd; padding: 6px 7px; text-align: left; vertical-align: top; }
+    th { background: #fff3ea; color: #7a2e10; }
+    tr { page-break-inside: avoid; }
+    .section { page-break-before: always; }
+    .section:first-of-type { page-break-before: auto; }
+    .checks { list-style: none; padding-left: 0; }
+    .checks li { padding-left: 22px; position: relative; }
+    .checks li:before { content: "☐"; position: absolute; left: 0; }
+    .ol-steps { padding-left: 22px; }
+    .ol-steps > li { margin-bottom: 8px; }
+    .toc a { color: #1a1a1a; text-decoration: none; }
+    .toc li { margin-bottom: 4px; }
+    .muted { color: #666; font-size: 9.5pt; }
+  </style>
+</head>
+<body>
+  <div class="cover">
+    <div class="kicker">HAAT · Content / Menu builders</div>
+    <h1>POS for builders</h1>
+    <p class="sub">A simple internal guide: what a POS is, what you must fill in, and what each POS can change.</p>
+  </div>
+
+  <ol class="toc">
+    <li>POS for builders</li>
+    <li>Matching keys</li>
+    <li>Restaurant builders</li>
+    <li>Market builders</li>
+    <li>POS directory</li>
+    <li>How we work together</li>
+  </ol>
+
+  <h2>1. What is a POS?</h2>
+  <p>This guide is for <strong>people who build menus</strong> in HAAT — Market builders and Restaurant builders.</p>
+  <p><strong>POS</strong> means the system the business already uses in the store.</p>
+  <ul>
+    <li>In a <strong>restaurant</strong>, it is the cash register / kitchen screen (for example Tabit).</li>
+    <li>In a <strong>market</strong>, it is the system that holds products, barcodes, and prices (for example Comax).</li>
+  </ul>
+  <p>When someone orders on HAAT, the order appears on <strong>their</strong> screen.</p>
+
+  <h2>The three jobs a POS can do</h2>
+  <p>Not every POS does all three.</p>
+  <table>
+    <thead><tr><th>Job</th><th>In simple words</th><th>Almost every POS?</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Send them the order</strong></td><td>Customer orders on HAAT → their kitchen / cashier sees it</td><td>Yes</td></tr>
+      <tr><td><strong>Send us catalog info</strong></td><td>They send us menu, prices, or stock. This is “the sync”</td><td>Yes</td></tr>
+      <tr><td><strong>Read our catalog</strong></td><td>They copy our menu. <strong>KubeGet</strong> and <strong>Kaman</strong> do this</td><td>No</td></tr>
+    </tbody>
+  </table>
+
+  <h2>What you must get right</h2>
+  <div class="card-row">
+    <div class="card"><strong>Restaurant builder</strong>Every item that can be ordered has a <strong>PosId</strong> — meal, deal, and ingredient. Tabit and McDonald's often fill this for you.</div>
+    <div class="card"><strong>Market builder</strong>Copy the <strong>barcode</strong> and <strong>product code</strong> exactly as they are in the POS file. There is no pairing table.</div>
+  </div>
+  <div class="warn">If the number is wrong, the customer can still order on HAAT — but the shop will see the wrong item, or “item not found.”</div>
+
+  <div class="section">
+    <h1>2. Matching keys</h1>
+    <p>HAAT and the POS each have their own item numbers.</p>
+    <p>Example: they call a burger <strong>#58821</strong>. We call it <strong>#4417</strong>. Sync and orders only work if we know those two are the <strong>same item</strong>.</p>
+
+    <h2>Restaurants = PosId</h2>
+    <p>Think of <strong>PosId</strong> as “their item number,” saved next to our item in HAAT. Every item that can be ordered has a PosId: meal, deal, and ingredient.</p>
+    <p>When a customer orders, HAAT <strong>changes our numbers into their numbers</strong>, then sends the order.</p>
+    <div class="warn">If an item is live on HAAT with <strong>no PosId</strong>, the customer can buy it, and the kitchen will not know what it is. Map every meal, deal, and ingredient.</div>
+    <h3>Who fills in PosId?</h3>
+    <table>
+      <thead><tr><th>POS</th><th>Who puts the number in?</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Tabit</strong> or <strong>McDonald's</strong> (first full menu)</td><td><strong>Automatic</strong> — created with the menu</td></tr>
+        <tr><td><strong>BeecommCloud</strong>, <strong>LeenCopot</strong>, Beecomm, PayPo, PizzaHut, Iron, and similar</td><td><strong>You</strong>, before go-live</td></tr>
+        <tr><td><strong>KubeGet</strong>, <strong>Kaman</strong></td><td><strong>They</strong> do it on their side</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Markets = barcode and product code</h2>
+    <p>Markets have <strong>no pairing table</strong>. We find the product by the code written on it. Copy the value <strong>exactly</strong>. Do not drop a zero. Do not add a space.</p>
+    <table>
+      <thead><tr><th>Code you copy</th><th>Used for</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Barcode</strong></td><td>Finding the product (Comax, Aviv)</td></tr>
+        <tr><td><strong>Product code</strong></td><td>Finding the product (All4Shops, Barak) <strong>and</strong> attaching <strong>deals</strong></td></tr>
+      </tbody>
+    </table>
+    <div class="warn">Deals use <strong>product code</strong>, not barcode. If the product code on the deal does not match the file, the promotion will not work.</div>
+    <p><strong>Who does the matching?</strong> We do — except KubeGet and Kaman, who match on their side.</p>
+    <h3>Before you finish a build</h3>
+    <ul class="checks">
+      <li>The business has a POS certificate (it is really connected).</li>
+      <li>You have their item list with <strong>numbers</strong>, not only names or a photo.</li>
+      <li>Restaurants: every item that can be ordered has a PosId — meal, deal, and ingredient.</li>
+      <li>Markets: barcode and product code match the file character by character.</li>
+      <li>You placed a <strong>test order</strong> and the shop screen shows the same items.</li>
+      <li>When they change items later, you update HAAT the same day.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h1>3. Restaurant builders</h1>
+    <div class="note"><strong>Only Tabit and McDonald's can build the HAAT menu for you.</strong> For every other restaurant POS, you build the menu first, then you map PosId.</div>
+
+    <h2>Your steps on every restaurant</h2>
+    <ol class="ol-steps">
+      <li><strong>Get their item list</strong> with IDs, not only names.</li>
+      <li><strong>Build or check the HAAT menu</strong> — same items, names, and prices.</li>
+      <li><strong>Fill PosId</strong> on every item that can be ordered — meal, deal, and ingredient. Skip only if Tabit or McDonald's already created the mapping.</li>
+      <li><strong>Send a test order.</strong> Wrong PosId is the usual reason an order “went to the POS wrong.”</li>
+      <li><strong>Keep it updated</strong> the same day they add or replace items.</li>
+    </ol>
+
+    <h2>Tabit</h2>
+    <p><strong>What it does:</strong> First time, builds the whole menu and fills PosId for you. If a menu already exists, only updates in stock / hidden. New items may arrive <strong>hidden</strong> for you to review. Can copy to franchise branches. Also sends order status.</p>
+    <p><strong>What you do:</strong> Review the auto-built menu and hidden new items (they are not live until you review). Do not change PosId unless there is a duplicate, or the restaurant wants a HAAT-only item.</p>
+
+    <h2>McDonald's</h2>
+    <p><strong>What it does:</strong> Creates and updates the menu and PosId mapping. Stock updates turn items available / unavailable.</p>
+    <p><strong>What you do:</strong> Review the synced menu. If McDonald's marked something out of stock, do not unhide it by hand.</p>
+
+    <h2>BeecommCloud and LeenCopot</h2>
+    <p>We pull their item list so our copy stays fresh. This does <strong>not</strong> change the HAAT menu by itself.</p>
+    <p><strong>What you do:</strong> Use that list when you map. New HAAT meals will not appear on their own.</p>
+
+    <h2>KubeGet and Kaman</h2>
+    <p>These work backwards: they copy our menu and match items on their side.</p>
+    <p><strong>What you do:</strong> Keep the HAAT menu clean. You do not have to map for them.</p>
+
+    <h2>Orders only — you build everything</h2>
+    <p><strong>Beecomm, PayPo, NetLunch, Elpos, PizzaHut, Presto, Beteavon, Iron</strong></p>
+    <p>These do not update the catalog. You build the menu by hand and map every PosId before the first live order.</p>
+    <ul>
+      <li>PayPo and Beecomm send order status, but not menu updates.</li>
+      <li>Presto gets the order as a file. Mapping work is the same for you.</li>
+    </ul>
+    <p><strong>Aviv restaurants:</strong> mapping + orders only. No product file for the restaurant menu. Aviv markets are covered in the market chapter.</p>
+
+    <h3>Remember</h3>
+    <ul>
+      <li>Only two POS types can build a restaurant menu: Tabit and McDonald's.</li>
+      <li>Wrong kitchen ticket? Check PosId first. Names can look right while the number is wrong.</li>
+      <li>Hidden Tabit items are waiting for you — they are not live yet.</li>
+      <li>A missing dish may be a stock update. Check the POS type before you “fix” it.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h1>4. Market builders</h1>
+    <p>Markets use <strong>barcode</strong> and <strong>product code</strong>. There is no PosId table.</p>
+    <p>Most market POS types update products that already exist, and they create or update deals. They usually do not add brand-new products. The exception is <strong>Comax</strong>.</p>
+    <div class="warn">There is no safety net. One extra space or a missing zero on the barcode will not show a red error. The order simply will not match on their side.</div>
+
+    <h2>Your steps on every market</h2>
+    <ol class="ol-steps">
+      <li><strong>Which POS is it?</strong> Comax, All4Shops, Aviv, Barak — or a fully manual catalog.</li>
+      <li><strong>Get their file</strong> (CSV or JSON). Copy barcode and product code exactly.</li>
+      <li><strong>Build or align the HAAT catalog.</strong> Do not invent extra product codes if this POS only updates existing products.</li>
+      <li><strong>Fill both codes.</strong> Barcode finds the product for Comax and Aviv. Product code finds the product for All4Shops and Barak — and it is what deals use.</li>
+      <li><strong>Send a test order.</strong></li>
+    </ol>
+
+    <h2>Comax</h2>
+    <p>They can add new products, and update price and availability. We pull deals every day at 05:00 (and you can ask for an extra pull).</p>
+    <p><strong>Match on:</strong> barcode or product code for products. Product code for deals.</p>
+    <p><strong>What you do:</strong> Check codes on anything you add by hand. If a deal does not show, the product code does not match.</p>
+
+    <h2>All4Shops</h2>
+    <p>They send price and availability only. They cannot create a new product. We pull barcodes at 01:00 (mismatch email) and deals at 05:00.</p>
+    <p><strong>Match on:</strong> product code for everything.</p>
+    <p><strong>What you do:</strong> Create the HAAT product first. Then their price can land on it. Open the mismatch email — those rows will never update until you fix the product code.</p>
+
+    <h2>Aviv</h2>
+    <p>We download their CSV files. Product and deals: once a day. Price file: every 2 hours.</p>
+    <p><strong>Match on:</strong> barcode for products. Product code for deals.</p>
+    <p><strong>What you do:</strong> Build from their file. Prices are only as new as the last 2-hour file — not live.</p>
+
+    <h2>Barak</h2>
+    <p>We download their CSV. After we read a file, it is moved to an <strong>OLD</strong> folder so we do not read it twice.</p>
+    <p><strong>Match on:</strong> product code (<code>ItemCode</code>).</p>
+    <p><strong>What you do:</strong> HAAT ItemCode must match their file. If they say “we already sent the file,” it may already be in OLD. Ask for a new file, or a pull from backoffice.</p>
+
+    <h3>Remember</h3>
+    <ul>
+      <li>Copy codes exactly.</li>
+      <li>Only Comax is expected to add new SKUs. All4Shops will never create a product for you.</li>
+      <li>Deals use product code, even when the product itself matches on barcode.</li>
+      <li>Aviv and Barak are not real-time.</li>
+      <li>Read the All4Shops mismatch email.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h1>5. POS directory</h1>
+    <p>Look up a POS name and see what it can change on the menu.</p>
+
+    <h2>Restaurants</h2>
+    <table>
+      <thead>
+        <tr><th>POS</th><th>Can it build the HAAT menu?</th><th>What it can change</th><th>Who starts it</th><th>Code you must get right</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Tabit</td><td><strong>Yes</strong> (first time)</td><td>Full menu + hide / stock</td><td>They send it</td><td>PosId (automatic)</td></tr>
+        <tr><td>McDonald's</td><td><strong>Yes</strong></td><td>Full menu + stock</td><td>They send it</td><td>PosId (automatic)</td></tr>
+        <tr><td>BeecommCloud</td><td>No</td><td>Nothing on our menu. Refreshes their item list</td><td>We pull</td><td>PosId (you fill it)</td></tr>
+        <tr><td>LeenCopot</td><td>No</td><td>Nothing on our menu. Refreshes their item list</td><td>We pull</td><td>PosId (you fill it)</td></tr>
+        <tr><td>KubeGet, Kaman</td><td>They copy our menu</td><td>—</td><td>They pull</td><td>They match on their side</td></tr>
+        <tr><td>Beecomm, PayPo, NetLunch, Elpos, PizzaHut, Presto, Beteavon, Iron</td><td>No</td><td>Nothing. Orders only</td><td>—</td><td>PosId (you fill it)</td></tr>
+        <tr><td>Aviv (as restaurant)</td><td>No</td><td>Nothing. Orders only</td><td>—</td><td>PosId (you fill it)</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Markets</h2>
+    <table>
+      <thead>
+        <tr><th>POS</th><th>Can it add new products?</th><th>What it can change</th><th>Who starts it</th><th>Code you must get right</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Comax</td><td><strong>Yes</strong></td><td>Products + deals</td><td>They send products. We pull deals</td><td>Barcode or product code. Deals = product code</td></tr>
+        <tr><td>All4Shops</td><td><strong>No</strong></td><td>Price, availability, barcodes, deals</td><td>They send prices. We pull the rest</td><td>Product code</td></tr>
+        <tr><td>Aviv</td><td>Updates what exists</td><td>Products, prices, deals</td><td>We download files</td><td>Barcode for products. Product code for deals</td></tr>
+        <tr><td>Barak</td><td>Updates what exists</td><td>Products + deals</td><td>We download files</td><td>Product code (ItemCode)</td></tr>
+      </tbody>
+    </table>
+
+    <h2>If something looks wrong</h2>
+    <h3>Restaurant</h3>
+    <table>
+      <thead><tr><th>What you see</th><th>What to do</th></tr></thead>
+      <tbody>
+        <tr><td>The kitchen ticket has the wrong items</td><td>Check PosId on each item — the name can look right while the number is wrong</td></tr>
+        <tr><td>A new dish never appears</td><td>Only Tabit and McDonald's can create meals. For other POS types, you add it in HAAT and map PosId</td></tr>
+        <tr><td>An item disappeared</td><td>McDonald's (and some others) can hide items when they are out of stock. Check the POS type before you unhide it</td></tr>
+      </tbody>
+    </table>
+    <h3>Market</h3>
+    <table>
+      <thead><tr><th>What you see</th><th>What to do</th></tr></thead>
+      <tbody>
+        <tr><td>The shop gets the wrong product</td><td>The barcode or product code does not match their file. Copy it again, exactly</td></tr>
+        <tr><td>Prices look old</td><td>Aviv / Barak: wait for the next file, or ask for a pull. Comax / All4Shops: check the last update they sent</td></tr>
+        <tr><td>A deal does not work</td><td>Deals match on product code. Check if there is a mismatch email</td></tr>
+        <tr><td>An All4Shops row never updates</td><td>Open the mismatch email and fix the product code</td></tr>
+        <tr><td>The order was sent to the partner app, but it does not appear on the POS</td><td>Check the picker app. The order may be sitting there instead of on the POS</td></tr>
+      </tbody>
+    </table>
+    <p class="muted">Aviv works as a market and as a restaurant. Unknown is not a real POS. MarketPrice is internal HAAT — do not describe it to partners.</p>
+  </div>
+
+  <div class="section">
+    <h1>6. How we work together</h1>
+    <div class="warn"><strong>Sales / Account Manager owns the partner.</strong> They chase the client, book calls, and keep the process moving. Product and Content do not own that relationship.</div>
+
+    <h2>Commercial (SE / AM)</h2>
+    <ul>
+      <li>Talk to the partner and book meetings</li>
+      <li>Make sure the client answers</li>
+      <li>Set expectations on time and what is included</li>
+    </ul>
+
+    <h2>Content (builders)</h2>
+    <ul>
+      <li>Collect the files (JSON or CSV) with real IDs</li>
+      <li>Build the menu with the correct PosId (restaurants) or barcode / product code (markets)</li>
+      <li>Update those values when the POS changes items</li>
+      <li>Place a test order and confirm it works</li>
+      <li>Help when an order fails; send real tech bugs to Product / R&amp;D</li>
+    </ul>
+
+    <h2>Product / R&amp;D</h2>
+    <ul>
+      <li>Join after Commercial has checked the request is worth doing</li>
+      <li>Size the work and decide a small first version vs full integration</li>
+      <li>Technical kickoff; build or turn on the connection</li>
+      <li>They do not replace Commercial as the partner contact</li>
+    </ul>
+
+    <h2>Before Product starts</h2>
+    <p>Commercial answers: market or restaurant? Do they have their own tech team?</p>
+    <p><strong>About priority</strong></p>
+    <ul>
+      <li>Total number of businesses using the POS</li>
+      <li>Number of existing HAAT partners using this POS</li>
+      <li>Presence of enterprise clients (for example franchises, chains, large retailers)</li>
+    </ul>
+
+    <h2>After it is approved</h2>
+    <ol class="ol-steps">
+      <li>Name the people (one POS contact, one HAAT contact).</li>
+      <li>Kickoff: what is in the first version, and the dates.</li>
+      <li>Content gets the catalog file with stable IDs.</li>
+      <li>Pilot shops go live. Success = test orders look correct on their screen.</li>
+      <li>After launch: order mistakes → Content first. Broken connection → Product / R&amp;D.</li>
+    </ol>
+  </div>
+</body>
+</html>
