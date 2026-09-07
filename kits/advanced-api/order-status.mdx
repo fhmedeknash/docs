@@ -55,15 +55,14 @@ api: "PUT http://ext-integration.haat-delivery.io/api/pos/business/{businessId}/
 
 ## Responses
 
-<details class="redoc-response" open>
-  <summary><span class="redoc-code">200</span> Success or queued</summary>
-  <div class="redoc-response-body">If <code>status</code> is <code>Pending</code>, poll Get request status.</div>
-</details>
-
-<details class="redoc-response redoc-response-error">
-  <summary><span class="redoc-code">400</span> Validation failed</summary>
-  <div class="redoc-response-body">Start prepare without <code>estimationMinutes</code> fails.</div>
-</details>
+<AccordionGroup>
+  <Accordion title="200 — Success or queued">
+    If `status` is `Pending`, poll Get request status.
+  </Accordion>
+  <Accordion title="400 — Validation failed">
+    Start prepare without `estimationMinutes` fails.
+  </Accordion>
+</AccordionGroup>
 
 <RequestExample>
 ```bash cURL

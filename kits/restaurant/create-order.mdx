@@ -149,15 +149,14 @@ Idempotency-Key: 7dda287d-21de-4159-a058-e60618e9b786</code></pre>
 
 ## Responses
 
-<details class="redoc-response" open>
-  <summary><span class="redoc-code">200</span> Order accepted</summary>
-  <div class="redoc-response-body">Return <code>status</code>, <code>message</code>, and <code>posOrderId</code>.</div>
-</details>
-
-<details class="redoc-response redoc-response-error">
-  <summary><span class="redoc-code">401</span> Invalid or missing authentication token</summary>
-  <div class="redoc-response-body">Check Bearer or <code>X-Signature</code>.</div>
-</details>
+<AccordionGroup>
+  <Accordion title="200 — Order accepted">
+    Return `status`, `message`, and `posOrderId`.
+  </Accordion>
+  <Accordion title="401 — Invalid or missing authentication token">
+    Check Bearer or `X-Signature`.
+  </Accordion>
+</AccordionGroup>
 
 <RequestExample>
 ```bash cURL

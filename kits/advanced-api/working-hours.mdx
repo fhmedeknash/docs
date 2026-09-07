@@ -71,15 +71,14 @@ Full replacement. Any day you leave out is treated as closed. `day`: 1 = Sunday 
 
 ## Responses
 
-<details class="redoc-response" open>
-  <summary><span class="redoc-code">200</span> Success or queued</summary>
-  <div class="redoc-response-body">If <code>status</code> is <code>Pending</code>, poll Get request status.</div>
-</details>
-
-<details class="redoc-response redoc-response-error">
-  <summary><span class="redoc-code">400</span> Validation failed</summary>
-  <div class="redoc-response-body">Overlapping hours or a bad <code>day</code> value.</div>
-</details>
+<AccordionGroup>
+  <Accordion title="200 — Success or queued">
+    If `status` is `Pending`, poll Get request status.
+  </Accordion>
+  <Accordion title="400 — Validation failed">
+    Overlapping hours or a bad `day` value.
+  </Accordion>
+</AccordionGroup>
 
 <RequestExample>
 ```bash cURL

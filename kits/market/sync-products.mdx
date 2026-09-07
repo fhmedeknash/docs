@@ -35,15 +35,14 @@ Call this after [Login](/kits/market/login). Full list once a day, plus a smalle
 
 ## Responses
 
-<details class="redoc-response" open>
-  <summary><span class="redoc-code">200</span> Products updated</summary>
-  <div class="redoc-response-body">HAAT confirms which product codes were updated.</div>
-</details>
-
-<details class="redoc-response redoc-response-error">
-  <summary><span class="redoc-code">401</span> Missing or invalid token</summary>
-  <div class="redoc-response-body">Login again and retry with a fresh bearer token.</div>
-</details>
+<AccordionGroup>
+  <Accordion title="200 — Products updated">
+    HAAT confirms which product codes were updated.
+  </Accordion>
+  <Accordion title="401 — Missing or invalid token">
+    Login again and retry with a fresh bearer token.
+  </Accordion>
+</AccordionGroup>
 
 <RequestExample>
 ```bash cURL

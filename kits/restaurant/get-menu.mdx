@@ -187,15 +187,14 @@ X-Haat-Version: 1.0</code></pre>
 
 ## Responses
 
-<details class="redoc-response" open>
-  <summary><span class="redoc-code">200</span> Menu successfully retrieved</summary>
-  <div class="redoc-response-body">Full menu: categories, meals, deals, and addons.</div>
-</details>
-
-<details class="redoc-response redoc-response-error">
-  <summary><span class="redoc-code">401</span> Invalid or missing authentication token</summary>
-  <div class="redoc-response-body">Check Bearer or <code>X-Signature</code>.</div>
-</details>
+<AccordionGroup>
+  <Accordion title="200 — Menu successfully retrieved">
+    Full menu: categories, meals, deals, and addons.
+  </Accordion>
+  <Accordion title="401 — Invalid or missing authentication token">
+    Check Bearer or `X-Signature`.
+  </Accordion>
+</AccordionGroup>
 
 <RequestExample>
 ```bash cURL

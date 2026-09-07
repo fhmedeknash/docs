@@ -91,15 +91,14 @@ organization-token: YOUR_ORGANIZATION_TOKEN</code></pre>
 
 ## Responses
 
-<details class="redoc-response" open>
-  <summary><span class="redoc-code">200</span> Order accepted</summary>
-  <div class="redoc-response-body">Return <code>posOrderId</code> from your POS.</div>
-</details>
-
-<details class="redoc-response redoc-response-error">
-  <summary><span class="redoc-code">401</span> Missing or invalid tokens</summary>
-  <div class="redoc-response-body">Validate both tokens before accepting the order.</div>
-</details>
+<AccordionGroup>
+  <Accordion title="200 — Order accepted">
+    Return `posOrderId` from your POS.
+  </Accordion>
+  <Accordion title="401 — Missing or invalid tokens">
+    Validate both tokens before accepting the order.
+  </Accordion>
+</AccordionGroup>
 
 <RequestExample>
 ```bash cURL

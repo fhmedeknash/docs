@@ -62,26 +62,17 @@ This login call itself does not need that header. Send the returned token on eve
 
 ## Responses
 
-<details class="redoc-response" open>
-  <summary><span class="redoc-code">200</span> Successfully retrieved access token</summary>
-  <div class="redoc-response-body">
-    Returns <code>data.token</code>. Use it as <code>Authorization: Bearer &lt;token&gt;</code> on the next calls.
-  </div>
-</details>
-
-<details class="redoc-response redoc-response-error">
-  <summary><span class="redoc-code">401</span> Invalid username or password</summary>
-  <div class="redoc-response-body">
+<AccordionGroup>
+  <Accordion title="200 — Successfully retrieved access token">
+    Returns `data.token`. Use it as `Authorization: Bearer <token>` on the next calls.
+  </Accordion>
+  <Accordion title="401 — Invalid username or password">
     Wrong credentials. Check the values from onboarding.
-  </div>
-</details>
-
-<details class="redoc-response redoc-response-error">
-  <summary><span class="redoc-code">429</span> Too Many Requests</summary>
-  <div class="redoc-response-body">
+  </Accordion>
+  <Accordion title="429 — Too Many Requests">
     You sent too many login calls. Wait and retry.
-  </div>
-</details>
+  </Accordion>
+</AccordionGroup>
 
 <RequestExample>
 ```bash cURL

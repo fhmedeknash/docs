@@ -62,15 +62,14 @@ Call this after [Login](/kits/daas/login).
 
 ## Responses
 
-<details class="redoc-response" open>
-  <summary><span class="redoc-code">200</span> Businesses for the operator</summary>
-  <div class="redoc-response-body">No query params. Returns the businesses for this org.</div>
-</details>
-
-<details class="redoc-response redoc-response-error">
-  <summary><span class="redoc-code">401</span> Missing or invalid token</summary>
-  <div class="redoc-response-body">Login again and retry.</div>
-</details>
+<AccordionGroup>
+  <Accordion title="200 — Businesses for the operator">
+    No query params. Returns the businesses for this org.
+  </Accordion>
+  <Accordion title="401 — Missing or invalid token">
+    Login again and retry.
+  </Accordion>
+</AccordionGroup>
 
 <RequestExample>
 ```bash cURL

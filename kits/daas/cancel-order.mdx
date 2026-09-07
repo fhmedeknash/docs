@@ -38,15 +38,14 @@ No body. Denied if the order is already picked up or delivered.
 
 ## Responses
 
-<details class="redoc-response" open>
-  <summary><span class="redoc-code">200</span> Cancel result</summary>
-  <div class="redoc-response-body"><code>status</code> is <code>success</code> when the order is cancelled.</div>
-</details>
-
-<details class="redoc-response redoc-response-error">
-  <summary><span class="redoc-code">400</span> Already picked up or delivered</summary>
-  <div class="redoc-response-body">You cannot cancel after pickup or delivery.</div>
-</details>
+<AccordionGroup>
+  <Accordion title="200 — Cancel result">
+    `status` is `success` when the order is cancelled.
+  </Accordion>
+  <Accordion title="400 — Already picked up or delivered">
+    You cannot cancel after pickup or delivery.
+  </Accordion>
+</AccordionGroup>
 
 <RequestExample>
 ```bash cURL

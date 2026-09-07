@@ -42,10 +42,11 @@ When a PUT returns `"Pending"`, call this until `"Success"` or `"Failed"`.
 
 ## Responses
 
-<details class="redoc-response" open>
-  <summary><span class="redoc-code">200</span> Current request status</summary>
-  <div class="redoc-response-body"><code>status</code> is <code>Success</code>, <code>Pending</code>, or <code>Failed</code>.</div>
-</details>
+<AccordionGroup>
+  <Accordion title="200 — Current request status">
+    `status` is `Success`, `Pending`, or `Failed`.
+  </Accordion>
+</AccordionGroup>
 
 <RequestExample>
 ```bash cURL

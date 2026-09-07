@@ -69,15 +69,14 @@ organization-token: YOUR_ORGANIZATION_TOKEN</code></pre>
 
 ## Responses
 
-<details class="redoc-response" open>
-  <summary><span class="redoc-code">200</span> List of promotions</summary>
-  <div class="redoc-response-body">Include current and upcoming promotions.</div>
-</details>
-
-<details class="redoc-response redoc-response-error">
-  <summary><span class="redoc-code">401</span> Missing or invalid tokens</summary>
-  <div class="redoc-response-body">Reject the request if either token is missing or wrong.</div>
-</details>
+<AccordionGroup>
+  <Accordion title="200 — List of promotions">
+    Include current and upcoming promotions.
+  </Accordion>
+  <Accordion title="401 — Missing or invalid tokens">
+    Reject the request if either token is missing or wrong.
+  </Accordion>
+</AccordionGroup>
 
 <RequestExample>
 ```bash cURL
