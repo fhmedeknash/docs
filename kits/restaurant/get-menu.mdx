@@ -4,7 +4,7 @@ description: "HAAT fetches the full restaurant menu from your POS."
 api: "GET https://pos.example.com/api/menu"
 ---
 
-Return the **full** menu. Keep `posId` stable. `en` is required on names.
+Return the **full** menu as an **array of categories**. Keep `PosId` stable. `en-US` is required on names.
 
 **Example:**
 
@@ -30,16 +30,16 @@ X-Haat-Version: 1.0</code></pre>
 
 <div class="redoc-tree">
   <div class="redoc-field">
-    <div class="redoc-field-name"><code>posId</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-name"><code>PosId</code><span class="redoc-required">required</span></div>
     <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Your POS category id. Keep it stable.</p></div>
   </div>
   <div class="redoc-field">
-    <div class="redoc-field-name"><code>name</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized names. <code>en</code> is required.</p></div>
+    <div class="redoc-field-name"><code>Name</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized names. <code>en-US</code> is required.</p></div>
   </div>
   <div class="redoc-children">
     <div class="redoc-field">
-      <div class="redoc-field-name"><code>en</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-name"><code>en-US</code><span class="redoc-required">required</span></div>
       <div class="redoc-field-meta"><div class="redoc-type">string</div><p>English name.</p></div>
     </div>
     <div class="redoc-field">
@@ -52,135 +52,157 @@ X-Haat-Version: 1.0</code></pre>
     </div>
   </div>
   <div class="redoc-field">
-    <div class="redoc-field-name"><code>image</code></div>
+    <div class="redoc-field-name"><code>ImageUrl</code></div>
     <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Category image URL.</p></div>
   </div>
   <div class="redoc-field">
-    <div class="redoc-field-name"><code>meals</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-name"><code>Meals</code><span class="redoc-required">required</span></div>
     <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Meals in this category.</p></div>
   </div>
   <div class="redoc-children">
     <div class="redoc-field">
-      <div class="redoc-field-name"><code>posId</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-name"><code>PosId</code><span class="redoc-required">required</span></div>
       <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Your POS meal id.</p></div>
     </div>
     <div class="redoc-field">
-      <div class="redoc-field-name"><code>name</code><span class="redoc-required">required</span></div>
-      <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized names. Same shape as category <code>name</code> (<code>en</code>, <code>he</code>, <code>ar</code>).</p></div>
+      <div class="redoc-field-name"><code>Name</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized names. Same shape as category <code>Name</code>.</p></div>
     </div>
     <div class="redoc-field">
-      <div class="redoc-field-name"><code>description</code></div>
-      <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized descriptions. Same shape as <code>name</code>.</p></div>
+      <div class="redoc-field-name"><code>Price</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Unit price with decimal precision, for example <code>32.5</code>.</p></div>
     </div>
     <div class="redoc-field">
-      <div class="redoc-field-name"><code>price</code><span class="redoc-required">required</span></div>
-      <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Unit price with decimal precision, for example <code>32.5</code> not <code>3250</code>.</p></div>
-    </div>
-    <div class="redoc-field">
-      <div class="redoc-field-name"><code>image</code></div>
-      <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Meal image URL.</p></div>
-    </div>
-    <div class="redoc-field">
-      <div class="redoc-field-name"><code>availability</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-name"><code>Available</code><span class="redoc-required">required</span></div>
       <div class="redoc-field-meta"><div class="redoc-type">boolean</div><p>In stock or not.</p></div>
     </div>
     <div class="redoc-field">
-      <div class="redoc-field-name"><code>discount</code></div>
-      <div class="redoc-field-meta"><div class="redoc-type">number | null</div><p>Discount amount. Can be <code>null</code>.</p></div>
+      <div class="redoc-field-name"><code>ImageUrl</code></div>
+      <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Meal image URL.</p></div>
     </div>
     <div class="redoc-field">
-      <div class="redoc-field-name"><code>addons</code></div>
-      <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Addon groups on this meal.</p></div>
+      <div class="redoc-field-name"><code>Groups</code></div>
+      <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Addon / modifier groups on this meal.</p></div>
     </div>
     <div class="redoc-children">
       <div class="redoc-field">
-        <div class="redoc-field-name"><code>posId</code><span class="redoc-required">required</span></div>
-        <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Addon group id.</p></div>
+        <div class="redoc-field-name"><code>PosId</code><span class="redoc-required">required</span></div>
+        <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Group id.</p></div>
       </div>
       <div class="redoc-field">
-        <div class="redoc-field-name"><code>name</code><span class="redoc-required">required</span></div>
+        <div class="redoc-field-name"><code>Name</code><span class="redoc-required">required</span></div>
         <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized group name.</p></div>
       </div>
       <div class="redoc-field">
-        <div class="redoc-field-name"><code>min</code><span class="redoc-required">required</span></div>
-        <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Minimum addons required. <code>0</code> = optional.</p></div>
+        <div class="redoc-field-name"><code>Price</code><span class="redoc-required">required</span></div>
+        <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Group base price. Often <code>0</code>.</p></div>
       </div>
       <div class="redoc-field">
-        <div class="redoc-field-name"><code>max</code><span class="redoc-required">required</span></div>
-        <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Maximum addons allowed.</p></div>
+        <div class="redoc-field-name"><code>Available</code><span class="redoc-required">required</span></div>
+        <div class="redoc-field-meta"><div class="redoc-type">boolean</div><p>Group available or not.</p></div>
       </div>
       <div class="redoc-field">
-        <div class="redoc-field-name"><code>groupType</code></div>
-        <div class="redoc-field-meta"><div class="redoc-type">string <span class="redoc-default">Default: <code>addon</code></span></div><p><code>addon</code> or <code>always_print</code>.</p></div>
+        <div class="redoc-field-name"><code>ImageUrl</code></div>
+        <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Group image URL.</p></div>
       </div>
       <div class="redoc-field">
-        <div class="redoc-field-name"><code>addons</code><span class="redoc-required">required</span></div>
-        <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Ingredients / choices in this group.</p></div>
+        <div class="redoc-field-name"><code>Min</code><span class="redoc-required">required</span></div>
+        <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Minimum selections. <code>0</code> = optional.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>Max</code><span class="redoc-required">required</span></div>
+        <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Maximum selections allowed.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>MealContents</code><span class="redoc-required">required</span></div>
+        <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Choices / ingredients in this group.</p></div>
       </div>
       <div class="redoc-children">
         <div class="redoc-field">
-          <div class="redoc-field-name"><code>posId</code><span class="redoc-required">required</span></div>
-          <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Ingredient id.</p></div>
+          <div class="redoc-field-name"><code>PosId</code><span class="redoc-required">required</span></div>
+          <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Content / ingredient id.</p></div>
         </div>
         <div class="redoc-field">
-          <div class="redoc-field-name"><code>name</code><span class="redoc-required">required</span></div>
-          <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized ingredient name.</p></div>
+          <div class="redoc-field-name"><code>Name</code><span class="redoc-required">required</span></div>
+          <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized content name.</p></div>
         </div>
         <div class="redoc-field">
-          <div class="redoc-field-name"><code>price</code><span class="redoc-required">required</span></div>
-          <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Additional price. <code>0.0</code> if free.</p></div>
+          <div class="redoc-field-name"><code>Price</code><span class="redoc-required">required</span></div>
+          <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Additional price. <code>0</code> if free.</p></div>
         </div>
         <div class="redoc-field">
-          <div class="redoc-field-name"><code>image</code></div>
-          <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Ingredient image URL.</p></div>
-        </div>
-        <div class="redoc-field">
-          <div class="redoc-field-name"><code>availability</code><span class="redoc-required">required</span></div>
+          <div class="redoc-field-name"><code>Available</code><span class="redoc-required">required</span></div>
           <div class="redoc-field-meta"><div class="redoc-type">boolean</div><p>In stock or not.</p></div>
+        </div>
+        <div class="redoc-field">
+          <div class="redoc-field-name"><code>ImageUrl</code></div>
+          <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Content image URL.</p></div>
         </div>
       </div>
     </div>
   </div>
   <div class="redoc-field">
-    <div class="redoc-field-name"><code>deals</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Deals in this category. Same addon shape as meals, plus:</p></div>
+    <div class="redoc-field-name"><code>Deals</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Deals in this category.</p></div>
   </div>
   <div class="redoc-children">
     <div class="redoc-field">
-      <div class="redoc-field-name"><code>posId</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-name"><code>PosId</code><span class="redoc-required">required</span></div>
       <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Your POS deal id.</p></div>
     </div>
     <div class="redoc-field">
-      <div class="redoc-field-name"><code>name</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-name"><code>Name</code><span class="redoc-required">required</span></div>
       <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized deal name.</p></div>
     </div>
     <div class="redoc-field">
-      <div class="redoc-field-name"><code>description</code></div>
-      <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized deal description.</p></div>
-    </div>
-    <div class="redoc-field">
-      <div class="redoc-field-name"><code>price</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-name"><code>Price</code><span class="redoc-required">required</span></div>
       <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Deal price.</p></div>
     </div>
     <div class="redoc-field">
-      <div class="redoc-field-name"><code>image</code></div>
-      <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Deal image URL.</p></div>
-    </div>
-    <div class="redoc-field">
-      <div class="redoc-field-name"><code>availability</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-name"><code>Available</code><span class="redoc-required">required</span></div>
       <div class="redoc-field-meta"><div class="redoc-type">boolean</div><p>In stock or not.</p></div>
     </div>
     <div class="redoc-field">
-      <div class="redoc-field-name"><code>priority</code></div>
-      <div class="redoc-field-meta"><div class="redoc-type">integer | null</div><p>Higher values are shown first.</p></div>
+      <div class="redoc-field-name"><code>ImageUrl</code></div>
+      <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Deal image URL.</p></div>
     </div>
     <div class="redoc-field">
-      <div class="redoc-field-name"><code>discount</code></div>
-      <div class="redoc-field-meta"><div class="redoc-type">number | null</div><p>Discount amount. Can be <code>null</code>.</p></div>
+      <div class="redoc-field-name"><code>MealGroups</code></div>
+      <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Choice groups inside the deal (pick a meal, pick a drink, etc.).</p></div>
     </div>
-    <div class="redoc-field">
-      <div class="redoc-field-name"><code>addons</code></div>
-      <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Same addon-group shape as meals.</p></div>
+    <div class="redoc-children">
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>PosId</code><span class="redoc-required">required</span></div>
+        <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Deal group id.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>Name</code><span class="redoc-required">required</span></div>
+        <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized group name.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>Price</code><span class="redoc-required">required</span></div>
+        <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Group base price. Often <code>0</code>.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>Available</code><span class="redoc-required">required</span></div>
+        <div class="redoc-field-meta"><div class="redoc-type">boolean</div><p>Group available or not.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>ImageUrl</code></div>
+        <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Group image URL.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>Min</code><span class="redoc-required">required</span></div>
+        <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Minimum selections.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>Max</code><span class="redoc-required">required</span></div>
+        <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Maximum selections.</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>Meals</code><span class="redoc-required">required</span></div>
+        <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Meals offered in this deal group. Same meal shape (including optional <code>Groups</code>).</p></div>
+      </div>
     </div>
   </div>
 </div>
@@ -189,7 +211,7 @@ X-Haat-Version: 1.0</code></pre>
 
 <AccordionGroup>
   <Accordion title="200 — Menu successfully retrieved">
-    Full menu: categories, meals, deals, and addons.
+    Full menu: categories with `Meals`, `Deals`, `Groups`, and `MealContents`.
   </Accordion>
   <Accordion title="401 — Invalid or missing authentication token">
     Check Bearer or `X-Signature`.
@@ -206,6 +228,71 @@ curl https://pos.example.com/api/menu \
 
 <ResponseExample>
 ```json 200
-[{"posId":"1","name":{"en":"Burgers"},"meals":[{"posId":"101","name":{"en":"Classic Burger"},"price":32.5,"availability":true}],"deals":[]}]
+[
+  {
+    "PosId": "cat-1",
+    "Name": { "en-US": "Burgers", "he": "בורגרים" },
+    "ImageUrl": "https://example.com/categories/burgers.jpg",
+    "Meals": [
+      {
+        "Name": { "en-US": "Burger", "he": "המבורגר" },
+        "PosId": "meal-201",
+        "Price": 32.5,
+        "Available": true,
+        "ImageUrl": "https://example.com/burger.png",
+        "Groups": [
+          {
+            "Name": { "en-US": "Add-ons" },
+            "PosId": "group-10",
+            "Price": 0,
+            "Available": true,
+            "ImageUrl": null,
+            "Max": 3,
+            "Min": 0,
+            "MealContents": [
+              {
+                "Name": { "en-US": "Cheese" },
+                "PosId": "content-501",
+                "Price": 3,
+                "Available": true,
+                "ImageUrl": null
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Deals": [
+      {
+        "Name": { "en-US": "Combo Deal", "he": "קומבו" },
+        "PosId": "deal-100",
+        "Price": 49.9,
+        "Available": true,
+        "ImageUrl": "https://example.com/deal.png",
+        "MealGroups": [
+          {
+            "Name": { "en-US": "Choose a meal" },
+            "PosId": "deal-group-1",
+            "Price": 0,
+            "Available": true,
+            "ImageUrl": null,
+            "Max": 1,
+            "Min": 1,
+            "Meals": [
+              {
+                "Name": { "en-US": "Burger" },
+                "PosId": "meal-201",
+                "Price": 0,
+                "Available": true,
+                "ImageUrl": null,
+                "Groups": []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
 ```
 </ResponseExample>

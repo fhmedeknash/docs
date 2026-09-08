@@ -7,10 +7,11 @@ description: "Go-live checklist for Restaurant partners."
 
 - [ ] Staging auth configured (Bearer or HMAC)
 - [ ] `GET /api/menu` returns full menu under 5s
-- [ ] Categories include meals and deals
-- [ ] Addon groups have `min` / `max`
-- [ ] `posId` values are stable
-- [ ] Localization includes at least `en`
+- [ ] Categories include `Meals` and `Deals`
+- [ ] Meal `Groups` have `Min` / `Max` and `MealContents`
+- [ ] Deal `MealGroups` have `Min` / `Max` and `Meals`
+- [ ] `PosId` values are stable
+- [ ] Localization includes at least `en-US`
 - [ ] `POST /api/orders` accepts HAAT payload
 - [ ] Idempotency key handled
 - [ ] Response includes `posOrderId`

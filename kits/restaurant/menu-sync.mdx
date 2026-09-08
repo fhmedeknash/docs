@@ -1,62 +1,93 @@
 ---
 title: "Menu sync"
-description: "How the restaurant POS returns the full menu to HAAT."
+description: "How HAAT pulls the restaurant menu from your POS."
 ---
 
 # Menu sync
 
-`GET /api/menu` — **required** before HAAT can process orders.
+HAAT calls your POS to build or refresh the restaurant menu.
+
+## Endpoint
+
+`GET /api/menu`
+
+Full field contract: [Get menu from POS](/kits/restaurant/get-menu).
 
 ## Rules
 
-- Return the **full** menu (no pagination)
-- Respond in under **5 seconds** when possible
-- Keep `posId` values **stable**
-- Reflect real-time `availability`
-- Names: `en` required; `he` and `ar` recommended
-- Prices as decimals (`32.5`, not `3250`)
-
-## Response shape (summary)
-
-Array of categories. Each category has `meals` and `deals`. Meals/deals can include addon groups (`min` / `max`).
-
-Addon `groupType`: `addon` (default) or `always_print`.
+- Keep `PosId` values **stable**
+- `en-US` is required on every `Name`
+- Return **categories**; each category has `Meals` and `Deals`
+- Meal modifiers use `Groups` → `MealContents`
+- Deal choices use `MealGroups` → `Meals`
 
 ## Example (shortened)
 
 ```json
 [
   {
-    "posId": "1",
-    "name": { "en": "Burgers", "he": "בורגרים", "ar": "برجر" },
-    "image": "https://example.com/categories/burgers.jpg",
-    "meals": [
+    "PosId": "cat-1",
+    "Name": { "en-US": "Burgers", "he": "בורגרים" },
+    "ImageUrl": "https://example.com/categories/burgers.jpg",
+    "Meals": [
       {
-        "posId": "101",
-        "name": { "en": "Classic Burger", "he": "בורגר קלאסי", "ar": "برجر كلاسيكي" },
-        "price": 32.5,
-        "availability": true,
-        "addons": [
+        "PosId": "meal-201",
+        "Name": { "en-US": "Burger", "he": "המבורגר" },
+        "Price": 32.5,
+        "Available": true,
+        "ImageUrl": "https://example.com/burger.png",
+        "Groups": [
           {
-            "posId": "1001",
-            "name": { "en": "Extras", "he": "תוספות", "ar": "إضافات" },
-            "min": 0,
-            "max": 3,
-            "groupType": "addon",
-            "addons": [
+            "PosId": "group-10",
+            "Name": { "en-US": "Add-ons" },
+            "Price": 0,
+            "Available": true,
+            "ImageUrl": null,
+            "Min": 0,
+            "Max": 3,
+            "MealContents": [
               {
-                "posId": "2001",
-                "name": { "en": "Extra Cheese", "he": "גבינה נוספת", "ar": "جبن إضافي" },
-                "price": 2.5,
-                "availability": true
+                "PosId": "content-501",
+                "Name": { "en-US": "Cheese" },
+                "Price": 3,
+                "Available": true,
+                "ImageUrl": null
               }
             ]
           }
-        ],
-        "discount": null
+        ]
       }
     ],
-    "deals": []
+    "Deals": [
+      {
+        "PosId": "deal-100",
+        "Name": { "en-US": "Combo Deal", "he": "קומבו" },
+        "Price": 49.9,
+        "Available": true,
+        "ImageUrl": "https://example.com/deal.png",
+        "MealGroups": [
+          {
+            "PosId": "deal-group-1",
+            "Name": { "en-US": "Choose a meal" },
+            "Price": 0,
+            "Available": true,
+            "ImageUrl": null,
+            "Min": 1,
+            "Max": 1,
+            "Meals": [
+              {
+                "PosId": "meal-201",
+                "Name": { "en-US": "Burger" },
+                "Price": 0,
+                "Available": true,
+                "ImageUrl": null,
+                "Groups": []
+              }
+            ]
+          }
+        ]
+      }
+    ]
   }
 ]
 ```

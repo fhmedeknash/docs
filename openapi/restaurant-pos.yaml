@@ -12,7 +12,7 @@ servers:
     description: Replace with your POS base URL
 tags:
   - name: Menu
-    description: Full menu sync (categories, meals, deals, addons)
+    description: Full menu sync (categories, Meals, Deals, Groups, MealContents)
   - name: Orders
     description: Real-time order create from HAAT
 
@@ -29,11 +29,12 @@ paths:
         REQUIRED endpoint. HAAT calls this to fetch the complete menu structure
         for synchronization.
 
-        - Return the **full** menu (no pagination)
+        - Return the **full** menu as an **array of categories** (no pagination)
         - Respond quickly (target under 5 seconds)
-        - Keep `posId` values stable across calls
-        - Reflect real-time `availability`
-        - Provide localized `name` / `description` dictionaries (`en` required; `he` and `ar` recommended)
+        - Keep `PosId` values stable across calls
+        - Reflect real-time `Available`
+        - Provide localized `Name` dictionaries (`en-US` required; `he` and `ar` recommended)
+        - Meal modifiers: `Groups` → `MealContents`; deal choices: `MealGroups` → `Meals`
 
         Sync frequency: initial setup, scheduled (typically daily), on-demand, and before processing orders when needed.
       parameters:
@@ -68,90 +69,60 @@ paths:
               examples:
                 sample:
                   value:
-                    - posId: "1"
-                      name:
-                        en: Burgers
+                    - PosId: "cat-1"
+                      Name:
+                        en-US: Burgers
                         he: בורגרים
-                        ar: برجر
-                      image: https://example.com/categories/burgers.jpg
-                      meals:
-                        - posId: "101"
-                          name:
-                            en: Classic Burger
-                            he: בורגר קלאסי
-                            ar: برجر كلاسيكي
-                          description:
-                            en: Juicy beef patty with fresh vegetables
-                            he: קציצת בקר עסיסית עם ירקות טריים
-                            ar: فطيرة لحم بقري عصيرية مع خضار طازجة
-                          price: 32.5
-                          image: https://example.com/meals/classic-burger.jpg
-                          addons:
-                            - posId: "1001"
-                              name:
-                                en: Extras
-                                he: תוספות
-                                ar: إضافات
-                              min: 0
-                              max: 3
-                              groupType: addon
-                              addons:
-                                - posId: "2001"
-                                  name:
-                                    en: Extra Cheese
-                                    he: גבינה נוספת
-                                    ar: جبن إضافي
-                                  price: 2.5
-                                  image: https://example.com/addons/cheese.jpg
-                                  availability: true
-                                - posId: "2002"
-                                  name:
-                                    en: Bacon
-                                    he: בייקון
-                                    ar: لحم مقدد
-                                  price: 4.0
-                                  availability: true
-                          availability: true
-                          discount: null
-                      deals:
-                        - posId: "501"
-                          name:
-                            en: Burger Combo
-                            he: קומבו בורגר
-                            ar: كومبو برجر
-                          description:
-                            en: Burger + Fries + Drink
-                            he: בורגר + צ'יפס + משקה
-                            ar: برجر + بطاطس + مشروب
-                          price: 45.9
-                          image: https://example.com/deals/burger-combo.jpg
-                          addons:
-                            - posId: "1002"
-                              name:
-                                en: Choose Your Drink
-                                he: בחר משקה
-                                ar: اختر مشروبك
-                              min: 1
-                              max: 1
-                              groupType: addon
-                              addons:
-                                - posId: "3001"
-                                  name:
-                                    en: Coca Cola
-                                    he: קוקה קולה
-                                    ar: كوكا كولا
-                                  price: 0.0
-                                  availability: true
-                                - posId: "3002"
-                                  name:
-                                    en: Sprite
-                                    he: ספרייט
-                                    ar: سبرايت
-                                  price: 0.0
-                                  availability: true
-                          availability: true
-                          priority: 1
-                          discount: 5.0
+                      ImageUrl: https://example.com/categories/burgers.jpg
+                      Meals:
+                        - PosId: "meal-201"
+                          Name:
+                            en-US: Burger
+                            he: המבורגר
+                          Price: 32.5
+                          Available: true
+                          ImageUrl: https://example.com/burger.png
+                          Groups:
+                            - PosId: "group-10"
+                              Name:
+                                en-US: Add-ons
+                              Price: 0
+                              Available: true
+                              ImageUrl: null
+                              Min: 0
+                              Max: 3
+                              MealContents:
+                                - PosId: "content-501"
+                                  Name:
+                                    en-US: Cheese
+                                  Price: 3
+                                  Available: true
+                                  ImageUrl: null
+                      Deals:
+                        - PosId: "deal-100"
+                          Name:
+                            en-US: Combo Deal
+                            he: קומבו
+                          Price: 49.9
+                          Available: true
+                          ImageUrl: https://example.com/deal.png
+                          MealGroups:
+                            - PosId: "deal-group-1"
+                              Name:
+                                en-US: Choose a meal
+                              Price: 0
+                              Available: true
+                              ImageUrl: null
+                              Min: 1
+                              Max: 1
+                              Meals:
+                                - PosId: "meal-201"
+                                  Name:
+                                    en-US: Burger
+                                  Price: 0
+                                  Available: true
+                                  ImageUrl: null
+                                  Groups: []
         "401":
           description: Invalid or missing authentication token
         "500":
@@ -255,9 +226,9 @@ components:
   schemas:
     LocalizedString:
       type: object
-      required: [en]
+      required: ["en-US"]
       properties:
-        en:
+        en-US:
           type: string
         he:
           type: string
@@ -268,122 +239,140 @@ components:
 
     Category:
       type: object
-      required: [posId, name, meals, deals]
+      required: [PosId, Name, Meals, Deals]
       properties:
-        posId:
+        PosId:
           type: string
           description: Your POS category ID
-        name:
+        Name:
           $ref: "#/components/schemas/LocalizedString"
-        image:
+        ImageUrl:
           type: [string, "null"]
           format: uri
-        meals:
+        Meals:
           type: array
           items:
             $ref: "#/components/schemas/Meal"
-        deals:
+        Deals:
           type: array
           items:
             $ref: "#/components/schemas/Deal"
 
     Meal:
       type: object
-      required: [posId, name, price, availability]
+      required: [PosId, Name, Price, Available]
       properties:
-        posId:
+        PosId:
           type: string
-        name:
+        Name:
           $ref: "#/components/schemas/LocalizedString"
-        description:
-          $ref: "#/components/schemas/LocalizedString"
-        price:
+        Price:
           type: number
           format: double
           description: Unit price with decimal precision (e.g. 32.5 not 3250)
-        image:
+        Available:
+          type: boolean
+        ImageUrl:
           type: [string, "null"]
           format: uri
-        addons:
+        Groups:
           type: array
+          description: Addon / modifier groups on this meal
           items:
-            $ref: "#/components/schemas/GroupAddons"
-        availability:
-          type: boolean
-        discount:
-          type: [number, "null"]
-          format: double
+            $ref: "#/components/schemas/Group"
 
     Deal:
       type: object
-      required: [posId, name, price, availability]
+      required: [PosId, Name, Price, Available]
       properties:
-        posId:
+        PosId:
           type: string
-        name:
+        Name:
           $ref: "#/components/schemas/LocalizedString"
-        description:
-          $ref: "#/components/schemas/LocalizedString"
-        price:
+        Price:
           type: number
           format: double
-        image:
+        Available:
+          type: boolean
+        ImageUrl:
           type: [string, "null"]
           format: uri
-        addons:
+        MealGroups:
           type: array
+          description: Choice groups inside the deal
           items:
-            $ref: "#/components/schemas/GroupAddons"
-        availability:
-          type: boolean
-        priority:
-          type: [integer, "null"]
-          description: Higher values are shown first
-        discount:
-          type: [number, "null"]
-          format: double
+            $ref: "#/components/schemas/MealGroup"
 
-    GroupAddons:
+    Group:
       type: object
-      required: [posId, name, min, max, addons]
+      required: [PosId, Name, Price, Available, Min, Max, MealContents]
       properties:
-        posId:
+        PosId:
           type: string
-        name:
+        Name:
           $ref: "#/components/schemas/LocalizedString"
-        min:
-          type: integer
-          description: Minimum addons required (0 = optional)
-        max:
-          type: integer
-          description: Maximum addons allowed
-        groupType:
-          type: string
-          enum: [addon, always_print]
-          default: addon
-          description: Use always_print for groups that should always appear on printouts
-        addons:
-          type: array
-          items:
-            $ref: "#/components/schemas/Addon"
-
-    Addon:
-      type: object
-      required: [posId, name, price, availability]
-      properties:
-        posId:
-          type: string
-        name:
-          $ref: "#/components/schemas/LocalizedString"
-        price:
+        Price:
           type: number
           format: double
-          description: Additional price (0.0 if free)
-        image:
+          description: Group base price (often 0)
+        Available:
+          type: boolean
+        ImageUrl:
           type: [string, "null"]
           format: uri
-        availability:
+        Min:
+          type: integer
+          description: Minimum selections (0 = optional)
+        Max:
+          type: integer
+          description: Maximum selections allowed
+        MealContents:
+          type: array
+          items:
+            $ref: "#/components/schemas/MealContent"
+
+    MealContent:
+      type: object
+      required: [PosId, Name, Price, Available]
+      properties:
+        PosId:
+          type: string
+        Name:
+          $ref: "#/components/schemas/LocalizedString"
+        Price:
+          type: number
+          format: double
+          description: Additional price (0 if free)
+        Available:
           type: boolean
+        ImageUrl:
+          type: [string, "null"]
+          format: uri
+
+    MealGroup:
+      type: object
+      required: [PosId, Name, Price, Available, Min, Max, Meals]
+      properties:
+        PosId:
+          type: string
+        Name:
+          $ref: "#/components/schemas/LocalizedString"
+        Price:
+          type: number
+          format: double
+        Available:
+          type: boolean
+        ImageUrl:
+          type: [string, "null"]
+          format: uri
+        Min:
+          type: integer
+        Max:
+          type: integer
+        Meals:
+          type: array
+          items:
+            $ref: "#/components/schemas/Meal"
 
     Customer:
       type: object
