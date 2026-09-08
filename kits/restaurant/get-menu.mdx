@@ -31,7 +31,7 @@ X-Haat-Version: 1.0</code></pre>
 <div class="redoc-tree">
   <div class="redoc-field">
     <div class="redoc-field-name"><code>posId</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Your POS category id. Keep it stable.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Your POS category id. Keep it stable.</p></div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>name</code><span class="redoc-required">required</span></div>
@@ -62,7 +62,7 @@ X-Haat-Version: 1.0</code></pre>
   <div class="redoc-children">
     <div class="redoc-field">
       <div class="redoc-field-name"><code>posId</code><span class="redoc-required">required</span></div>
-      <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Your POS meal id.</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Your POS meal id.</p></div>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>name</code><span class="redoc-required">required</span></div>
@@ -95,7 +95,7 @@ X-Haat-Version: 1.0</code></pre>
     <div class="redoc-children">
       <div class="redoc-field">
         <div class="redoc-field-name"><code>posId</code><span class="redoc-required">required</span></div>
-        <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Addon group id.</p></div>
+        <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Addon group id.</p></div>
       </div>
       <div class="redoc-field">
         <div class="redoc-field-name"><code>name</code><span class="redoc-required">required</span></div>
@@ -120,7 +120,7 @@ X-Haat-Version: 1.0</code></pre>
       <div class="redoc-children">
         <div class="redoc-field">
           <div class="redoc-field-name"><code>posId</code><span class="redoc-required">required</span></div>
-          <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Ingredient id.</p></div>
+          <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Ingredient id.</p></div>
         </div>
         <div class="redoc-field">
           <div class="redoc-field-name"><code>name</code><span class="redoc-required">required</span></div>
@@ -148,7 +148,7 @@ X-Haat-Version: 1.0</code></pre>
   <div class="redoc-children">
     <div class="redoc-field">
       <div class="redoc-field-name"><code>posId</code><span class="redoc-required">required</span></div>
-      <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Your POS deal id.</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Your POS deal id.</p></div>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>name</code><span class="redoc-required">required</span></div>
@@ -206,6 +206,6 @@ curl https://pos.example.com/api/menu \
 
 <ResponseExample>
 ```json 200
-[{"posId":1,"name":{"en":"Burgers"},"meals":[{"posId":101,"name":{"en":"Classic Burger"},"price":32.5,"availability":true}],"deals":[]}]
+[{"posId":"1","name":{"en":"Burgers"},"meals":[{"posId":"101","name":{"en":"Classic Burger"},"price":32.5,"availability":true}],"deals":[]}]
 ```
 </ResponseExample>

@@ -65,7 +65,7 @@ Idempotency-Key: 7dda287d-21de-4159-a058-e60618e9b786</code></pre>
   <div class="redoc-children">
     <div class="redoc-field">
       <div class="redoc-field-name"><code>id</code><span class="redoc-required">required</span></div>
-      <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>POS item id (<code>posId</code>).</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">string</div><p>POS item id (<code>posId</code>).</p></div>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>quantity</code><span class="redoc-required">required</span></div>
@@ -82,7 +82,7 @@ Idempotency-Key: 7dda287d-21de-4159-a058-e60618e9b786</code></pre>
     <div class="redoc-children">
       <div class="redoc-field">
         <div class="redoc-field-name"><code>id</code><span class="redoc-required">required</span></div>
-        <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>POS variation / addon id.</p></div>
+        <div class="redoc-field-meta"><div class="redoc-type">string</div><p>POS variation / addon id.</p></div>
       </div>
       <div class="redoc-field">
         <div class="redoc-field-name"><code>quantity</code><span class="redoc-required">required</span></div>
@@ -164,7 +164,7 @@ curl -X POST https://pos.example.com/api/orders \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "X-Haat-Version: 1.0" \
   -H "Content-Type: application/json" \
-  -d '{"orderId":87452,"businessId":1021,"customer":{"name":"John Cohen","phone":"+972501234567"},"items":[{"id":5012,"quantity":2,"price":32.5}],"payments":[{"paymentType":"credit_card","amount":84.9}],"payRestaurant":84.9,"deliveryType":"delivery"}'
+  -d '{"orderId":87452,"businessId":1021,"customer":{"name":"John Cohen","phone":"+972501234567"},"items":[{"id":"5012","quantity":2,"price":32.5}],"payments":[{"paymentType":"credit_card","amount":84.9}],"payRestaurant":84.9,"deliveryType":"delivery"}'
 ```
 </RequestExample>
 

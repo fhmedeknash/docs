@@ -68,14 +68,14 @@ paths:
               examples:
                 sample:
                   value:
-                    - posId: 1
+                    - posId: "1"
                       name:
                         en: Burgers
                         he: בורגרים
                         ar: برجر
                       image: https://example.com/categories/burgers.jpg
                       meals:
-                        - posId: 101
+                        - posId: "101"
                           name:
                             en: Classic Burger
                             he: בורגר קלאסי
@@ -87,7 +87,7 @@ paths:
                           price: 32.5
                           image: https://example.com/meals/classic-burger.jpg
                           addons:
-                            - posId: 1001
+                            - posId: "1001"
                               name:
                                 en: Extras
                                 he: תוספות
@@ -96,7 +96,7 @@ paths:
                               max: 3
                               groupType: addon
                               addons:
-                                - posId: 2001
+                                - posId: "2001"
                                   name:
                                     en: Extra Cheese
                                     he: גבינה נוספת
@@ -104,7 +104,7 @@ paths:
                                   price: 2.5
                                   image: https://example.com/addons/cheese.jpg
                                   availability: true
-                                - posId: 2002
+                                - posId: "2002"
                                   name:
                                     en: Bacon
                                     he: בייקון
@@ -114,7 +114,7 @@ paths:
                           availability: true
                           discount: null
                       deals:
-                        - posId: 501
+                        - posId: "501"
                           name:
                             en: Burger Combo
                             he: קומבו בורגר
@@ -126,7 +126,7 @@ paths:
                           price: 45.9
                           image: https://example.com/deals/burger-combo.jpg
                           addons:
-                            - posId: 1002
+                            - posId: "1002"
                               name:
                                 en: Choose Your Drink
                                 he: בחר משקה
@@ -135,14 +135,14 @@ paths:
                               max: 1
                               groupType: addon
                               addons:
-                                - posId: 3001
+                                - posId: "3001"
                                   name:
                                     en: Coca Cola
                                     he: קוקה קולה
                                     ar: كوكا كولا
                                   price: 0.0
                                   availability: true
-                                - posId: 3002
+                                - posId: "3002"
                                   name:
                                     en: Sprite
                                     he: ספרייט
@@ -208,14 +208,14 @@ paths:
                     name: John Cohen
                     phone: "+972501234567"
                   items:
-                    - id: 5012
+                    - id: "5012"
                       quantity: 2
                       price: 32.5
                       variations:
-                        - id: 9001
+                        - id: "9001"
                           quantity: 1
                           price: 0.0
-                    - id: 7840
+                    - id: "7840"
                       quantity: 1
                       price: 19.9
                   payments:
@@ -271,7 +271,7 @@ components:
       required: [posId, name, meals, deals]
       properties:
         posId:
-          type: integer
+          type: string
           description: Your POS category ID
         name:
           $ref: "#/components/schemas/LocalizedString"
@@ -292,7 +292,7 @@ components:
       required: [posId, name, price, availability]
       properties:
         posId:
-          type: integer
+          type: string
         name:
           $ref: "#/components/schemas/LocalizedString"
         description:
@@ -319,7 +319,7 @@ components:
       required: [posId, name, price, availability]
       properties:
         posId:
-          type: integer
+          type: string
         name:
           $ref: "#/components/schemas/LocalizedString"
         description:
@@ -348,7 +348,7 @@ components:
       required: [posId, name, min, max, addons]
       properties:
         posId:
-          type: integer
+          type: string
         name:
           $ref: "#/components/schemas/LocalizedString"
         min:
@@ -372,7 +372,7 @@ components:
       required: [posId, name, price, availability]
       properties:
         posId:
-          type: integer
+          type: string
         name:
           $ref: "#/components/schemas/LocalizedString"
         price:
@@ -400,7 +400,7 @@ components:
       required: [id, quantity, price]
       properties:
         id:
-          type: integer
+          type: string
           description: POS item ID
         quantity:
           type: integer
@@ -444,7 +444,7 @@ components:
           description: Unique order ID assigned by HAAT
         businessId:
           type: integer
-          description: POS/store identifier for the restaurant on HAAT side
+          description: Restaurant / store id on the HAAT side
         customer:
           $ref: "#/components/schemas/Customer"
         items:
