@@ -13,8 +13,10 @@ info:
     `businessId` is required unless `posBusinessId` is set (then `posBusinessId` overrides).
     When `isCashOrder` is `true`, item quantity and price are required for cash pricing.
 servers:
-  - url: https://external-partners.example.haat.delivery
-    description: Replace with the DaaS environment URL provided during onboarding
+  - url: http://ext-integration.haat-delivery.io
+    description: Staging
+  - url: https://integration.internal.haat.delivery
+    description: Production
 tags:
   - name: Authentication
   - name: Businesses

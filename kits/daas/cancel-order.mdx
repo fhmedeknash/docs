@@ -1,7 +1,7 @@
 ---
 title: "Cancel order"
 description: "Cancel a DaaS delivery order."
-api: "PUT https://external-partners.example.haat.delivery/api/daas/orders/{orderId}/cancel"
+api: "PUT http://ext-integration.haat-delivery.io/api/daas/orders/{orderId}/cancel"
 ---
 
 No body. Denied if the order is already picked up or delivered.
@@ -49,7 +49,7 @@ No body. Denied if the order is already picked up or delivered.
 
 <RequestExample>
 ```bash cURL
-curl -X PUT https://external-partners.example.haat.delivery/api/daas/orders/5887966/cancel \
+curl -X PUT http://ext-integration.haat-delivery.io/api/daas/orders/5887966/cancel \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 </RequestExample>

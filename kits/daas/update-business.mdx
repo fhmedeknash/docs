@@ -1,7 +1,7 @@
 ---
 title: "Update business"
 description: "Update details for a DaaS business you own."
-api: "PUT https://external-partners.example.haat.delivery/api/daas/{businessId}/update-business"
+api: "PUT http://ext-integration.haat-delivery.io/api/daas/{businessId}/update-business"
 ---
 
 `businessId` must belong to the current org.
@@ -81,7 +81,7 @@ api: "PUT https://external-partners.example.haat.delivery/api/daas/{businessId}/
 
 <RequestExample>
 ```bash cURL
-curl -X PUT https://external-partners.example.haat.delivery/api/daas/180/update-business \
+curl -X PUT http://ext-integration.haat-delivery.io/api/daas/180/update-business \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"businessName":"bakery","location":{"latitude":32.51,"longitude":35.51},"phoneNumber":"+972542182747"}'

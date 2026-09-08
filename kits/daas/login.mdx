@@ -1,7 +1,7 @@
 ---
 title: "Login"
 description: "Get a DaaS org access token."
-api: "POST https://external-partners.example.haat.delivery/api/daas/authentication/login"
+api: "POST http://ext-integration.haat-delivery.io/api/daas/authentication/login"
 ---
 
 **Rate Limiting:** If you send too many requests in a short time, you will receive a <span class="status-429">429 Too Many Requests</span> response.
@@ -76,7 +76,7 @@ This login call itself does not need that header. Send the returned token on eve
 
 <RequestExample>
 ```bash cURL
-curl -X POST https://external-partners.example.haat.delivery/api/daas/authentication/login \
+curl -X POST http://ext-integration.haat-delivery.io/api/daas/authentication/login \
   -H "Content-Type: application/json" \
   -d '{"username":"username","password":"password!@123"}'
 ```

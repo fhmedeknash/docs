@@ -1,7 +1,7 @@
 ---
 title: "Validate order"
 description: "Dry-run a delivery order. Does not create an order."
-api: "POST https://external-partners.example.haat.delivery/api/daas/validate-order"
+api: "POST http://ext-integration.haat-delivery.io/api/daas/validate-order"
 ---
 
 Same body as [Submit order](/kits/daas/submit-order). Returns pickup and delivery estimates only.
@@ -172,7 +172,7 @@ Same body as [Submit order](/kits/daas/submit-order). Returns pickup and deliver
 
 <RequestExample>
 ```bash cURL
-curl -X POST https://external-partners.example.haat.delivery/api/daas/validate-order \
+curl -X POST http://ext-integration.haat-delivery.io/api/daas/validate-order \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"businessId":180,"daaSOrderId":"DAAS-1","userDetails":{"name":"John Doe","phoneNumber":"+972544774783","location":{"latitude":32.522,"longitude":35.148},"address":{"city":"Umm El Fahem"}},"estimatedPickupTime":"2025-09-09T23:45:00"}'
