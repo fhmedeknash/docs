@@ -13,6 +13,12 @@ Optional query: `orderId`
 
 Example response: `[10, 15, 20, 25, 30, 45, 60]`
 
+## Get business status
+
+`GET /api/pos/business/{businessId}/status`
+
+Response: `{ "status": "Open" | "Closed" }` (display mapping for POS).
+
 ## Update business status
 
 `PUT /api/pos/business/{businessId}/status`
@@ -37,6 +43,12 @@ Close temporarily (expiration required):
 }
 ```
 
+## Get order status
+
+`GET /api/pos/business/{businessId}/order-status?orderId={id}`
+
+Response: `{ "orderId", "status": "New" | "Preparing" | "Ready" | "Done" | "Cancelled" }`
+
 ## Update order status
 
 `PUT /api/pos/business/{businessId}/order-status`
@@ -45,12 +57,20 @@ Close temporarily (expiration required):
 | --- | --- | --- |
 | `1` | Start prepare | `estimationMinutes` required (> 0) |
 | `2` | Cancel | |
+| `3` | Done prepare | No `estimationMinutes`; requires prior Start prepare |
 
 ```json
 {
   "orderId": 98765,
   "status": 1,
   "estimationMinutes": 20
+}
+```
+
+```json
+{
+  "orderId": 98765,
+  "status": 3
 }
 ```
 

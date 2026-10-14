@@ -8,9 +8,12 @@ description: "Go-live checklist for Advanced API partners."
 - [ ] Using staging base URL: `http://ext-integration.haat-delivery.io`
 - [ ] API key configured for staging
 - [ ] `GET /api/pos/businesses` returns expected branches
-- [ ] Business open / close tested
+- [ ] `GET /api/pos/business/{businessId}/status` returns `Open` or `Closed`
+- [ ] Business open / close (PUT Online / Offline) tested
 - [ ] Order start-prepare includes `estimationMinutes`
+- [ ] Order done-prepare (`status` `3`) tested after start-prepare
 - [ ] Order cancel tested
+- [ ] `GET /api/pos/business/{businessId}/order-status?orderId=` returns display status
 - [ ] Working hours sent as full weekly replacement (UTC)
 - [ ] Availability updates use correct item ids
 - [ ] Pending writes polled via sync-status

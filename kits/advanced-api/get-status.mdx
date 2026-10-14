@@ -1,0 +1,69 @@
+---
+title: "Get business status"
+description: "Read whether a business is Open or Closed for POS display."
+api: "GET http://ext-integration.haat-delivery.io/api/pos/business/{businessId}/status"
+---
+
+Read-only. Returns the partner display status mapped for POS.
+
+This is **not** the same as [Update business status](/kits/advanced-api/update-status) (`PUT`), which writes Online (`0`) / Offline (`1`) and returns a sync `requestId`.
+
+Auth uses the same `X-Api-Key`. Missing business returns `404`.
+
+**Example:**
+
+<pre class="redoc-example"><code>X-Api-Key: YOUR_API_KEY</code></pre>
+
+<div class="redoc-schema-label">PATH SCHEMA</div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>businessId</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>HAAT business id from List businesses.</p></div>
+  </div>
+</div>
+
+<div class="redoc-schema-label">RESPONSE BODY SCHEMA: <strong>application/json</strong></div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>status</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p><code>Open</code> or <code>Closed</code> only.</p></div>
+  </div>
+</div>
+
+### Display mapping
+
+| HAAT internal | Returned to POS |
+| --- | --- |
+| Open | `Open` |
+| Busy | `Closed` |
+| Close | `Closed` |
+| Soon | `Closed` |
+
+## Responses
+
+<AccordionGroup>
+  <Accordion title="200 — Current display status">
+    Body is `{ "status": "Open" }` or `{ "status": "Closed" }`.
+  </Accordion>
+  <Accordion title="401 / 403 — Auth failed">
+    Missing or invalid `X-Api-Key`.
+  </Accordion>
+  <Accordion title="404 — Business not found">
+    Unknown `businessId` for this API key.
+  </Accordion>
+</AccordionGroup>
+
+<RequestExample>
+```bash cURL
+curl http://ext-integration.haat-delivery.io/api/pos/business/1021/status \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{"status":"Open"}
+```
+</ResponseExample>

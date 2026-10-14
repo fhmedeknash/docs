@@ -146,6 +146,7 @@
             "group": "Businesses",
             "pages": [
               "kits/advanced-api/list-businesses",
+              "kits/advanced-api/get-status",
               "kits/advanced-api/update-status",
               "kits/advanced-api/working-hours",
               "kits/advanced-api/availability"
@@ -155,6 +156,7 @@
             "group": "Orders",
             "pages": [
               "kits/advanced-api/prepare-time",
+              "kits/advanced-api/get-order-status",
               "kits/advanced-api/order-status"
             ]
           },

@@ -38,10 +38,12 @@ The following API is already available from HAAT and can be used by the POS for 
 | Method | Purpose |
 | --- | --- |
 | `GET` List businesses | IDs assigned to your key |
+| `GET` Business status | Display status `Open` / `Closed` |
 | `GET` Prepare time | Available prep-time options (minutes) |
+| `GET` Order status | Display status `New` / `Preparing` / `Ready` / `Done` / `Cancelled` |
 | `GET` Request status | Poll async write results |
-| `PUT` Business status | Open (`0`) / close (`1`) with optional expiration |
-| `PUT` Order status | Start prepare (`1`) or cancel (`2`) |
+| `PUT` Business status | Online (`0`) / Offline (`1`) with optional expiration |
+| `PUT` Order status | Start prepare (`1`), cancel (`2`), or done prepare (`3`) |
 | `PUT` Working hours | Full weekly schedule replacement |
 | `PUT` Availability | Bulk item availability |
 
@@ -66,8 +68,11 @@ All PUT endpoints return:
 
 <Check>API key configured for staging and production</Check>
 <Check>List businesses returns expected branches</Check>
+<Check>GET business status returns Open / Closed</Check>
 <Check>Business open/close tested</Check>
 <Check>Order start-prepare includes `estimationMinutes`</Check>
+<Check>Order done-prepare (`status` 3) tested</Check>
+<Check>GET order status returns display string</Check>
 <Check>Working hours sent as full weekly replacement (UTC `HH:mm`)</Check>
 <Check>Availability updates use onboarding item IDs</Check>
 <Check>Pending writes polled via sync-status</Check>

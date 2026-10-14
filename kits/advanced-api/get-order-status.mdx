@@ -1,0 +1,71 @@
+---
+title: "Get order status"
+description: "Read the current display status of an order."
+api: "GET http://ext-integration.haat-delivery.io/api/pos/business/{businessId}/order-status"
+---
+
+Read-only. Returns the current order status string. Does **not** return a `requestId` and does not create a sync audit entry.
+
+This is different from [Update order status](/kits/advanced-api/order-status) (`PUT`), which uses numeric `status` `1` / `2` / `3`. The GET string can change over time without another PUT.
+
+**Example:**
+
+<pre class="redoc-example"><code>X-Api-Key: YOUR_API_KEY</code></pre>
+
+<div class="redoc-schema-label">PATH SCHEMA</div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>businessId</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>HAAT business id from List businesses.</p></div>
+  </div>
+</div>
+
+<div class="redoc-schema-label">QUERY SCHEMA</div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>orderId</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>HAAT order id.</p></div>
+  </div>
+</div>
+
+<div class="redoc-schema-label">RESPONSE BODY SCHEMA: <strong>application/json</strong></div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>orderId</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Same HAAT order id you queried.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>status</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p><code>New</code>, <code>Preparing</code>, <code>Ready</code>, <code>Done</code>, or <code>Cancelled</code>.</p></div>
+  </div>
+</div>
+
+## Responses
+
+<AccordionGroup>
+  <Accordion title="200 — Current order status">
+    Body is `{ "orderId", "status" }` with a display string.
+  </Accordion>
+  <Accordion title="401 / 403 — Auth failed">
+    Missing or invalid `X-Api-Key`.
+  </Accordion>
+  <Accordion title="404 — Not found">
+    Unknown `orderId` or order not on this business.
+  </Accordion>
+</AccordionGroup>
+
+<RequestExample>
+```bash cURL
+curl "http://ext-integration.haat-delivery.io/api/pos/business/1021/order-status?orderId=98765" \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{"orderId":98765,"status":"Preparing"}
+```
+</ResponseExample>

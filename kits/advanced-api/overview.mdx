@@ -11,8 +11,9 @@ Each endpoint page in the sidebar shows **headers, body fields, and example resp
 
 Typical uses:
 
-- Open / close a business
-- Update order status (start prepare / cancel)
+- Open / close a business (PUT) and read display status (GET)
+- Update order status (start prepare / done prepare / cancel)
+- Read current order status (GET)
 - Update working hours
 - Update item availability
 - Poll a request that returned `Pending`
@@ -33,8 +34,8 @@ Typical uses:
 ## Start here
 
 1. [Setup](/kits/advanced-api/setup) — API key and `businessId`
-2. **Businesses** — list, status, hours, availability
-3. **Orders** — prepare time, order status
+2. **Businesses** — list, get/update status, hours, availability
+3. **Orders** — prepare time, get/update order status
 4. **Sync** — poll `requestId` when a write is `Pending`
 5. [Checklist](/kits/advanced-api/checklist) — go-live
 

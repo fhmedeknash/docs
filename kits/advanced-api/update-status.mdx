@@ -1,10 +1,12 @@
 ---
 title: "Update business status"
-description: "Open or close a business."
+description: "Open or close a business (Online / Offline write)."
 api: "PUT http://ext-integration.haat-delivery.io/api/pos/business/{businessId}/status"
 ---
 
 `status` `0` = Online (open). `status` `1` = Offline (closed). When closing, `closeExpirationDate` is required.
+
+To **read** the current POS display status (`Open` / `Closed`), use [Get business status](/kits/advanced-api/get-status).
 
 **Example:**
 

@@ -1,10 +1,14 @@
 ---
 title: "Update order status"
-description: "Start prepare or cancel an order."
+description: "Start prepare, done prepare, or cancel an order."
 api: "PUT http://ext-integration.haat-delivery.io/api/pos/business/{businessId}/order-status"
 ---
 
-`status` `1` = Start Prepare. `status` `2` = Cancel.
+`status` `1` = Start Prepare. `status` `2` = Cancel. `status` `3` = Done Prepare.
+
+Auth uses `X-Api-Key`. Missing or invalid key returns `401` / `403`.
+
+Write responses use `Success`, `Pending`, or `Failed`. If `Pending`, poll [Get request status](/kits/advanced-api/request-status).
 
 **Example:**
 
@@ -28,13 +32,29 @@ api: "PUT http://ext-integration.haat-delivery.io/api/pos/business/{businessId}/
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>status</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p><code>1</code> start prepare, <code>2</code> cancel.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p><code>1</code> start prepare, <code>2</code> cancel, <code>3</code> done prepare.</p></div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>estimationMinutes</code></div>
-    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Required for start prepare. Use a value from Get prepare time options.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Required for start prepare (<code>status</code> <code>1</code>). Use a value from Get prepare time options. Not used for cancel or done prepare.</p></div>
   </div>
 </div>
+
+### Status values
+
+| `status` | Meaning | Body |
+| --- | --- | --- |
+| `1` | Start Prepare | `{ "orderId", "status": 1, "estimationMinutes" }` |
+| `2` | Cancel | `{ "orderId", "status": 2 }` |
+| `3` | Done Prepare | `{ "orderId", "status": 3 }` — no `estimationMinutes` |
+
+### Done Prepare (`status` `3`)
+
+- Requires a prior successful **Start Prepare**
+- Body is only `orderId` + `status: 3`
+- Fails if the order is cancelled, already Done Prepare, or not started
+- Can also fail when the order is pending customer approval, picker-restricted, or otherwise ineligible
+- Failure returns HTTP `400` with response `status` `Failed` and a `message`
 
 <div class="redoc-schema-label">RESPONSE BODY SCHEMA: <strong>application/json</strong></div>
 
@@ -57,24 +77,45 @@ api: "PUT http://ext-integration.haat-delivery.io/api/pos/business/{businessId}/
 
 <AccordionGroup>
   <Accordion title="200 — Success or queued">
-    If `status` is `Pending`, poll Get request status.
+    On success, `message` is like `Order {orderId} updated to {Status} successfully`. If response `status` is `Pending`, poll Get request status.
   </Accordion>
-  <Accordion title="400 — Validation failed">
-    Start prepare without `estimationMinutes` fails.
+  <Accordion title="400 — Failed">
+    Common cases: invalid `orderId` or `status`; order not found or wrong business; Start Prepare without `estimationMinutes`; Cancel / Done Prepare rule violations (not started, already done, cancelled, pending customer approval, picker-restricted, ineligible). Body has `status` `Failed` and `message`.
+  </Accordion>
+  <Accordion title="401 / 403 — Auth failed">
+    Missing or invalid `X-Api-Key`.
   </Accordion>
 </AccordionGroup>
 
 <RequestExample>
-```bash cURL
+```bash cURL Start Prepare
 curl -X PUT http://ext-integration.haat-delivery.io/api/pos/business/1021/order-status \
   -H "X-Api-Key: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"orderId":98765,"status":1,"estimationMinutes":20}'
 ```
+
+```bash cURL Done Prepare
+curl -X PUT http://ext-integration.haat-delivery.io/api/pos/business/1021/order-status \
+  -H "X-Api-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"orderId":98765,"status":3}'
+```
+
+```bash cURL Cancel
+curl -X PUT http://ext-integration.haat-delivery.io/api/pos/business/1021/order-status \
+  -H "X-Api-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"orderId":98765,"status":2}'
+```
 </RequestExample>
 
 <ResponseExample>
 ```json 200
-{"requestId":"6651a3f2e1b2c3d4e5f60001","status":"Success","message":"Updated successfully"}
+{"requestId":"6651a3f2e1b2c3d4e5f60001","status":"Success","message":"Order 98765 updated to Preparing successfully"}
+```
+
+```json 400
+{"requestId":"6651a3f2e1b2c3d4e5f60002","status":"Failed","message":"Order must be started before DonePrepare"}
 ```
 </ResponseExample>
