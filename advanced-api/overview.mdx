@@ -39,10 +39,11 @@ The following API is already available from HAAT and can be used by the POS for 
 | --- | --- |
 | `GET` List businesses | IDs assigned to your key |
 | `GET` Business status | Display status `Open` / `Closed` |
+| `GET` Working hours | Regular weekly schedule (`days`, UTC) |
 | `GET` Prepare time | Available prep-time options (minutes) |
 | `GET` Order status | Display status `New` / `Preparing` / `Ready` / `Done` / `Cancelled` |
 | `GET` Request status | Poll async write results |
-| `PUT` Business status | Online (`0`) / Offline (`1`) with optional expiration |
+| `PUT` Business status | Closed (`0`) / Open (`1`) with optional expiration dates |
 | `PUT` Order status | Start prepare (`1`), cancel (`2`), or done prepare (`3`) |
 | `PUT` Working hours | Full weekly schedule replacement |
 | `PUT` Availability | Bulk item availability |

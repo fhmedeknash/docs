@@ -6,7 +6,7 @@ api: "GET http://ext-integration.haat-delivery.io/api/pos/business/{businessId}/
 
 Read-only. Returns the partner display status mapped for POS.
 
-This is **not** the same as [Update business status](/kits/advanced-api/update-status) (`PUT`), which writes Online (`0`) / Offline (`1`) and returns a sync `requestId`.
+This is **not** the same as [Update business status](/kits/advanced-api/update-status) (`PUT`), which writes Closed (`0`) / Open (`1`) and returns a sync `requestId`.
 
 Auth uses the same `X-Api-Key`. Missing business returns `404`.
 

@@ -1,12 +1,22 @@
 ---
 title: "Update business status"
-description: "Open or close a business (Online / Offline write)."
+description: "Open or close a business. Expiration dates are optional."
 api: "PUT http://ext-integration.haat-delivery.io/api/pos/business/{businessId}/status"
 ---
 
-`status` `0` = Online (open). `status` `1` = Offline (closed). When closing, `closeExpirationDate` is required.
+`status` `0` = Closed. `status` `1` = Open.
 
-To **read** the current POS display status (`Open` / `Closed`), use [Get business status](/kits/advanced-api/get-status).
+Both `openExpirationDate` and `closeExpirationDate` are optional. When you omit a date, HAAT either calculates one from working hours (and days off) or clears it, depending on Open vs Close and whether the business is inside working hours.
+
+<Warning>
+  **Breaking change:** older docs used `0` = Online (open) and `1` = Offline (closed), and required `closeExpirationDate` when closing. That contract is replaced by Closed / Open above. Close date is no longer required.
+</Warning>
+
+To read the current POS display status (`Open` / `Closed`), use [Get business status](/kits/advanced-api/get-status).
+
+Auth uses `X-Api-Key`. Missing or invalid key returns `401` / `403`.
+
+Write responses use `Success`, `Pending`, or `Failed`. If `Pending`, poll [Get request status](/kits/advanced-api/request-status).
 
 **Example:**
 
@@ -26,20 +36,69 @@ To **read** the current POS display status (`Open` / `Closed`), use [Get busines
 <div class="redoc-tree">
   <div class="redoc-field">
     <div class="redoc-field-name"><code>status</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p><code>0</code> open, <code>1</code> closed.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p><code>0</code> Closed, <code>1</code> Open. Other values fail validation.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>openExpirationDate</code></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Optional. Only when <code>status</code> is <code>1</code> (Open). ISO 8601. Must be in the future if set.</p></div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>closeExpirationDate</code></div>
-    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Required when closing. Example: <code>2026-07-01T23:59:59</code>.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Optional. Only when <code>status</code> is <code>0</code> (Closed). ISO 8601. Must be in the future if set.</p></div>
   </div>
 </div>
+
+### Status values
+
+| `status` | Meaning | Typical body |
+| --- | --- | --- |
+| `0` | Closed | `{ "status": 0 }` or `{ "status": 0, "closeExpirationDate": "..." }` |
+| `1` | Open | `{ "status": 1 }` or `{ "status": 1, "openExpirationDate": "..." }` |
+
+Do not send Busy, Soon, or other internal statuses on this endpoint. [Get business status](/kits/advanced-api/get-status) maps Busy / Close / Soon to display `Closed`.
+
+### Open (`status` `1`)
+
+- Opens the business and clears any close expiration.
+- Inside working hours: a provided `openExpirationDate` is ignored; open expiration is cleared.
+- Outside working hours: uses `openExpirationDate` if provided; otherwise the next slot's closing time; if none, about 8 hours from now.
+- Opening may clear today from days off when applicable.
+
+### Close (`status` `0`)
+
+- Closes the business and clears any open expiration.
+- Uses `closeExpirationDate` if provided; otherwise the next opening time from working hours (converted to UTC).
+- If no next opening time is found, close expiration may remain unset (`null`).
+
+### Already open / already closed
+
+If the business is already open and you send Open, or already closed and you send Closed:
+
+- Response `status` is `Success`
+- `message` is `Branch is already open` or `Branch is already closed`
+- Dates are not recalculated and the status is not applied again
+
+A temporary Busy / Soon state is **not** treated as already closed — a Close request still applies.
+
+### How to handle the response
+
+1. Read body `status` (`Success`, `Pending`, or `Failed`), not only the HTTP code.
+2. If `Success`, the change is done (or was already in the requested state).
+3. If `Pending`, poll Get request status with `requestId` until `Success` or `Failed`.
+4. If `Failed`, read `message` and fix the request.
+
+| Response status | HTTP | Meaning |
+| --- | --- | --- |
+| `Success` | `200` | Applied now, or already open/closed |
+| `Pending` | `200` | Queued — poll Get request status |
+| `Failed` | `400` | Validation or apply failed |
 
 <div class="redoc-schema-label">RESPONSE BODY SCHEMA: <strong>application/json</strong></div>
 
 <div class="redoc-tree">
   <div class="redoc-field">
     <div class="redoc-field-name"><code>requestId</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Tracking id. Use it on Get request status.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Tracking id for Get request status.</p></div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>status</code><span class="redoc-required">required</span></div>
@@ -51,28 +110,73 @@ To **read** the current POS display status (`Open` / `Closed`), use [Get busines
   </div>
 </div>
 
+Common `message` values:
+
+- `Branch status updated successfully`
+- `Branch is already open`
+- `Branch is already closed`
+- `Request queued for processing`
+- `CloseExpirationDate must not be provided when status is Open`
+- `OpenExpirationDate must not be provided when status is Closed`
+- `OpenExpirationDate must be in the future`
+- `CloseExpirationDate must be in the future`
+- `Error: status 2 is not supported`
+
 ## Responses
 
 <AccordionGroup>
   <Accordion title="200 — Success or queued">
-    If `status` is `Pending`, poll Get request status.
+    If body `status` is `Pending`, poll Get request status.
   </Accordion>
-  <Accordion title="400 — Validation failed">
-    Closing without `closeExpirationDate` fails.
+  <Accordion title="400 — Failed">
+    Examples: unsupported `status`; open/close date on the wrong request; past expiration date; unknown business. Body has `status` `Failed`, a `requestId`, and `message`.
+  </Accordion>
+  <Accordion title="401 / 403 — Auth failed">
+    Missing or invalid `X-Api-Key`.
   </Accordion>
 </AccordionGroup>
 
 <RequestExample>
-```bash cURL
+```bash cURL Open
 curl -X PUT http://ext-integration.haat-delivery.io/api/pos/business/1021/status \
   -H "X-Api-Key: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"status":0}'
+  -d '{"status":1}'
+```
+
+```bash cURL Close
+curl -X PUT http://ext-integration.haat-delivery.io/api/pos/business/1021/status \
+  -H "X-Api-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"status":0,"closeExpirationDate":"2026-12-31T08:00:00Z"}'
+```
+
+```bash cURL Open with openExpirationDate
+curl -X PUT http://ext-integration.haat-delivery.io/api/pos/business/1021/status \
+  -H "X-Api-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"status":1,"openExpirationDate":"2026-12-31T22:00:00Z"}'
 ```
 </RequestExample>
 
 <ResponseExample>
 ```json 200
-{"requestId":"6651a3f2e1b2c3d4e5f60001","status":"Success","message":"Updated successfully"}
+{"requestId":"6651a3f2e1b2c3d4e5f60001","status":"Success","message":"Branch status updated successfully"}
+```
+
+```json 200 Already open
+{"requestId":"6651a3f2e1b2c3d4e5f60002","status":"Success","message":"Branch is already open"}
+```
+
+```json 200 Pending
+{"requestId":"6651a3f2e1b2c3d4e5f60003","status":"Pending","message":"Request queued for processing"}
+```
+
+```json 400
+{"requestId":"6651a3f2e1b2c3d4e5f60004","status":"Failed","message":"Error: status 2 is not supported"}
+```
+
+```json 400 Past close date
+{"requestId":"6651a3f2e1b2c3d4e5f60005","status":"Failed","message":"CloseExpirationDate must be in the future"}
 ```
 </ResponseExample>

@@ -118,7 +118,7 @@ paths:
 
         - Response is only `{ "status": "Open" }` or `{ "status": "Closed" }`
         - Mapping: Open → Open; Busy / Close / Soon → Closed
-        - Distinct from PUT Online(`0`) / Offline(`1`), which writes and returns a sync `requestId`
+        - Distinct from PUT Closed(`0`) / Open(`1`), which writes and returns a sync `requestId`
         - Missing business → `404`
       parameters:
         - $ref: "#/components/parameters/BusinessId"
@@ -145,11 +145,18 @@ paths:
       description: |
         Open or close your business.
 
-        - `status` `0` = Online (open)
-        - `status` `1` = Offline (closed)
+        - `status` `0` = Closed
+        - `status` `1` = Open
 
-        When closing, `closeExpirationDate` (ISO 8601, future) is required.
-        When opening, omit it or set it to null. The business reopens automatically when the expiration is reached.
+        `closeExpirationDate` and `openExpirationDate` are optional ISO 8601 future datetimes.
+        When omitted, HAAT may calculate expiration from working hours (and days off) or clear it.
+
+        Breaking change vs older docs: previously `0` = Online and `1` = Offline, and
+        `closeExpirationDate` was required when closing.
+
+        On success, `message` is typically `Branch status updated successfully`.
+        Already open / already closed returns Success with `Branch is already open` /
+        `Branch is already closed` (no second apply).
 
         To read the current POS display status (`Open` / `Closed`), use GET on this path.
       parameters:
@@ -164,17 +171,47 @@ paths:
               open:
                 summary: Open
                 value:
-                  status: 0
+                  status: 1
               close:
-                summary: Close temporarily
+                summary: Close with optional expiration
+                value:
+                  status: 0
+                  closeExpirationDate: "2026-12-31T08:00:00Z"
+              openWithExpiration:
+                summary: Open with optional open expiration
                 value:
                   status: 1
-                  closeExpirationDate: "2026-07-01T23:59:59"
+                  openExpirationDate: "2026-12-31T22:00:00Z"
       responses:
         "200":
-          $ref: "#/components/responses/WriteOk"
+          description: Success or queued
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WriteResponse"
+              examples:
+                success:
+                  value:
+                    requestId: "6651a3f2e1b2c3d4e5f60001"
+                    status: Success
+                    message: "Branch status updated successfully"
+                alreadyOpen:
+                  value:
+                    requestId: "6651a3f2e1b2c3d4e5f60002"
+                    status: Success
+                    message: "Branch is already open"
         "400":
-          $ref: "#/components/responses/WriteBadRequest"
+          description: Validation or apply failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WriteResponse"
+              examples:
+                unsupportedStatus:
+                  value:
+                    requestId: "6651a3f2e1b2c3d4e5f60004"
+                    status: Failed
+                    message: "Error: status 2 is not supported"
 
   /api/pos/business/{businessId}/order-status:
     get:
@@ -279,16 +316,74 @@ paths:
                     message: "Order must be started before DonePrepare"
 
   /api/pos/business/{businessId}/working-hours:
+    get:
+      tags: [Businesses]
+      operationId: getWorkingHours
+      summary: Get working hours
+      description: |
+        Read-only. Returns the business's regular weekly working hours.
+
+        - Body is `{ "days": [ ... ] }` only (no `requestId` / sync audit)
+        - Only active open days; closed days omitted (`type` `1` never returned)
+        - If every day is closed → `{ "days": [] }`
+        - Field order on each day: `day`, `hours`, `type`
+        - `type`: `0` = specific hours, `2` = open 24 hours (`hours` is `[]`)
+        - `fromHour` / `toHour`: `"HH:mm"` UTC; overnight ranges allowed
+        - Does not include occasion overrides, temporary special hours, or days off
+      parameters:
+        - $ref: "#/components/parameters/BusinessId"
+      responses:
+        "200":
+          description: Regular weekly schedule
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkingHoursResponse"
+              examples:
+                sample:
+                  value:
+                    days:
+                      - day: 1
+                        hours:
+                          - fromHour: "08:00"
+                            toHour: "14:00"
+                          - fromHour: "17:00"
+                            toHour: "23:00"
+                        type: 0
+                      - day: 2
+                        hours:
+                          - fromHour: "09:00"
+                            toHour: "22:00"
+                        type: 0
+                      - day: 6
+                        hours:
+                          - fromHour: "10:00"
+                            toHour: "23:00"
+                        type: 0
+                      - day: 7
+                        hours: []
+                        type: 2
+                emptyWeek:
+                  value:
+                    days: []
+        "401":
+          description: Missing or invalid API key
+        "403":
+          description: Key not authorized for this business
     put:
       tags: [Businesses]
       operationId: updateWorkingHours
       summary: Update working hours
       description: |
         Full replacement of weekly working hours. Any day not included is treated as closed.
+        Do not send `type` `1`; omit the day instead.
 
         - `day`: 1=Sunday … 7=Saturday
-        - `type`: `0` (default) = open during `hours`, `2` = open 24 hours
+        - `type` (optional numeric enum): `0` (default) = open during `hours`,
+          `1` = Closed (do not send), `2` = open 24 hours
         - `fromHour` / `toHour`: `"HH:mm"` UTC, 24-hour clock; ranges must not overlap
+
+        To read the schedule after an update, use GET on this path.
       parameters:
         - $ref: "#/components/parameters/BusinessId"
       requestBody:
@@ -423,10 +518,18 @@ components:
         status:
           type: integer
           enum: [0, 1]
-          description: "0 = Online (open), 1 = Offline (closed)"
+          description: "0 = Closed, 1 = Open"
+        openExpirationDate:
+          type: [string, "null"]
+          description: |
+            Optional when Open (`status` 1) only. ISO 8601 future datetime.
+            Must not be sent when Closed.
         closeExpirationDate:
           type: [string, "null"]
-          description: Required when closing; ISO 8601 future datetime
+          description: |
+            Optional when Closed (`status` 0) only. ISO 8601 future datetime.
+            Must not be sent when Open. If omitted on Close, HAAT may derive
+            next opening time from working hours (UTC).
 
     BusinessStatusResponse:
       type: object
@@ -489,8 +592,11 @@ components:
           description: "1=Sunday … 7=Saturday"
         type:
           type: integer
-          enum: [0, 2]
-          description: "0 = specific hours, 2 = open 24 hours"
+          enum: [0, 1, 2]
+          description: |
+            Numeric enum (not a string). 0 = specific hours (default if omitted on PUT),
+            1 = Closed (do not send on PUT; omit the day; never returned on GET),
+            2 = open 24 hours (hours empty).
         hours:
           type: array
           items:
@@ -502,6 +608,19 @@ components:
       properties:
         days:
           type: array
+          description: Full weekly replacement. Omit closed days; do not send type 1.
+          items:
+            $ref: "#/components/schemas/WorkingDay"
+
+    WorkingHoursResponse:
+      type: object
+      required: [days]
+      properties:
+        days:
+          type: array
+          description: |
+            Active open days only, ordered by day ascending. Closed days omitted.
+            Empty array when every day is closed.
           items:
             $ref: "#/components/schemas/WorkingDay"
 

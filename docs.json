@@ -148,6 +148,7 @@
               "kits/advanced-api/list-businesses",
               "kits/advanced-api/get-status",
               "kits/advanced-api/update-status",
+              "kits/advanced-api/get-working-hours",
               "kits/advanced-api/working-hours",
               "kits/advanced-api/availability"
             ]

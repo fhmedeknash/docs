@@ -25,21 +25,21 @@ Response: `{ "status": "Open" | "Closed" }` (display mapping for POS).
 
 | status | Meaning |
 | --- | --- |
-| `0` | Online (open) |
-| `1` | Offline (closed) |
+| `0` | Closed |
+| `1` | Open |
 
 Open:
 
 ```json
-{ "status": 0 }
+{ "status": 1 }
 ```
 
-Close temporarily (expiration required):
+Close (optional expiration; HAAT may derive next opening time if omitted):
 
 ```json
 {
-  "status": 1,
-  "closeExpirationDate": "2026-07-01T23:59:59"
+  "status": 0,
+  "closeExpirationDate": "2026-12-31T08:00:00Z"
 }
 ```
 
@@ -74,6 +74,12 @@ Response: `{ "orderId", "status": "New" | "Preparing" | "Ready" | "Done" | "Canc
 }
 ```
 
+## Get working hours
+
+`GET /api/pos/business/{businessId}/working-hours`
+
+Response: `{ "days": [ ... ] }` — active open days only; closed days omitted. Empty `{ "days": [] }` when fully closed.
+
 ## Update working hours
 
 `PUT /api/pos/business/{businessId}/working-hours`
@@ -81,7 +87,7 @@ Response: `{ "orderId", "status": "New" | "Preparing" | "Ready" | "Done" | "Canc
 Full replacement. Days not listed are closed.
 
 - `day`: `1` Sunday … `7` Saturday  
-- `type`: `0` specific hours (default), `2` open 24 hours  
+- `type`: `0` specific hours (default), `1` Closed (do not send — omit the day), `2` open 24 hours  
 - Times: `"HH:mm"` UTC  
 
 ```json

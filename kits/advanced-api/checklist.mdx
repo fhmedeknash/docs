@@ -9,12 +9,13 @@ description: "Go-live checklist for Advanced API partners."
 - [ ] API key configured for staging
 - [ ] `GET /api/pos/businesses` returns expected branches
 - [ ] `GET /api/pos/business/{businessId}/status` returns `Open` or `Closed`
-- [ ] Business open / close (PUT Online / Offline) tested
+- [ ] Business open / close (PUT Closed `0` / Open `1`, optional expiration dates) tested
 - [ ] Order start-prepare includes `estimationMinutes`
 - [ ] Order done-prepare (`status` `3`) tested after start-prepare
 - [ ] Order cancel tested
 - [ ] `GET /api/pos/business/{businessId}/order-status?orderId=` returns display status
 - [ ] Working hours sent as full weekly replacement (UTC)
+- [ ] `GET /api/pos/business/{businessId}/working-hours` returns the expected UTC schedule (including empty `days` when fully closed)
 - [ ] Availability updates use correct item ids
 - [ ] Pending writes polled via sync-status
 - [ ] Staging certification approved

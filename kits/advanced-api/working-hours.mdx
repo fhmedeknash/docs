@@ -4,7 +4,9 @@ description: "Replace the weekly working hours for a business."
 api: "PUT http://ext-integration.haat-delivery.io/api/pos/business/{businessId}/working-hours"
 ---
 
-Full replacement. Any day you leave out is treated as closed. `day`: 1 = Sunday … 7 = Saturday.
+Full replacement. Any day you leave out is treated as closed. `day`: 1 = Sunday … 7 = Saturday. Times are `HH:mm` UTC.
+
+To read the schedule after an update, call [Get working hours](/kits/advanced-api/get-working-hours). GET uses the same `days` / `day` / `hours` / `type` / `fromHour` / `toHour` shape and the same UTC `HH:mm` convention. GET does not return a `requestId`.
 
 **Example:**
 
@@ -24,7 +26,7 @@ Full replacement. Any day you leave out is treated as closed. `day`: 1 = Sunday 
 <div class="redoc-tree">
   <div class="redoc-field">
     <div class="redoc-field-name"><code>days</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Weekly hours. Any day you leave out is treated as closed.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Weekly hours. Any day you leave out is treated as closed. Do <strong>not</strong> send <code>type: 1</code>; omit the day instead.</p></div>
   </div>
   <div class="redoc-children">
     <div class="redoc-field">
@@ -33,11 +35,11 @@ Full replacement. Any day you leave out is treated as closed. `day`: 1 = Sunday 
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>type</code></div>
-      <div class="redoc-field-meta"><div class="redoc-type">integer</div><p><code>0</code> open during <code>hours</code>, <code>2</code> open 24 hours.</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Optional numeric enum (not a string). Default <code>0</code> if omitted. See table below.</p></div>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>hours</code></div>
-      <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>UTC ranges. Must not overlap.</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>UTC ranges. Must not overlap. Required when <code>type</code> is <code>0</code>; empty / not required when <code>type</code> is <code>2</code>.</p></div>
     </div>
     <div class="redoc-children">
       <div class="redoc-field">
@@ -51,6 +53,14 @@ Full replacement. Any day you leave out is treated as closed. `day`: 1 = Sunday 
     </div>
   </div>
 </div>
+
+### `type` values
+
+| `type` | Meaning on PUT |
+| --- | --- |
+| `0` | Open with specific hours (`hours` required, one or more non-overlapping UTC ranges). **Default if `type` is omitted.** |
+| `1` | Closed — **do not send**. Omit the day from `days` instead. |
+| `2` | Open 24 hours (`hours` empty / not required) |
 
 <div class="redoc-schema-label">RESPONSE BODY SCHEMA: <strong>application/json</strong></div>
 

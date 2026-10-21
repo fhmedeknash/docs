@@ -1,0 +1,141 @@
+---
+title: "Get working hours"
+description: "Read the regular weekly working hours for a business."
+api: "GET http://ext-integration.haat-delivery.io/api/pos/business/{businessId}/working-hours"
+---
+
+Read-only. Returns the business's **regular weekly** working hours. Use after PUT to confirm what HAAT stored, or to load the schedule into a POS UI.
+
+Does **not** include occasion overrides, temporary special hours, or days off.
+
+Does **not** return a `requestId` and does not create a sync audit entry. For writes, use [Update working hours](/kits/advanced-api/working-hours).
+
+GET uses the same `days` / `day` / `hours` / `type` / `fromHour` / `toHour` shape and the same UTC `HH:mm` convention as PUT.
+
+**Example:**
+
+<pre class="redoc-example"><code>X-Api-Key: YOUR_API_KEY</code></pre>
+
+<div class="redoc-schema-label">PATH SCHEMA</div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>businessId</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>HAAT business id from List businesses. No query parameters.</p></div>
+  </div>
+</div>
+
+<div class="redoc-schema-label">RESPONSE BODY SCHEMA: <strong>application/json</strong></div>
+
+<div class="redoc-tree">
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>days</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Active open days only, ordered by <code>day</code> ascending. Closed days are omitted. If every day is closed, <code>days</code> is <code>[]</code>.</p></div>
+  </div>
+  <div class="redoc-children">
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>day</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-meta"><div class="redoc-type">integer</div><p><code>1</code> Sunday … <code>7</code> Saturday.</p></div>
+    </div>
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>hours</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>UTC ranges, ordered by <code>fromHour</code> ascending. Empty <code>[]</code> when <code>type</code> is <code>2</code>.</p></div>
+    </div>
+    <div class="redoc-children">
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>fromHour</code><span class="redoc-required">required</span></div>
+        <div class="redoc-field-meta"><div class="redoc-type">string</div><p><code>HH:mm</code> UTC, 24-hour clock. Overnight ranges allowed (<code>fromHour</code> may be later than <code>toHour</code>).</p></div>
+      </div>
+      <div class="redoc-field">
+        <div class="redoc-field-name"><code>toHour</code><span class="redoc-required">required</span></div>
+        <div class="redoc-field-meta"><div class="redoc-type">string</div><p><code>HH:mm</code> UTC, 24-hour clock.</p></div>
+      </div>
+    </div>
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>type</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Numeric enum (not a string). Always present on returned days.</p></div>
+    </div>
+  </div>
+</div>
+
+### `type` values
+
+| `type` | Meaning on GET |
+| --- | --- |
+| `0` | Open with specific hours (`hours` has one or more ranges) |
+| `1` | Closed — **never returned**; the day is omitted instead |
+| `2` | Open 24 hours (`hours` is `[]`) |
+
+### UTC and DST
+
+Same convention as PUT: `HH:mm` UTC. After a successful PUT, GET returns the same UTC values while the country's UTC offset is unchanged. Operator UIs may show **local** time (offset from these UTC values).
+
+If the country UTC offset changes (for example daylight saving) and hours are **not** rewritten, GET's UTC `HH:mm` values **may shift** so local opening times stay consistent. Do not assume UTC clock strings never change after DST without another PUT (or equivalent hours update in HAAT).
+
+### Relation to PUT
+
+- Same schedule fields and the same numeric `type` values `0` / `1` / `2`
+- GET = read schedule; PUT = full-replace write + sync response
+- On PUT, any day left out of the request is treated as closed (do **not** send `type: 1`)
+- Partners may round-trip GET `days` into a PUT body after edits; PUT remains full replacement
+
+## Responses
+
+<AccordionGroup>
+  <Accordion title="200 — Regular weekly schedule">
+    Body is `{ "days": [ ... ] }` only. Not the PUT sync shape (`requestId` / `status` / `message`).
+  </Accordion>
+  <Accordion title="401 — Auth failed">
+    Missing or invalid `X-Api-Key`.
+  </Accordion>
+  <Accordion title="403 — Not authorized">
+    Key not authorized for this `businessId`.
+  </Accordion>
+</AccordionGroup>
+
+<RequestExample>
+```bash cURL
+curl "http://ext-integration.haat-delivery.io/api/pos/business/1021/working-hours" \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "days": [
+    {
+      "day": 1,
+      "hours": [
+        { "fromHour": "08:00", "toHour": "14:00" },
+        { "fromHour": "17:00", "toHour": "23:00" }
+      ],
+      "type": 0
+    },
+    {
+      "day": 2,
+      "hours": [
+        { "fromHour": "09:00", "toHour": "22:00" }
+      ],
+      "type": 0
+    },
+    {
+      "day": 6,
+      "hours": [
+        { "fromHour": "10:00", "toHour": "23:00" }
+      ],
+      "type": 0
+    },
+    {
+      "day": 7,
+      "hours": [],
+      "type": 2
+    }
+  ]
+}
+```
+
+```json 200 Empty week
+{ "days": [] }
+```
+</ResponseExample>
