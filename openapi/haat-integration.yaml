@@ -55,7 +55,7 @@ paths:
     get:
       tags: [Orders]
       operationId: getPrepareTime
-      summary: Get prepare time options
+      summary: Get prepare time
       description: Returns available prepare-time options (in minutes) for your business.
       parameters:
         - $ref: "#/components/parameters/BusinessId"
