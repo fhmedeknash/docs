@@ -1,18 +1,12 @@
 ---
 title: "Get menu from HAAT"
-description: "Partner reads the HAAT menu for a business (categories, meals, deals, allocations)."
+description: "Read the menu HAAT stores for a business."
 api: "GET http://ext-integration.haat-delivery.io/api/pos/business/{businessId}/menu"
 ---
 
-Read-only. Returns the restaurant menu HAAT stores for this business. The **partner calls HAAT** with `X-Api-Key`.
+Read-only. You call HAAT with `X-Api-Key` and get the menu for one business.
 
-Auth is Advanced API (`X-Api-Key`). For the reverse direction (HAAT calls your POS), use [Get menu from POS](/kits/restaurant/get-menu).
-
-Does **not** return a `requestId` and does not create a sync audit entry. There is no `Pending` state.
-
-Classification uses **Allocation** (`allocationId` / `allocations`). Do not expect `mealCategoryId` or `mealCategoryNames`.
-
-JSON is camelCase. Localized names keep `en-US`, `ar`, `he`, `fr`. Allocation `name` is a single string, not a language dictionary.
+For the reverse flow (HAAT pulls from your POS), see [Get menu from POS](/kits/restaurant/get-menu).
 
 **Example:**
 
@@ -23,7 +17,7 @@ JSON is camelCase. Localized names keep `en-US`, `ar`, `he`, `fr`. Allocation `n
 <div class="redoc-tree">
   <div class="redoc-field">
     <div class="redoc-field-name"><code>businessId</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>HAAT business id from List businesses. No query parameters.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>HAAT business id from List businesses.</p></div>
   </div>
 </div>
 
@@ -32,171 +26,52 @@ JSON is camelCase. Localized names keep `en-US`, `ar`, `he`, `fr`. Allocation `n
 <div class="redoc-tree">
   <div class="redoc-field">
     <div class="redoc-field-name"><code>lastModified</code></div>
-    <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Newest menu outbox creation time across menu items, item relations, and menu categories (including deleted items). <code>null</code> when none exist. Not a per-item field.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>ISO timestamp of the latest menu change. <code>null</code> if none.</p></div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>allocations</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Lookup for <code>allocationId</code>. Not a second menu tree. Only allocations used by this restaurant's menu items.</p></div>
-  </div>
-  <div class="redoc-children">
-    <div class="redoc-field">
-      <div class="redoc-field-name"><code>haatId</code><span class="redoc-required">required</span></div>
-      <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>HAAT allocation id.</p></div>
-    </div>
-    <div class="redoc-field">
-      <div class="redoc-field-name"><code>name</code><span class="redoc-required">required</span></div>
-      <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Single string, for example <code>Drinks</code>. Not a language dictionary.</p></div>
-    </div>
+    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Lookup table for <code>allocationId</code>. Each row: <code>haatId</code> + string <code>name</code> (not localized).</p></div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>categories</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Restaurant menu categories. Each has <code>meals</code> and <code>deals</code>.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Menu categories. Each has <code>haatId</code>, localized <code>name</code>, <code>imageUrl</code>, <code>meals</code>, <code>deals</code>.</p></div>
   </div>
   <div class="redoc-children">
     <div class="redoc-field">
-      <div class="redoc-field-name"><code>haatId</code><span class="redoc-required">required</span></div>
-      <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>HAAT category id.</p></div>
-    </div>
-    <div class="redoc-field">
-      <div class="redoc-field-name"><code>name</code><span class="redoc-required">required</span></div>
-      <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized names (<code>en-US</code>, <code>ar</code>, <code>he</code>, <code>fr</code>, …).</p></div>
-    </div>
-    <div class="redoc-field">
-      <div class="redoc-field-name"><code>imageUrl</code></div>
-      <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Category image URL.</p></div>
-    </div>
-    <div class="redoc-field">
       <div class="redoc-field-name"><code>meals</code><span class="redoc-required">required</span></div>
-      <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Meals in this category. A plain restaurant item is a meal with <code>groups: []</code>.</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p><code>haatId</code>, <code>name</code>, <code>price</code>, <code>available</code>, <code>imageUrl</code>, <code>allocationId</code>, <code>groups</code>. Plain items use <code>groups: []</code>.</p></div>
     </div>
-    <div class="redoc-children">
-      <div class="redoc-field">
-        <div class="redoc-field-name"><code>haatId</code><span class="redoc-required">required</span></div>
-        <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>HAAT meal id.</p></div>
-      </div>
-      <div class="redoc-field">
-        <div class="redoc-field-name"><code>name</code><span class="redoc-required">required</span></div>
-        <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized names.</p></div>
-      </div>
-      <div class="redoc-field">
-        <div class="redoc-field-name"><code>price</code><span class="redoc-required">required</span></div>
-        <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Unit price.</p></div>
-      </div>
-      <div class="redoc-field">
-        <div class="redoc-field-name"><code>available</code><span class="redoc-required">required</span></div>
-        <div class="redoc-field-meta"><div class="redoc-type">boolean</div><p>See availability rules below.</p></div>
-      </div>
-      <div class="redoc-field">
-        <div class="redoc-field-name"><code>imageUrl</code></div>
-        <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Meal image URL.</p></div>
-      </div>
-      <div class="redoc-field">
-        <div class="redoc-field-name"><code>allocationId</code></div>
-        <div class="redoc-field-meta"><div class="redoc-type">integer | null</div><p>Nullable. Lookup key into top-level <code>allocations</code>.</p></div>
-      </div>
-      <div class="redoc-field">
-        <div class="redoc-field-name"><code>groups</code><span class="redoc-required">required</span></div>
-        <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Modifier groups. Empty array for a plain item.</p></div>
-      </div>
-      <div class="redoc-children">
-        <div class="redoc-field">
-          <div class="redoc-field-name"><code>haatId</code><span class="redoc-required">required</span></div>
-          <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>HAAT group id.</p></div>
-        </div>
-        <div class="redoc-field">
-          <div class="redoc-field-name"><code>name</code><span class="redoc-required">required</span></div>
-          <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized group name.</p></div>
-        </div>
-        <div class="redoc-field">
-          <div class="redoc-field-name"><code>min</code><span class="redoc-required">required</span></div>
-          <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Stored minimum. Not adjusted for fixed items.</p></div>
-        </div>
-        <div class="redoc-field">
-          <div class="redoc-field-name"><code>max</code><span class="redoc-required">required</span></div>
-          <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Stored maximum. Not capped.</p></div>
-        </div>
-        <div class="redoc-field">
-          <div class="redoc-field-name"><code>mealContents</code><span class="redoc-required">required</span></div>
-          <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Choices / ingredients. <code>haatId</code> is the ingredient menu-item id.</p></div>
-        </div>
-      </div>
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>groups</code></div>
+      <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Modifiers: <code>haatId</code>, <code>name</code>, <code>min</code>, <code>max</code>, <code>mealContents</code>. No price / available / imageUrl on the group.</p></div>
+    </div>
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>mealContents</code></div>
+      <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Choices: same item fields as meals, plus <code>isDefault</code>, <code>nonModifiable</code>, <code>maxCount</code>.</p></div>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>deals</code><span class="redoc-required">required</span></div>
-      <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Restaurant deals and combo meals.</p></div>
-    </div>
-    <div class="redoc-children">
-      <div class="redoc-field">
-        <div class="redoc-field-name"><code>haatId</code><span class="redoc-required">required</span></div>
-        <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>HAAT deal id.</p></div>
-      </div>
-      <div class="redoc-field">
-        <div class="redoc-field-name"><code>name</code><span class="redoc-required">required</span></div>
-        <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized deal name.</p></div>
-      </div>
-      <div class="redoc-field">
-        <div class="redoc-field-name"><code>price</code><span class="redoc-required">required</span></div>
-        <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Deal price.</p></div>
-      </div>
-      <div class="redoc-field">
-        <div class="redoc-field-name"><code>available</code><span class="redoc-required">required</span></div>
-        <div class="redoc-field-meta"><div class="redoc-type">boolean</div><p>Same meal/deal availability rules.</p></div>
-      </div>
-      <div class="redoc-field">
-        <div class="redoc-field-name"><code>imageUrl</code></div>
-        <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Deal image URL.</p></div>
-      </div>
-      <div class="redoc-field">
-        <div class="redoc-field-name"><code>allocationId</code></div>
-        <div class="redoc-field-meta"><div class="redoc-type">integer | null</div><p>Nullable.</p></div>
-      </div>
-      <div class="redoc-field">
-        <div class="redoc-field-name"><code>mealGroups</code><span class="redoc-required">required</span></div>
-        <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Choice groups inside the deal. Same group shape as meal <code>groups</code> (no <code>price</code> / <code>available</code> / <code>imageUrl</code>), with nested <code>meals</code>.</p></div>
-      </div>
+      <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Combos / deals: same top-level item fields as meals, with <code>mealGroups</code> → nested <code>meals</code>.</p></div>
     </div>
   </div>
 </div>
 
-### Meal content fields
+### Notes
 
-Each `mealContents` item includes `haatId`, localized `name`, `price`, `available`, `imageUrl`, `allocationId` (nullable), plus:
-
-| Field | Meaning |
-| --- | --- |
-| `isDefault` | Stored default-selected flag |
-| `nonModifiable` | Stored non-modifiable flag |
-| `maxCount` | Stored max amount, or `0` when null |
-
-### Response rules
-
-- **HAAT ids only.** Never POS ids, placement ids, or group-item ids.
-- A meal content `haatId` is the ingredient menu-item id.
-- Groups and deal groups have `haatId`, `name`, `min`, `max`, and children. They do **not** have `price`, `available`, or `imageUrl`.
-- Meals, deals, and meal contents have `price`, `available`, and `imageUrl`.
-- A deal meal's `price` is the deal-component price, or `0` when that price is null.
-- A nested deal add-on uses the deal override price when one is stored.
-- Group `min` / `max` are the stored values. Do not subtract fixed items and do not cap them.
-- Hidden and deleted rows are omitted from category lists. Unavailable rows stay, with `available: false`.
-- A hidden meal that is a visible choice inside a deal still appears inside that deal. Category meals stay hidden when Hide is set.
-- Names keep every stored language. If `en-US` is missing or blank, fill it from `he`, then `ar`, then `fr`, then any other non-empty value.
-- `imageUrl` prefers the small image, then the original. Prefix a relative path with the image host. Leave an absolute URL unchanged. Use `null` when there is no path or no host.
-- Meal / deal `available` is `true` when `NotAvailable` is false or its unavailability expiration has passed, **and** the weekly hours say it is open now. Empty weekly hours means open. Uses the business country timezone; if the business has no country, Israel is used.
-- Meal content `available` uses `NotAvailable` and the expiration date only (no weekly hours).
-- Smart availability is **not** applied.
-- This GET does **not** use the partner item ids from [Update availability](/kits/advanced-api/availability). That PUT still writes by those partner ids.
+- All ids are **HAAT** ids (`haatId`), not POS ids.
+- Resolve `allocationId` against top-level `allocations`.
+- Localized `name` objects use `en-US`, `ar`, `he`, `fr` (and any other stored languages).
+- Hidden / deleted items are omitted. Out-of-stock items stay with `available: false`.
+- No `requestId` — this is not a sync write.
 
 ## Responses
 
 <AccordionGroup>
-  <Accordion title="200 — Menu JSON">
-    Body has `lastModified`, `allocations`, and `categories`.
+  <Accordion title="200 — Menu">
+    `{ lastModified, allocations, categories }`
   </Accordion>
-  <Accordion title="401 — Auth failed">
-    Missing or invalid `X-Api-Key`.
-  </Accordion>
-  <Accordion title="403 — Not authorized">
-    Key not allowed for this `businessId`.
+  <Accordion title="401 / 403 — Auth failed">
+    Missing, invalid, or unauthorized `X-Api-Key`.
   </Accordion>
   <Accordion title="404 — Business not found">
     Unknown `businessId`.
@@ -220,12 +95,12 @@ curl "http://ext-integration.haat-delivery.io/api/pos/business/1021/menu" \
   "categories": [
     {
       "haatId": 10,
-      "name": { "en-US": "Burgers", "ar": "برغر", "he": "המבורגרים", "fr": "Burgers" },
+      "name": { "en-US": "Burgers", "he": "המבורגרים" },
       "imageUrl": "https://images.haat.delivery/categories/burgers.jpg",
       "meals": [
         {
           "haatId": 201,
-          "name": { "en-US": "Classic Burger", "ar": "برغر", "he": "המבורגר", "fr": "Burger" },
+          "name": { "en-US": "Classic Burger" },
           "price": 32.5,
           "available": true,
           "imageUrl": "https://images.haat.delivery/meals/burger.jpg",
@@ -273,7 +148,7 @@ curl "http://ext-integration.haat-delivery.io/api/pos/business/1021/menu" \
                   "name": { "en-US": "Classic Burger" },
                   "price": 0,
                   "available": true,
-                  "imageUrl": "https://images.haat.delivery/meals/burger.jpg",
+                  "imageUrl": null,
                   "allocationId": 4,
                   "groups": []
                 }
