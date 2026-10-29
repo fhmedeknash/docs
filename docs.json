@@ -112,12 +112,6 @@
             ]
           },
           {
-            "group": "Menu",
-            "pages": [
-              "kits/restaurant/get-menu"
-            ]
-          },
-          {
             "group": "Orders",
             "pages": [
               "kits/restaurant/create-order"
@@ -127,6 +121,19 @@
             "group": "Go-live",
             "pages": [
               "kits/restaurant/checklist"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Menu",
+        "icon": "book-open",
+        "groups": [
+          {
+            "group": "Get menu",
+            "pages": [
+              "kits/advanced-api/get-menu",
+              "kits/restaurant/get-menu"
             ]
           }
         ]

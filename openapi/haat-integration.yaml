@@ -445,6 +445,101 @@ paths:
         "400":
           $ref: "#/components/responses/WriteBadRequest"
 
+  /api/pos/business/{businessId}/menu:
+    get:
+      tags: [Businesses]
+      operationId: getMenu
+      summary: Get menu from HAAT
+      description: |
+        Read-only. Returns the HAAT menu for a business (categories, meals, deals, allocations).
+
+        - Partner calls HAAT (not the external POS get-menu that HAAT calls)
+        - No `requestId` / sync audit / Pending
+        - Classification uses Allocation (`allocationId` / `allocations`); not meal categories
+        - HAAT ids only
+        - Hidden/deleted rows omitted from category lists; unavailable rows stay with `available: false`
+      parameters:
+        - $ref: "#/components/parameters/BusinessId"
+      responses:
+        "200":
+          description: Menu JSON
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PosMenuResponse"
+              examples:
+                sample:
+                  value:
+                    lastModified: "2026-10-28T12:00:00Z"
+                    allocations:
+                      - haatId: 4
+                        name: Drinks
+                    categories:
+                      - haatId: 10
+                        name:
+                          en-US: Burgers
+                          ar: برغر
+                          he: המבורגרים
+                          fr: Burgers
+                        imageUrl: https://images.haat.delivery/categories/burgers.jpg
+                        meals:
+                          - haatId: 201
+                            name:
+                              en-US: Classic Burger
+                              ar: برغر
+                              he: המבורגר
+                              fr: Burger
+                            price: 32.5
+                            available: true
+                            imageUrl: https://images.haat.delivery/meals/burger.jpg
+                            allocationId: 4
+                            groups:
+                              - haatId: 8
+                                name:
+                                  en-US: Add-ons
+                                min: 0
+                                max: 3
+                                mealContents:
+                                  - haatId: 900
+                                    name:
+                                      en-US: Cheese
+                                    price: 3
+                                    available: true
+                                    imageUrl: null
+                                    isDefault: true
+                                    nonModifiable: false
+                                    maxCount: 5
+                                    allocationId: 4
+                        deals:
+                          - haatId: 300
+                            name:
+                              en-US: Combo
+                            price: 49.9
+                            available: false
+                            imageUrl: null
+                            allocationId: 4
+                            mealGroups:
+                              - haatId: 40
+                                name:
+                                  en-US: Choose a burger
+                                min: 1
+                                max: 1
+                                meals:
+                                  - haatId: 201
+                                    name:
+                                      en-US: Classic Burger
+                                    price: 0
+                                    available: true
+                                    imageUrl: https://images.haat.delivery/meals/burger.jpg
+                                    allocationId: 4
+                                    groups: []
+        "401":
+          description: Missing or invalid API key
+        "403":
+          description: Key not authorized for this business
+        "404":
+          description: Business not found
+
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -635,3 +730,159 @@ components:
             type: string
         available:
           type: boolean
+
+    LocalizedMenuName:
+      type: object
+      additionalProperties:
+        type: string
+      description: |
+        Localized names. Keys include en-US, ar, he, fr, and any other stored language.
+        If en-US is missing or blank, HAAT fills it from he, then ar, then fr, then any other non-empty value.
+
+    PosMenuAllocation:
+      type: object
+      required: [haatId, name]
+      properties:
+        haatId:
+          type: integer
+        name:
+          type: string
+          description: Single string (not a language dictionary)
+
+    PosMenuMealContent:
+      type: object
+      required: [haatId, name, price, available]
+      properties:
+        haatId:
+          type: integer
+          description: Ingredient menu-item id
+        name:
+          $ref: "#/components/schemas/LocalizedMenuName"
+        price:
+          type: number
+        available:
+          type: boolean
+        imageUrl:
+          type: [string, "null"]
+        isDefault:
+          type: boolean
+        nonModifiable:
+          type: boolean
+        maxCount:
+          type: integer
+          description: Stored max amount, or 0 when null
+        allocationId:
+          type: [integer, "null"]
+
+    PosMenuGroup:
+      type: object
+      required: [haatId, name, min, max, mealContents]
+      properties:
+        haatId:
+          type: integer
+        name:
+          $ref: "#/components/schemas/LocalizedMenuName"
+        min:
+          type: integer
+        max:
+          type: integer
+        mealContents:
+          type: array
+          items:
+            $ref: "#/components/schemas/PosMenuMealContent"
+
+    PosMenuMeal:
+      type: object
+      required: [haatId, name, price, available, groups]
+      properties:
+        haatId:
+          type: integer
+        name:
+          $ref: "#/components/schemas/LocalizedMenuName"
+        price:
+          type: number
+        available:
+          type: boolean
+        imageUrl:
+          type: [string, "null"]
+        allocationId:
+          type: [integer, "null"]
+        groups:
+          type: array
+          items:
+            $ref: "#/components/schemas/PosMenuGroup"
+
+    PosMenuDealGroup:
+      type: object
+      required: [haatId, name, min, max, meals]
+      properties:
+        haatId:
+          type: integer
+        name:
+          $ref: "#/components/schemas/LocalizedMenuName"
+        min:
+          type: integer
+        max:
+          type: integer
+        meals:
+          type: array
+          items:
+            $ref: "#/components/schemas/PosMenuMeal"
+
+    PosMenuDeal:
+      type: object
+      required: [haatId, name, price, available, mealGroups]
+      properties:
+        haatId:
+          type: integer
+        name:
+          $ref: "#/components/schemas/LocalizedMenuName"
+        price:
+          type: number
+        available:
+          type: boolean
+        imageUrl:
+          type: [string, "null"]
+        allocationId:
+          type: [integer, "null"]
+        mealGroups:
+          type: array
+          items:
+            $ref: "#/components/schemas/PosMenuDealGroup"
+
+    PosMenuCategory:
+      type: object
+      required: [haatId, name, meals, deals]
+      properties:
+        haatId:
+          type: integer
+        name:
+          $ref: "#/components/schemas/LocalizedMenuName"
+        imageUrl:
+          type: [string, "null"]
+        meals:
+          type: array
+          items:
+            $ref: "#/components/schemas/PosMenuMeal"
+        deals:
+          type: array
+          items:
+            $ref: "#/components/schemas/PosMenuDeal"
+
+    PosMenuResponse:
+      type: object
+      required: [allocations, categories]
+      properties:
+        lastModified:
+          type: [string, "null"]
+          format: date-time
+          description: Newest menu outbox creation time; null when none
+        allocations:
+          type: array
+          description: Lookup for allocationId; only allocations used by this menu
+          items:
+            $ref: "#/components/schemas/PosMenuAllocation"
+        categories:
+          type: array
+          items:
+            $ref: "#/components/schemas/PosMenuCategory"

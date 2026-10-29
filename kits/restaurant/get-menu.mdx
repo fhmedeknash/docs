@@ -1,10 +1,12 @@
 ---
 title: "Get menu from POS"
-description: "HAAT fetches the full restaurant menu from your POS."
+description: "External — HAAT fetches the full restaurant menu from your POS."
 api: "GET https://pos.example.com/api/menu"
 ---
 
-Return the **full** menu as an **array of categories**. Keep `PosId` stable. `en-US` is required on names.
+External menu sync: **HAAT calls your POS**. Return the **full** menu as an **array of categories**. Keep `PosId` stable. `en-US` is required on names.
+
+To read the menu HAAT already stores, use [Get menu from HAAT](/kits/advanced-api/get-menu).
 
 **Example:**
 
