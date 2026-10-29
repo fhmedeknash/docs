@@ -451,7 +451,7 @@ paths:
       operationId: getMenu
       summary: Get menu from HAAT
       description: |
-        Read-only. Returns the HAAT menu for a business (categories, meals, deals, allocations).
+        Returns the HAAT menu for a business (categories, meals, deals, allocations).
 
         - Partner calls HAAT (not the external POS get-menu that HAAT calls)
         - No `requestId` / sync audit / Pending
