@@ -114,7 +114,7 @@
           {
             "group": "Menu",
             "pages": [
-              "kits/advanced-api/get-menu",
+              "kits/restaurant/get-menu-from-haat",
               "kits/restaurant/get-menu"
             ]
           },

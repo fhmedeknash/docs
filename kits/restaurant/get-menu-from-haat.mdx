@@ -6,7 +6,7 @@ api: "GET http://ext-integration.haat-delivery.io/api/pos/business/{businessId}/
 
 Read-only. Returns the restaurant menu HAAT stores for this business. The **partner calls HAAT** with `X-Api-Key`.
 
-For the reverse direction (HAAT calls your POS), use [Get menu from POS](/kits/restaurant/get-menu).
+Auth is Advanced API (`X-Api-Key`). For the reverse direction (HAAT calls your POS), use [Get menu from POS](/kits/restaurant/get-menu).
 
 Does **not** return a `requestId` and does not create a sync audit entry. There is no `Pending` state.
 
