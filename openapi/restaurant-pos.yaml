@@ -132,7 +132,7 @@ paths:
     post:
       tags: [Orders]
       operationId: createOrder
-      summary: Create order in POS
+      summary: Submit order
       description: |
         HAAT sends new customer orders to your POS in real time.
         Process the order and respond with an acknowledgment including your `posOrderId`.

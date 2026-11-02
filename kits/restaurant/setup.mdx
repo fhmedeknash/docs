@@ -20,14 +20,14 @@ Also required:
 | --- | --- |
 | `X-Haat-Version` | `1.0` |
 | `Content-Type` | `application/json` |
-| `Idempotency-Key` | On create order (UUID) — same key must not create duplicate orders |
+| `Idempotency-Key` | On submit order (UUID) — same key must not create duplicate orders |
 
 ## Partner endpoints
 
 | Method | Path | Purpose |
 | --- | --- | --- |
 | `GET` | `/api/menu` | Full menu sync |
-| `POST` | `/api/orders` | Create order |
+| `POST` | `/api/orders` | Submit order |
 
 Example base: `https://pos.example.com`
 
