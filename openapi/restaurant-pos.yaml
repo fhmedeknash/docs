@@ -173,30 +173,86 @@ paths:
             examples:
               sample:
                 value:
-                  orderId: 87452
-                  businessId: 1021
+                  orderId: 90001
+                  businessId: 120
                   customer:
-                    name: John Cohen
-                    phone: "+972501234567"
+                    name: Abed
+                    phone: "0500000000"
+                    email: abed@example.com
+                    address: null
                   items:
-                    - id: "5012"
-                      quantity: 2
-                      price: 32.5
-                      variations:
-                        - id: "9001"
-                          quantity: 1
-                          price: 0.0
-                    - id: "7840"
+                    - id: 1001
                       quantity: 1
-                      price: 19.9
+                      price: 30
+                      finalPrice: 34
+                      name: Burger
+                      names:
+                        en: Burger
+                        ar: برغر
+                        he: המבורגר
+                        fr: Burger
+                      variations:
+                        - id: 11
+                          quantity: 1
+                          price: 4
+                          finalPrice: 4
+                          name: Cheese
+                          names:
+                            en: Cheese
+                            ar: جبنة
+                            he: גבינה
+                            fr: Fromage
+                          variations: null
+                          isDeal: false
+                      isDeal: false
+                    - id: 2001
+                      quantity: 1
+                      price: 50
+                      finalPrice: 58
+                      name: Family Deal
+                      names:
+                        en: Family Deal
+                        ar: صفقة عائلية
+                        he: דיל משפחתי
+                        fr: Menu familial
+                      variations:
+                        - id: 3001
+                          quantity: 1
+                          price: 5
+                          finalPrice: 8
+                          name: Deal Burger
+                          names:
+                            en: Deal Burger
+                            ar: برغر الصفقة
+                            he: המבורגר הדיל
+                            fr: Burger menu
+                          variations:
+                            - id: 31
+                              quantity: 1
+                              price: 3
+                              finalPrice: 3
+                              name: Cheese
+                              names:
+                                en: Cheese
+                                ar: جبنة
+                                he: גבינה
+                                fr: Fromage
+                              variations: null
+                              isDeal: false
+                          isDeal: false
+                      isDeal: true
                   payments:
                     - paymentType: credit_card
-                      amount: 84.9
-                  payRestaurant: 84.9
+                      amount: 60
+                  payRestaurant: 60
                   deliveryType: delivery
-                  customerNotes: Please remove onions from one burger.
-                  formatCreatedDate: "2025-10-05T12:45:00Z"
-                  formatDeliveryDate: "2025-10-05T13:20:00Z"
+                  customerNotes: ""
+                  formatCreatedDate: "2026-10-26T08:00:00.000Z"
+                  formatDeliveryDate: "2026-10-26T08:30:00.000Z"
+                  formatReadyDate: "2026-10-26T08:30:00.000Z"
+                  deliveryEstimationTime: 15
+                  restaurantDiscount: 0
+                  remake: false
       responses:
         "200":
           description: Order accepted
@@ -376,32 +432,68 @@ components:
 
     Customer:
       type: object
-      required: [name, phone]
+      required: [name, phone, email]
       properties:
         name:
           type: string
         phone:
           type: string
-          description: E.164 format recommended
+        email:
+          type: string
+          description: May be empty
+        address:
+          type: [string, "null"]
+
+    ItemNames:
+      type: object
+      description: Localized names. Keys are en, ar, he, and fr when present.
+      additionalProperties:
+        type: string
+      properties:
+        en:
+          type: string
+        ar:
+          type: string
+        he:
+          type: string
+        fr:
+          type: string
 
     Item:
       type: object
-      required: [id, quantity, price]
+      required: [id, quantity, price, finalPrice, name, names, isDeal]
+      description: |
+        Same object for meals, deal meals, and variations.
+        Meal line: `isDeal` false; `variations` are add-ons (`[]` if none).
+        Deal line: `isDeal` true; `variations` are selected meals (`isDeal` false on nested meals).
+        Addon / leaf: `variations` is null.
+        Meal `finalPrice` = `price` + sum of each direct variation's `price` (quantity not multiplied).
+        Deal `finalPrice` = `price` + sum of (child.`finalPrice` × child.`quantity`).
       properties:
         id:
-          type: string
-          description: POS item ID
+          type: integer
+          description: HAAT menu item id
         quantity:
           type: integer
         price:
           type: number
           format: double
-          description: Unit price with exact decimal precision
+          description: Unit / original price for a meal or deal
+        finalPrice:
+          type: number
+          format: double
+        name:
+          type: string
+          description: English display name
+        names:
+          $ref: "#/components/schemas/ItemNames"
         variations:
-          type: array
-          description: Add-ons, sides, or nested sub-items
+          type: [array, "null"]
           items:
             $ref: "#/components/schemas/Item"
+        isDeal:
+          type: boolean
+          description: true only on the deal line
 
     Payment:
       type: object
@@ -425,8 +517,13 @@ components:
         - payments
         - payRestaurant
         - deliveryType
+        - customerNotes
         - formatCreatedDate
         - formatDeliveryDate
+        - formatReadyDate
+        - deliveryEstimationTime
+        - restaurantDiscount
+        - remake
       properties:
         orderId:
           type: integer
@@ -438,6 +535,7 @@ components:
           $ref: "#/components/schemas/Customer"
         items:
           type: array
+          description: Meals and deals only
           items:
             $ref: "#/components/schemas/Item"
         payments:
@@ -447,20 +545,36 @@ components:
         payRestaurant:
           type: number
           format: double
-          description: Total amount payable to the restaurant
+          description: Sum of payment amounts
         deliveryType:
           type: string
-          enum: [delivery, pickup]
+          enum: [delivery, pickup, seat, unknown]
         customerNotes:
-          type: [string, "null"]
+          type: string
+          description: May be empty; not null
         formatCreatedDate:
           type: string
           format: date-time
-          description: ISO-8601 UTC timestamp when the order was created
+          description: ISO-8601 UTC
+          example: "2026-10-26T08:00:00.000Z"
         formatDeliveryDate:
           type: string
           format: date-time
-          description: Scheduled delivery or pickup time (ISO-8601 UTC)
+          description: ISO-8601 UTC
+          example: "2026-10-26T08:30:00.000Z"
+        formatReadyDate:
+          type: string
+          format: date-time
+          description: ISO-8601 UTC
+          example: "2026-10-26T08:30:00.000Z"
+        deliveryEstimationTime:
+          type: [integer, "null"]
+          description: Minutes from ready time to arrival
+        restaurantDiscount:
+          type: number
+          format: double
+        remake:
+          type: boolean
 
     OrderResponse:
       type: object

@@ -38,65 +38,75 @@ Idempotency-Key: 7dda287d-21de-4159-a058-e60618e9b786</code></pre>
 <div class="redoc-tree">
   <div class="redoc-field">
     <div class="redoc-field-name"><code>orderId</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Unique order id assigned by HAAT.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>HAAT order id.</p></div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>businessId</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Restaurant / store id on the HAAT side.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>HAAT restaurant / store id.</p></div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>customer</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Customer who placed the order.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object</div></div>
   </div>
   <div class="redoc-children">
     <div class="redoc-field">
       <div class="redoc-field-name"><code>name</code><span class="redoc-required">required</span></div>
-      <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Customer name.</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">string</div></div>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>phone</code><span class="redoc-required">required</span></div>
-      <div class="redoc-field-meta"><div class="redoc-type">string</div><p>E.164 format recommended, for example <code>+972501234567</code>.</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">string</div></div>
+    </div>
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>email</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-meta"><div class="redoc-type">string</div><p>May be empty.</p></div>
+    </div>
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>address</code></div>
+      <div class="redoc-field-meta"><div class="redoc-type">string | null</div></div>
     </div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>items</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Order lines. <code>id</code> is the POS item id.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Meals and deals only. Same <code>Item</code> shape for meals, deal meals, and variations.</p></div>
   </div>
   <div class="redoc-children">
     <div class="redoc-field">
       <div class="redoc-field-name"><code>id</code><span class="redoc-required">required</span></div>
-      <div class="redoc-field-meta"><div class="redoc-type">string</div><p>POS item id (<code>posId</code>).</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>HAAT menu item id.</p></div>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>quantity</code><span class="redoc-required">required</span></div>
-      <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Quantity ordered.</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">integer</div></div>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>price</code><span class="redoc-required">required</span></div>
-      <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Unit price with exact decimal precision.</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Unit / original price for a meal or deal.</p></div>
     </div>
     <div class="redoc-field">
-      <div class="redoc-field-name"><code>variations</code></div>
-      <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>Add-ons, sides, or nested sub-items. Same shape as an item.</p></div>
+      <div class="redoc-field-name"><code>finalPrice</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Meal: <code>price</code> + sum of direct variation <code>price</code> values (quantity not multiplied). Deal: <code>price</code> + sum of (<code>child.finalPrice</code> × <code>child.quantity</code>).</p></div>
     </div>
-    <div class="redoc-children">
-      <div class="redoc-field">
-        <div class="redoc-field-name"><code>id</code><span class="redoc-required">required</span></div>
-        <div class="redoc-field-meta"><div class="redoc-type">string</div><p>POS variation / addon id.</p></div>
-      </div>
-      <div class="redoc-field">
-        <div class="redoc-field-name"><code>quantity</code><span class="redoc-required">required</span></div>
-        <div class="redoc-field-meta"><div class="redoc-type">integer</div><p>Variation quantity.</p></div>
-      </div>
-      <div class="redoc-field">
-        <div class="redoc-field-name"><code>price</code><span class="redoc-required">required</span></div>
-        <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Additional price. <code>0.0</code> if free.</p></div>
-      </div>
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>name</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-meta"><div class="redoc-type">string</div><p>English display name.</p></div>
+    </div>
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>names</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-meta"><div class="redoc-type">object</div><p>Localized names. Keys <code>en</code>, <code>ar</code>, <code>he</code>, <code>fr</code> when present.</p></div>
+    </div>
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>variations</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-meta"><div class="redoc-type">object[] | null</div><p>Meal with no add-ons: <code>[]</code>. Addon / leaf: <code>null</code>. Deal: nested meals (same Item shape; nested <code>isDeal</code> is <code>false</code>).</p></div>
+    </div>
+    <div class="redoc-field">
+      <div class="redoc-field-name"><code>isDeal</code><span class="redoc-required">required</span></div>
+      <div class="redoc-field-meta"><div class="redoc-type">boolean</div><p><code>false</code> on a meal (variations are add-ons). <code>true</code> only on the deal line (variations are selected meals).</p></div>
     </div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>payments</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">object[]</div><p>How the customer paid. Amounts must align with <code>payRestaurant</code>.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">object[]</div></div>
   </div>
   <div class="redoc-children">
     <div class="redoc-field">
@@ -105,28 +115,44 @@ Idempotency-Key: 7dda287d-21de-4159-a058-e60618e9b786</code></pre>
     </div>
     <div class="redoc-field">
       <div class="redoc-field-name"><code>amount</code><span class="redoc-required">required</span></div>
-      <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Payment amount.</p></div>
+      <div class="redoc-field-meta"><div class="redoc-type">number</div></div>
     </div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>payRestaurant</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Total amount payable to the restaurant.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">number</div><p>Sum of payment amounts.</p></div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>deliveryType</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">string</div><p><code>delivery</code> or <code>pickup</code>.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p><code>delivery</code>, <code>pickup</code>, <code>seat</code>, or <code>unknown</code>.</p></div>
   </div>
   <div class="redoc-field">
-    <div class="redoc-field-name"><code>customerNotes</code></div>
-    <div class="redoc-field-meta"><div class="redoc-type">string | null</div><p>Customer note. Can be <code>null</code>.</p></div>
+    <div class="redoc-field-name"><code>customerNotes</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>May be empty. Not null.</p></div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>formatCreatedDate</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>ISO-8601 UTC timestamp when the order was created.</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>ISO-8601 UTC, for example <code>2026-10-26T08:00:00.000Z</code>.</p></div>
   </div>
   <div class="redoc-field">
     <div class="redoc-field-name"><code>formatDeliveryDate</code><span class="redoc-required">required</span></div>
-    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>Scheduled delivery or pickup time (ISO-8601 UTC).</p></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>ISO-8601 UTC.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>formatReadyDate</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">string</div><p>ISO-8601 UTC.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>deliveryEstimationTime</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">integer | null</div><p>Minutes from ready time to arrival.</p></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>restaurantDiscount</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">number</div></div>
+  </div>
+  <div class="redoc-field">
+    <div class="redoc-field-name"><code>remake</code><span class="redoc-required">required</span></div>
+    <div class="redoc-field-meta"><div class="redoc-type">boolean</div></div>
   </div>
 </div>
 
@@ -163,8 +189,85 @@ Idempotency-Key: 7dda287d-21de-4159-a058-e60618e9b786</code></pre>
 curl -X POST https://pos.example.com/api/orders \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "X-Haat-Version: 1.0" \
+  -H "Idempotency-Key: 7dda287d-21de-4159-a058-e60618e9b786" \
   -H "Content-Type: application/json" \
-  -d '{"orderId":87452,"businessId":1021,"customer":{"name":"John Cohen","phone":"+972501234567"},"items":[{"id":"5012","quantity":2,"price":32.5}],"payments":[{"paymentType":"credit_card","amount":84.9}],"payRestaurant":84.9,"deliveryType":"delivery"}'
+  -d '{
+  "orderId": 90001,
+  "businessId": 120,
+  "customer": {
+    "name": "Abed",
+    "phone": "0500000000",
+    "email": "abed@example.com",
+    "address": null
+  },
+  "items": [
+    {
+      "id": 1001,
+      "quantity": 1,
+      "price": 30,
+      "finalPrice": 34,
+      "name": "Burger",
+      "names": { "en": "Burger", "ar": "برغر", "he": "המבורגר", "fr": "Burger" },
+      "variations": [
+        {
+          "id": 11,
+          "quantity": 1,
+          "price": 4,
+          "finalPrice": 4,
+          "name": "Cheese",
+          "names": { "en": "Cheese", "ar": "جبنة", "he": "גבינה", "fr": "Fromage" },
+          "variations": null,
+          "isDeal": false
+        }
+      ],
+      "isDeal": false
+    },
+    {
+      "id": 2001,
+      "quantity": 1,
+      "price": 50,
+      "finalPrice": 58,
+      "name": "Family Deal",
+      "names": { "en": "Family Deal", "ar": "صفقة عائلية", "he": "דיל משפחתי", "fr": "Menu familial" },
+      "variations": [
+        {
+          "id": 3001,
+          "quantity": 1,
+          "price": 5,
+          "finalPrice": 8,
+          "name": "Deal Burger",
+          "names": { "en": "Deal Burger", "ar": "برغر الصفقة", "he": "המבורגר הדיל", "fr": "Burger menu" },
+          "variations": [
+            {
+              "id": 31,
+              "quantity": 1,
+              "price": 3,
+              "finalPrice": 3,
+              "name": "Cheese",
+              "names": { "en": "Cheese", "ar": "جبنة", "he": "גבינה", "fr": "Fromage" },
+              "variations": null,
+              "isDeal": false
+            }
+          ],
+          "isDeal": false
+        }
+      ],
+      "isDeal": true
+    }
+  ],
+  "payments": [
+    { "paymentType": "credit_card", "amount": 60 }
+  ],
+  "payRestaurant": 60,
+  "deliveryType": "delivery",
+  "customerNotes": "",
+  "formatCreatedDate": "2026-10-26T08:00:00.000Z",
+  "formatDeliveryDate": "2026-10-26T08:30:00.000Z",
+  "formatReadyDate": "2026-10-26T08:30:00.000Z",
+  "deliveryEstimationTime": 15,
+  "restaurantDiscount": 0,
+  "remake": false
+}'
 ```
 </RequestExample>
 
